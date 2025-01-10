@@ -1,14 +1,43 @@
 {
-  "name": "",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "vitest"
   },
   "dependencies": {
-    "astro": "^5.1.4"
-  }
+    "@astrojs/react": "^4.1.2",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "astro": "^4.14.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.3",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-onboarding": "^8.4.7",
+    "@storybook/astro": "workspace:*",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "@types/prop-types": "^15",
+    "@vitest/ui": "2.1.8",
+    "prop-types": "^15.8.1",
+    "storybook": "^8.4.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  },
+  "workspaces": [
+    "packages/@storybook/*"
+  ],
+  "packageManager": "yarn@4.6.0"
 }
