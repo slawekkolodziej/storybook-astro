@@ -16,10 +16,7 @@ export async function handler(data) {
     entrypoint: "@astrojs/react/client.js",
   });
 
-  const { default: Component } = await import(
-    data.component
-    // "../../../src/components/Welcome.astro"
-  );
+  const { default: Component } = await import(/* @vite-ignore */ data.component);
 
   return container.renderToString(Component, {
     props: data.args,
