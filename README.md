@@ -17,4 +17,13 @@ This repository is an experimental project and is not a fully functional Storybo
 2. Run `yarn install`
 3. Run `yarn storybook`
 
+## Code structure
+
+The repository is based on Astro blank project.
+
+Code responsible for Storybook integration lives in two packages:
+- `packages/@storybook/astro` - defines Storybook framework (https://storybook.js.org/docs/configure/integration/frameworks), it is responsible for server-side rendering Astro components
+- `packages/@storybook/astro-renderer` - a package that gets imported into client-side of Storybook, it sends render requests to Astro rendering proxy.
+
+
 **Any help is highly appreciated!**
