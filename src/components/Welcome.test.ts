@@ -25,8 +25,8 @@ async function renderAstroComponent(
 test("Card with slots", async () => {
   const result = await renderAstroComponent(Welcome);
 
-  expect(result).toContain("This is a card");
-  expect(result).toContain("Card content");
+  expect(result).toContain("Hello World!");
+  expect(result).toContain("This is astro component!");
   expect(result).toContain("Welcome from React!");
 });
 
@@ -38,6 +38,6 @@ test("Card with custom title", async () => {
   });
 
   expect(result).toContain("Custom title");
-  expect(result).toContain("Card content");
+  expect(result).toContain("This is astro component!");
   expect(result).toContain("Welcome from React!");
 });
