@@ -1,8 +1,8 @@
-import Card from '../components/Card.astro';
+import Welcome from '../components/Welcome.astro';
 
 export default {
-  title: 'Astro/Card',
-  component: Card,
+  title: 'Astro/Welcome',
+  component: Welcome,
   args: {}
 };
 
@@ -10,9 +10,18 @@ export const Primary = {
   args: {},
 };
 
-export const Custom = {
+export const Secondary = {
   args: {
-    title: 'Custom title',
-    content: 'Custom content',
+    title: 'Some other title',
   },
 };
+
+export const WithSlots = {
+  args: {
+    title: 'Some other title',
+  },
+  slots: {
+    main: '<strong>Content in a slot!</strong>',
+  },
+};
+

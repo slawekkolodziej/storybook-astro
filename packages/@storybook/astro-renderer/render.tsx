@@ -72,31 +72,33 @@ export async function renderToCanvas(
   showMain();
 
   if (element.isAstroComponentFactory) {
-    const response = await fetch("/__render_astro_story", {
-      method: "POST",
-      body: JSON.stringify({
-        component: element.moduleId,
-        args: storyContext.args,
-      }),
+    const { slots = {}, ...args } = storyContext.args;
+  
+    const renderAstro = (data) => {
+      canvasElement.innerHTML = data.html;
+      import.meta.hot?.off('astro:render:response', renderAstro);
+    }
+    import.meta.hot?.on('astro:render:response', renderAstro);
+    import.meta.hot?.send('astro:render:request', {
+      component: element.moduleId,
+      args: args,
+      slots: slots,
     });
-    const html = await response.text();
 
-    canvasElement.innerHTML = html;
+    Array.from<HTMLScriptElement>(
+      canvasElement.querySelectorAll("script")
+    ).forEach((oldScript) => {
+      const newScript = document.createElement("script");
 
-    Array.from<HTMLScriptElement>(canvasElement.querySelectorAll("script")).forEach(
-      (oldScript) => {
-        const newScript = document.createElement("script");
+      Array.from(oldScript.attributes).forEach((attr) => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
 
-        Array.from(oldScript.attributes).forEach((attr) => {
-          newScript.setAttribute(attr.name, attr.value);
-        });
+      const scriptText = document.createTextNode(oldScript.innerHTML);
+      newScript.appendChild(scriptText);
 
-        const scriptText = document.createTextNode(oldScript.innerHTML);
-        newScript.appendChild(scriptText);
-
-        oldScript.parentNode?.replaceChild(newScript, oldScript);
-      }
-    );
+      oldScript.parentNode?.replaceChild(newScript, oldScript);
+    });
   } else if (typeof element === "string") {
     canvasElement.innerHTML = element;
     simulatePageLoad(canvasElement);

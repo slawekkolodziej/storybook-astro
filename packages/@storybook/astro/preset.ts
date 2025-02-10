@@ -45,23 +45,10 @@ export const viteFinal = async (config, { presets }) => {
         fixStacktrace: true,
       });
 
-      server.middlewares.use("/__render_astro_story", (req, res) => {
-        if (req.method !== "POST") {
-          res.statusCode = 405;
-          res.end("Method Not Allowed");
-          return;
-        }
+      server.ws.on("astro:render:request", async (data) => {
+        const html = await mod.handler(data);
 
-        let body = "";
-        req.on("readable", () => {
-          body += req.read();
-        });
-        req.on("end", async () => {
-          const data = JSON.parse(body);
-          res.setHeader("Content-Type", "text/html");
-          const result = await mod.handler(data);
-          res.end(result);
-        });
+        server.ws.send("astro:render:response", { html });
       });
     },
   });

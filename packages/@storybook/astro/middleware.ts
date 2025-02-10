@@ -34,5 +34,6 @@ export async function handler(data) {
 
   return container.renderToString(Component, {
     props: data.args,
+    slots: data.slots ?? {},
   });
 }
