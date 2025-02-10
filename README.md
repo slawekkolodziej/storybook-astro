@@ -8,11 +8,11 @@ It uses Vitest To verify that Astro Container API works as expected. You can try
 
 ## Known issues
 
-- [ ] UI components are not hydrated when using `client` directives (partially fixed)
+- [x] ~~UI components are not hydrated when using `client` directives~~
+- [x] ~~Container API does not work properly in Astro 5.x (it looks like a potential bug in Astro).~~ Actually it did work, but required updating Vite and Vitest.
 - [ ] Currently, only React integration is supported, and it is hardcoded.
 - [ ] Astro components with CSS throw errors.
 - [ ] Unhandled rejection errors occur sometimes when rendering Astro components.
-- [ ] Container API does not work properly in Astro 5.x (it looks like a potential bug in Astro).
 
 ## Setup instructions
 
