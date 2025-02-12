@@ -4,13 +4,29 @@
   "module": "index.js",
   "type": "module",
   "devDependencies": {
-    "@astrojs/react": "^2.0.0",
     "@types/node": "^20.0.0",
     "astro": "^4.14.6"
   },
   "peerDependencies": {
-    "@astrojs/react": "^2.0.0",
+    "@astrojs/react": "*",
+    "@astrojs/solid-js": "*",
+    "@astrojs/svelte": "*",
+    "@astrojs/vue": "*",
     "astro": "^4.14.6"
+  },
+  "peerDependenciesMeta": {
+    "@astrojs/react": {
+      "optional": true
+    },
+    "@astrojs/solid-js": {
+      "optional": true
+    },
+    "@astrojs/svelte": {
+      "optional": true
+    },
+    "@astrojs/vue": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@storybook/astro-renderer": "workspace:*"
