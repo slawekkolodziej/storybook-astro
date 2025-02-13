@@ -1,4 +1,4 @@
-/** @type { import('@storybook/react-vite').StorybookConfig } */
+/** @type { import('@storybook/astro').StorybookConfig } */
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
@@ -8,7 +8,9 @@ const config = {
   ],
   framework: {
     name: "@storybook/astro",
-    options: {},
+    options: {
+      integrations: ['react', 'solid'],
+    },
   },
 };
 export default config;

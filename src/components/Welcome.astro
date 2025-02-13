@@ -1,5 +1,6 @@
 ---
-import Welcome from './Welcome.jsx';
+import ReactWelcome from './react/Welcome.jsx';
+import SolidCounter from './solid/Counter.jsx';
 
 const title = Astro.props.title ?? 'Hello World!';
 
@@ -8,7 +9,8 @@ const title = Astro.props.title ?? 'Hello World!';
 <div id="container">
 	<h2>{title}</h2>
 	<p>This is astro component!</p>
-	<Welcome client:load />
+	<ReactWelcome client:load />
+	<SolidCounter client:load />
 </div>
 
 <!-- Styles does not -->

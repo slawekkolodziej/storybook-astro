@@ -1,4 +1,4 @@
-import Welcome from '../components/Welcome.jsx';
+import Welcome from '../components/react/Welcome.jsx';
 
 export default {
   title: 'React/Welcome',

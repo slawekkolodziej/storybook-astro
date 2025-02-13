@@ -4,7 +4,7 @@ function Welcome() {
   const [count, setCount] = useState(1);
   return (
     <div>
-      Welcome from React! {count}
+      React counter: {count}
       <button onClick={() => setCount(count + 1)}>+1</button>
     </div>
   );
