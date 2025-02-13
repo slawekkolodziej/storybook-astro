@@ -2025,6 +2025,15 @@ __metadata:
     "@astrojs/svelte": "*"
     "@astrojs/vue": "*"
     astro: ^4.14.6
+  peerDependenciesMeta:
+    "@astrojs/react":
+      optional: true
+    "@astrojs/solid-js":
+      optional: true
+    "@astrojs/svelte":
+      optional: true
+    "@astrojs/vue":
+      optional: true
   languageName: unknown
   linkType: soft
 
