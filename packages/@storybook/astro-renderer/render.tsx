@@ -77,27 +77,28 @@ export async function renderToCanvas(
     const renderAstro = (data) => {
       canvasElement.innerHTML = data.html;
       import.meta.hot?.off('astro:render:response', renderAstro);
+
+      Array.from<HTMLScriptElement>(
+        canvasElement.querySelectorAll("script")
+      ).forEach((oldScript) => {
+        const newScript = document.createElement("script");
+  
+        Array.from(oldScript.attributes).forEach((attr) => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+  
+        const scriptText = document.createTextNode(oldScript.innerHTML);
+  
+        newScript.appendChild(scriptText);
+  
+        oldScript.parentNode?.replaceChild(newScript, oldScript);
+      });
     }
     import.meta.hot?.on('astro:render:response', renderAstro);
     import.meta.hot?.send('astro:render:request', {
       component: element.moduleId,
       args: args,
       slots: slots,
-    });
-
-    Array.from<HTMLScriptElement>(
-      canvasElement.querySelectorAll("script")
-    ).forEach((oldScript) => {
-      const newScript = document.createElement("script");
-
-      Array.from(oldScript.attributes).forEach((attr) => {
-        newScript.setAttribute(attr.name, attr.value);
-      });
-
-      const scriptText = document.createTextNode(oldScript.innerHTML);
-      newScript.appendChild(scriptText);
-
-      oldScript.parentNode?.replaceChild(newScript, oldScript);
     });
   } else if (typeof element === "string") {
     canvasElement.innerHTML = element;
