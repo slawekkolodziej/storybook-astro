@@ -3,19 +3,12 @@ import { createServer, type PluginOption } from "vite";
 import type { AstroInlineConfig } from "astro/config";
 import type { FrameworkOptions, SupportedFramework } from "./types";
 
-const PLUGINS_TO_KEEP = [
-  "@astrojs/react:opts",
-  "astro:scripts",
-  "vite:react-refresh",
-  "solid",
-];
-
 export async function vitePluginStorybookAstroMiddleware(
   options: FrameworkOptions
 ) {
   const viteServer = await createViteServer(options.integrations);
 
-  return {
+  const vitePlugin = {
     name: "storybook-astro-middleware-plugin",
     async configureServer(server) {
       const filePath = fileURLToPath(new URL("./middleware", import.meta.url));
@@ -42,6 +35,16 @@ export async function vitePluginStorybookAstroMiddleware(
       });
     },
   } satisfies PluginOption;
+
+  return {
+    vitePlugin,
+    viteConfig: {
+      plugins: [
+        viteServer.config.plugins.find(plugin => plugin.name === 'vite:css'),
+        viteServer.config.plugins.find(plugin => plugin.name === 'vite:css-post')
+      ].filter(Boolean)
+    }
+  }
 }
 
 export async function makeAstroConfig(integrations: SupportedFramework[]) {}

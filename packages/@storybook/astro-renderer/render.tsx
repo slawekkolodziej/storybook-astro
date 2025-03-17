@@ -73,29 +73,50 @@ export async function renderToCanvas(
 
   if (element.isAstroComponentFactory) {
     const { slots = {}, ...args } = storyContext.args;
-  
+
+    // import.meta.hot?.on('vite:afterUpdate', (payload) => {
+    // FIXME: Detect if hot-updated chunk is CSS from astro component
+    // console.log("payload: ", payload);
+    // })
+
+    // FIXME: This can probably be simplified:
+    // Array.from(document.querySelectorAll("style[data-vite-dev-id]")).map(
+    //   (el) => {
+    //     const newScript = document.createElement("script");
+    //     newScript.type = "module";
+    //     const scriptText = document.createTextNode(
+    //       el.innerHTML
+    //         .replaceAll("import.meta.hot.accept(", "import.meta.hot?.accept(")
+    //         .replaceAll("import.meta.hot.prune(", "import.meta.hot?.prune(")
+    //     );
+    //     newScript.appendChild(scriptText);
+    //     document.body.appendChild(newScript);
+    //     document.body.removeChild(newScript);
+    //   }
+    // );
+
     const renderAstro = (data) => {
       canvasElement.innerHTML = data.html;
-      import.meta.hot?.off('astro:render:response', renderAstro);
+      import.meta.hot?.off("astro:render:response", renderAstro);
 
       Array.from<HTMLScriptElement>(
         canvasElement.querySelectorAll("script")
       ).forEach((oldScript) => {
         const newScript = document.createElement("script");
-  
+
         Array.from(oldScript.attributes).forEach((attr) => {
           newScript.setAttribute(attr.name, attr.value);
         });
-  
+
         const scriptText = document.createTextNode(oldScript.innerHTML);
-  
+
         newScript.appendChild(scriptText);
-  
+
         oldScript.parentNode?.replaceChild(newScript, oldScript);
       });
-    }
-    import.meta.hot?.on('astro:render:response', renderAstro);
-    import.meta.hot?.send('astro:render:request', {
+    };
+    import.meta.hot?.on("astro:render:response", renderAstro);
+    import.meta.hot?.send("astro:render:request", {
       component: element.moduleId,
       args: args,
       slots: slots,

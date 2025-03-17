@@ -16,16 +16,16 @@ export const viteFinal: StorybookConfigVite["viteFinal"] = async (
   { presets }
 ) => {
   const options = await presets.apply<FrameworkOptions>("frameworkOptions");
-  const storybookAstroMiddlewarePlugin =
+  const { vitePlugin: storybookAstroMiddlewarePlugin, viteConfig } =
     await vitePluginStorybookAstroMiddleware(options);
 
   if (!config.plugins) {
     config.plugins = [];
   }
 
-  config.plugins.push(storybookAstroMiddlewarePlugin);
+  config.plugins.push(storybookAstroMiddlewarePlugin, ...viteConfig.plugins);
 
   const finalConfig = await mergeWithAstroConfig(config);
 
-  return finalConfig
+  return finalConfig;
 };
