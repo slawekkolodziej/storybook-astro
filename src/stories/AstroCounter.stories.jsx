@@ -1,9 +1,9 @@
-import Welcome from '../components/Welcome.astro';
+import Counter from '../components/Counter.astro';
 
 export default {
-  title: 'Astro/Welcome',
-  component: Welcome,
-  args: {}
+  title: 'Astro/Counter',
+  component: Counter,
+  args: {},
 };
 
 export const Primary = {
@@ -24,4 +24,3 @@ export const WithSlots = {
     main: '<strong>Content in a slot!</strong>',
   },
 };
-

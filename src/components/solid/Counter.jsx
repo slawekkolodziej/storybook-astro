@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal } from 'solid-js';
 
 const Counter = () => {
   const [count, setCount] = createSignal(0);

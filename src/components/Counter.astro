@@ -1,0 +1,19 @@
+---
+import ReactCounter from './react/Counter.jsx';
+import SolidCounter from './solid/Counter.jsx';
+
+const title = Astro.props.title ?? 'Hello World!';
+---
+
+<div id="container">
+  <h2>{title}</h2>
+  <p>This is astro component!</p>
+  <ReactCounter client:load />
+  <SolidCounter client:load />
+</div>
+
+<style>
+  #container {
+    border: 2px solid hotpink;
+  }
+</style>

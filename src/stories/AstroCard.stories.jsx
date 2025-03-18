@@ -3,7 +3,7 @@ import Card from '../components/Card.astro';
 export default {
   title: 'Astro/Card',
   component: Card,
-  args: {}
+  args: {},
 };
 
 export const Primary = {
@@ -25,4 +25,3 @@ export const WithSlots = {
     },
   },
 };
-

@@ -1,7 +1,7 @@
-import Counter from '../components/react/Counter.jsx';
+import Counter from '../components/solid/Counter.jsx';
 
 export default {
-  title: 'React/Counter',
+  title: 'Solid/Counter',
   component: Counter,
   args: {},
 };
