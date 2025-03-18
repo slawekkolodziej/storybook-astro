@@ -74,28 +74,43 @@ export async function renderToCanvas(
   if (element.isAstroComponentFactory) {
     const { slots = {}, ...args } = storyContext.args;
 
-    // import.meta.hot?.on('vite:afterUpdate', (payload) => {
-    // FIXME: Detect if hot-updated chunk is CSS from astro component
-    // console.log("payload: ", payload);
-    // })
+    import.meta.hot?.on("vite:afterUpdate", (payload) => {
+      // FIXME: Detect if hot-updated chunk is CSS from astro component
+      console.log("payload: ", payload);
+      if (
+        payload.updates.some((update) => {
+          // FIXME: parse this path better
+          return update.path.endsWith(
+            ".astro?astro&type=style&index=0&lang.css"
+          );
+        })
+      ) {
+        console.log("updated styles!");
+        applyStyles();
+      }
+    });
 
-    // FIXME: This can probably be simplified:
-    // Array.from(document.querySelectorAll("style[data-vite-dev-id]")).map(
-    //   (el) => {
-    //     const newScript = document.createElement("script");
-    //     newScript.type = "module";
-    //     const scriptText = document.createTextNode(
-    //       el.innerHTML
-    //         .replaceAll("import.meta.hot.accept(", "import.meta.hot?.accept(")
-    //         .replaceAll("import.meta.hot.prune(", "import.meta.hot?.prune(")
-    //     );
-    //     newScript.appendChild(scriptText);
-    //     document.body.appendChild(newScript);
-    //     document.body.removeChild(newScript);
-    //   }
-    // );
+    function applyStyles() {
+      // FIXME: This can probably be simplified:
+      Array.from(document.querySelectorAll("style[data-vite-dev-id]"))
+        // FIXME: Clean this up
+        .filter((el) => /__vite__updateStyle/.test(el.innerHTML))
+        .map((el) => {
+          const newScript = document.createElement("script");
+          newScript.type = "module";
+          const scriptText = document.createTextNode(
+            el.innerHTML
+              .replaceAll("import.meta.hot.accept(", "import.meta.hot?.accept(")
+              .replaceAll("import.meta.hot.prune(", "import.meta.hot?.prune(")
+          );
+          newScript.appendChild(scriptText);
+          document.head.appendChild(newScript);
+          document.head.removeChild(newScript);
+        });
+    }
 
     const renderAstro = (data) => {
+      applyStyles();
       canvasElement.innerHTML = data.html;
       import.meta.hot?.off("astro:render:response", renderAstro);
 

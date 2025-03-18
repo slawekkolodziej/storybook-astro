@@ -11,10 +11,10 @@ It uses Vitest To verify that Astro Container API works as expected. You can try
 - [x] ~~UI components are not hydrated when using `client` directives~~
 - [x] ~~Container API does not work properly in Astro 5.x (it looks like a potential bug in Astro).~~ Actually it did work, but required updating Vite and Vitest.
 - [x] ~~Currently, only React integration is supported, and it is hardcoded.~~ 
-- [ ] React and Solid integrations work, other frameworks should probably work too, but integration needs to get a bit simpler
 - [x] ~~Astro components with CSS throw errors.~~
-- [ ] Hydrate CSS chunks
+- [x] ~~Hydrate CSS chunks~~
 - [x] ~~Unhandled rejection errors occur sometimes when rendering Astro components.~~ I don't see this anymore, switching to hmr websocket did the trick
+- [ ] React and Solid integrations work, other frameworks should probably work too, but integration needs to get a bit simpler
 
 ## Setup instructions
 
