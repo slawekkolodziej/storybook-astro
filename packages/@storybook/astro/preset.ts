@@ -4,6 +4,7 @@ import { vitePluginStorybookAstroMiddleware } from "./viteStorybookAstroMiddlewa
 import { mergeWithAstroConfig } from "./vitePluginAstro";
 
 const getAbsolutePath = <I extends string>(input: I): I =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dirname(require.resolve(join(input, "package.json"))) as any;
 
 export const core = {
