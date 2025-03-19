@@ -26,9 +26,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # Build the project
+      # Build Astro
       - name: Build the project
         run: yarn build
+
+        # Build Storybook
+      - name: Build the project
+        run: yarn build-storybook
 
       # Run tests
       - name: Run tests
