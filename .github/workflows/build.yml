@@ -19,12 +19,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Specify your Node.js version
+          node-version: 22
           cache: 'yarn'
 
       # Install dependencies
       - name: Install dependencies
         run: yarn install
+
+      # Lint code
+      - name: Build Astro
+        run: yarn eslint
+
 
       # Build Astro
       - name: Build Astro
