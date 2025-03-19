@@ -69,6 +69,7 @@ export async function loadIntegrations(
 ): Promise<AstroInlineConfig['integrations']> {
   const frameworkMap = {
     react: '@astrojs/react',
+    preact: '@astrojs/preact',
     svelte: '@astrojs/svelte',
     vue: '@astrojs/vue',
     solid: '@astrojs/solid-js'

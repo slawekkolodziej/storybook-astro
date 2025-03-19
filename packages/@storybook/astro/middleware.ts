@@ -92,7 +92,8 @@ export async function handlerFactory(integrations: SupportedFramework[]) {
       if (
         s.startsWith('astro:scripts') ||
         s.startsWith('@astrojs/react/client') ||
-        s.startsWith('@astrojs/solid-js/client')
+        s.startsWith('@astrojs/solid-js/client') ||
+        s.startsWith('@astrojs/preact/client') 
       ) {
         return `/@id/${s}`;
       }

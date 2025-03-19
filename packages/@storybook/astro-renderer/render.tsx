@@ -7,11 +7,16 @@ import {
 import type { ArgsStoryFn, RenderContext } from "storybook/internal/types";
 import { global } from "@storybook/global";
 import { dedent } from "ts-dedent";
+import "astro:scripts/page.js";
 import type { $FIXME } from "./types";
 
 const { Node } = global;
 
-export const render: ArgsStoryFn<any> = (args, context) => {
+if ('Alpine' in window) {
+  (window.Alpine as $FIXME).start();
+}
+
+export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const { id, component: Component } = context;
 
   if (!Component) {
@@ -81,8 +86,6 @@ export async function renderToCanvas(
     const { slots = {}, ...args } = storyContext.args;
 
     import.meta.hot?.on("vite:afterUpdate", (payload) => {
-      // FIXME: Detect if hot-updated chunk is CSS from astro component
-      console.log("payload: ", payload);
       if (
         payload.updates.some((update) => {
           // FIXME: parse this path better
@@ -91,7 +94,6 @@ export async function renderToCanvas(
           );
         })
       ) {
-        console.log("updated styles!");
         applyStyles();
       }
     });
