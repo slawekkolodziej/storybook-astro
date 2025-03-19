@@ -1,0 +1,26 @@
+<template>
+  <div>
+    Vue counter: {{ count }}
+    <button @click="increment">+1</button>
+  </div>
+</template>
+
+<script>
+import { ref } from 'vue';
+
+export default {
+  name: 'Counter',
+  setup() {
+    const count = ref(1);
+
+    const increment = () => {
+      count.value += 1;
+    };
+
+    return {
+      count,
+      increment,
+    };
+  },
+};
+</script>

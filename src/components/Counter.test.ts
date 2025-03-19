@@ -1,6 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import reactRenderer from '@astrojs/react/server.js';
 import solidRenderer from '@astrojs/solid-js/server.js';
+import vueRenderer from '@astrojs/vue/server.js';
 import { expect, test } from 'vitest';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 
@@ -32,6 +33,16 @@ async function renderAstroComponent(
   container.addClientRenderer({
     name: '@astrojs/solid-js',
     entrypoint: '@astrojs/solid-js/client.js',
+  });
+
+  container.addServerRenderer({
+    renderer: vueRenderer,
+    name: '@astrojs/vue',
+  });
+
+  container.addClientRenderer({
+    name: '@astrojs/vue',
+    entrypoint: '@astrojs/vue/client.js',
   });
 
   return container.renderToString(Component, renderingOptions);
