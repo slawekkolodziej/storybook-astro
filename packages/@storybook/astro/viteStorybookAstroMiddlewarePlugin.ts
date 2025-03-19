@@ -86,10 +86,10 @@ export async function loadIntegrations(
 
         const framework = await import(frameworkMap[integration]);
 
-        // FIXME: Forward JSX frameworks config here
         if (['solid', 'preact'].includes(integration)) {
           return framework.default({
-            include: ['**/solid/*']
+            // FIXME: Forward JSX frameworks config here
+            include: [`**/${integration}/*`]
           });
         }
 
