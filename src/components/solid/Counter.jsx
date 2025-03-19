@@ -1,7 +1,7 @@
 import { createSignal } from 'solid-js';
 
 const Counter = () => {
-  const [count, setCount] = createSignal(0);
+  const [count, setCount] = createSignal(1);
 
   return (
     <div>
