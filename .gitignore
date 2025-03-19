@@ -26,3 +26,4 @@ pnpm-debug.log*
 *storybook.log
 
 .yarn/
+storybook-static/
