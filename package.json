@@ -11,13 +11,16 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@astrojs/alpinejs": "^0.4.3",
     "@astrojs/preact": "^4.0.5",
     "@astrojs/react": "^4.2.1",
     "@astrojs/solid-js": "5.0.5",
     "@astrojs/svelte": "^7.0.6",
     "@astrojs/vue": "^5.0.7",
+    "@types/alpinejs": "^3.13.11",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
+    "alpinejs": "^3.14.9",
     "astro": "^5.5.3",
     "preact": "^10.26.4",
     "react": "^18.3.1",
