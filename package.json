@@ -14,7 +14,7 @@
     "@astrojs/preact": "^4.0.5",
     "@astrojs/react": "^4.2.1",
     "@astrojs/solid-js": "5.0.5",
-    "@astrojs/svelte": "7.0.6",
+    "@astrojs/svelte": "^7.0.6",
     "@astrojs/vue": "^5.0.7",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
@@ -22,6 +22,7 @@
     "preact": "^10.26.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "svelte": "^5.23.2",
     "vue": "^3.5.13"
   },
   "devDependencies": {
@@ -41,7 +42,7 @@
     "prop-types": "^15.8.1",
     "solid-js": "^1.9.4",
     "storybook": "^8.6.7",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.2",
     "vite": "^6.2.2",
     "vitest": "^3.0.9"
   },
