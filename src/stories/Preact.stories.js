@@ -1,7 +1,7 @@
-import Counter from '../components/react/Counter.jsx';
+import Counter from '../components/preact/Counter.jsx';
 
 export default {
-  title: 'React/Counter',
+  title: 'Preact/Counter',
   component: Counter,
   args: {},
 };

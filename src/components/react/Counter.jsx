@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Welcome() {
+function Counter() {
   const [count, setCount] = useState(1);
   return (
     <div>
@@ -10,4 +10,4 @@ function Welcome() {
   );
 }
 
-export default Welcome;
+export default Counter;
