@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 
 function Counter() {
   const [count, setCount] = useState(1);
+
   return (
     <div>
       Preact counter: {count}

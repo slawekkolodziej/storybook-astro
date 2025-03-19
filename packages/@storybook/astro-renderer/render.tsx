@@ -7,10 +7,16 @@ import {
 import type { ArgsStoryFn, RenderContext } from "storybook/internal/types";
 import { global } from "@storybook/global";
 import { dedent } from "ts-dedent";
+import "astro:scripts/page.js";
+import type { $FIXME } from "./types";
 
 const { Node } = global;
 
-export const render: ArgsStoryFn<any> = (args, context) => {
+if ('Alpine' in window) {
+  (window.Alpine as $FIXME).start();
+}
+
+export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const { id, component: Component } = context;
 
   if (!Component) {
@@ -21,14 +27,17 @@ export const render: ArgsStoryFn<any> = (args, context) => {
 
   if (typeof Component === "string") {
     let output = Component;
+
     Object.keys(args).forEach((key) => {
       output = output.replace(`{{${key}}}`, args[key]);
     });
+    
     return output;
   }
 
   if (Component instanceof HTMLElement) {
     const output = Component.cloneNode(true) as HTMLElement;
+
     Object.keys(args).forEach((key) => {
       output.setAttribute(
         key,
@@ -55,7 +64,9 @@ export const render: ArgsStoryFn<any> = (args, context) => {
 };
 
 export async function renderToCanvas(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ctx: RenderContext<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   canvasElement: any
 ) {
   const {
@@ -75,8 +86,6 @@ export async function renderToCanvas(
     const { slots = {}, ...args } = storyContext.args;
 
     import.meta.hot?.on("vite:afterUpdate", (payload) => {
-      // FIXME: Detect if hot-updated chunk is CSS from astro component
-      console.log("payload: ", payload);
       if (
         payload.updates.some((update) => {
           // FIXME: parse this path better
@@ -85,31 +94,11 @@ export async function renderToCanvas(
           );
         })
       ) {
-        console.log("updated styles!");
         applyStyles();
       }
     });
 
-    function applyStyles() {
-      // FIXME: This can probably be simplified:
-      Array.from(document.querySelectorAll("style[data-vite-dev-id]"))
-        // FIXME: Clean this up
-        .filter((el) => /__vite__updateStyle/.test(el.innerHTML))
-        .map((el) => {
-          const newScript = document.createElement("script");
-          newScript.type = "module";
-          const scriptText = document.createTextNode(
-            el.innerHTML
-              .replaceAll("import.meta.hot.accept(", "import.meta.hot?.accept(")
-              .replaceAll("import.meta.hot.prune(", "import.meta.hot?.prune(")
-          );
-          newScript.appendChild(scriptText);
-          document.head.appendChild(newScript);
-          document.head.removeChild(newScript);
-        });
-    }
-
-    const renderAstro = (data) => {
+    const renderAstro = (data: $FIXME) => {
       applyStyles();
       canvasElement.innerHTML = data.html;
       import.meta.hot?.off("astro:render:response", renderAstro);
@@ -130,6 +119,7 @@ export async function renderToCanvas(
         oldScript.parentNode?.replaceChild(newScript, oldScript);
       });
     };
+
     import.meta.hot?.on("astro:render:response", renderAstro);
     import.meta.hot?.send("astro:render:request", {
       component: element.moduleId,
@@ -158,4 +148,25 @@ export async function renderToCanvas(
       `,
     });
   }
+}
+
+function applyStyles() {
+  // FIXME: This can probably be simplified:
+  Array.from(document.querySelectorAll("style[data-vite-dev-id]"))
+    // FIXME: Clean this up
+    .filter((el) => /__vite__updateStyle/.test(el.innerHTML))
+    .map((el) => {
+      const newScript = document.createElement("script");
+
+      newScript.type = "module";
+      const scriptText = document.createTextNode(
+        el.innerHTML
+          .replaceAll("import.meta.hot.accept(", "import.meta.hot?.accept(")
+          .replaceAll("import.meta.hot.prune(", "import.meta.hot?.prune(")
+      );
+
+      newScript.appendChild(scriptText);
+      document.head.appendChild(newScript);
+      document.head.removeChild(newScript);
+    });
 }

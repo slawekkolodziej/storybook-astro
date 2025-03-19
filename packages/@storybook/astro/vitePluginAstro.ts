@@ -67,9 +67,6 @@ export const vitePluginAstro = {
           path.resolve(path.dirname(id), specifier),
       });
 
-      console.log("CSS:", result.css);
-      console.log("Code:", result.code);
-      // Return empty TypeScript module for now
       return {
         code: result.code,
         map: result.map,

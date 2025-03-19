@@ -1,8 +1,5 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { createRequire } from 'node:module';
 import type { SupportedFramework } from './types';
-
-const require = createRequire(import.meta.url);
 
 async function attachRenderers(
   container: AstroContainer,
@@ -95,7 +92,8 @@ export async function handlerFactory(integrations: SupportedFramework[]) {
       if (
         s.startsWith('astro:scripts') ||
         s.startsWith('@astrojs/react/client') ||
-        s.startsWith('@astrojs/solid-js/client')
+        s.startsWith('@astrojs/solid-js/client') ||
+        s.startsWith('@astrojs/preact/client') 
       ) {
         return `/@id/${s}`;
       }
@@ -106,7 +104,8 @@ export async function handlerFactory(integrations: SupportedFramework[]) {
 
   await attachRenderers(container, integrations);
 
-  return async function handler(data) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return async function handler(data: any) {
     const { default: Component } = await import(
       /* @vite-ignore */ data.component
     );
