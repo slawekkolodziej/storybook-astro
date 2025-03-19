@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { createServer, type PluginOption } from 'vite';
 import type { AstroInlineConfig } from 'astro/config';
+import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/astro-renderer/types';
 import type { FrameworkOptions, SupportedFramework } from './types';
 
 export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptions) {
@@ -15,20 +16,23 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
       });
       const handler = await mod.handlerFactory(options.integrations);
 
-      server.ws.on('astro:render:request', async (data) => {
+      server.ws.on('astro:render:request', async (data: RenderRequestMessage['data']) => {
         try {
           const html = await handler(data, options.integrations);
 
-          server.ws.send('astro:render:response', { html });
+          server.ws.send('astro:render:response', {
+            html,
+            id: data.id
+          } satisfies RenderResponseMessage['data']);
         } catch (err) {
           console.error(err);
-
           server.ws.send('astro:render:response', {
+            id: data.id,
             html:
               '<div style="background: #d73838; padding: 8px; color: #f0f0f0">' +
               'Error occurred while rendering Astro component' +
               '</div>'
-          });
+          } satisfies RenderResponseMessage['data']);
         }
       });
     }
