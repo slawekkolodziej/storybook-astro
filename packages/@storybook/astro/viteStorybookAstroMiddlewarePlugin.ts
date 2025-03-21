@@ -93,15 +93,9 @@ export async function loadIntegrations(
           });
         }
 
-        if (integration === 'vue') {
+        if (['vue', 'svelte'].includes(integration)) {
           return framework.default({
-            include: [`*.vue`]
-          });
-        }
-
-        if (integration === 'svelte') {
-          return framework.default({
-            include: [`*.svelte`]
+            include: [`*.${integration}`]
           });
         }
 
