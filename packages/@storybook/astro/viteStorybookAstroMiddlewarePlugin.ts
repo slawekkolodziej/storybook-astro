@@ -18,7 +18,7 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
 
       server.ws.on('astro:render:request', async (data: RenderRequestMessage['data']) => {
         try {
-          const html = await handler(data, options.integrations);
+          const html = await handler(data);
 
           server.ws.send('astro:render:response', {
             html,
@@ -94,6 +94,12 @@ export async function loadIntegrations(
           return framework.default({
             // FIXME: Forward JSX frameworks config here
             include: [`**/${integration}/*`]
+          });
+        }
+
+        if (['vue', 'svelte'].includes(integration)) {
+          return framework.default({
+            include: [`*.${integration}`]
           });
         }
 

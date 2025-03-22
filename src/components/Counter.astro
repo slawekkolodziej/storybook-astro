@@ -3,8 +3,8 @@ import ReactCounter from './react/Counter.jsx';
 import SolidCounter from './solid/Counter.jsx';
 import PreactCounter from './preact/Counter.jsx';
 import AlpineCounter from './alpine/Counter.astro';
-// import SvelteCounter from './svelte/Counter.svelte';
-// import VueCounter from './vue/Counter.vue';
+import SvelteCounter from './svelte/Counter.svelte';
+import VueCounter from './vue/Counter.vue';
 
 const title = Astro.props.title ?? 'Hello World!';
 ---
@@ -16,12 +16,8 @@ const title = Astro.props.title ?? 'Hello World!';
   <SolidCounter client:load />
   <PreactCounter client:load />
   <AlpineCounter />
-
-  <!-- Svelte parser appears to be broken at the moment as of Astro 5.5.3 -->
-  <!-- <SvelteCounter client:load /> -->
-
-  <!-- Vue parser appears to be broken at the moment as of Astro 5.5.3 -->
-  <!-- <VueCounter client:load /> -->
+  <SvelteCounter client:load />
+  <VueCounter client:load />
 </div>
 
 <style>
