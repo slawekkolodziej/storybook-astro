@@ -9,7 +9,14 @@ const config = {
   framework: {
     name: '@storybook/astro',
     options: {
-      integrations: ['alpine', 'svelte', 'preact', 'vue', 'react', 'solid'],
+      integrations: [
+        'alpine',
+        'svelte',
+        'preact',
+        'vue',
+        'react',
+        'solid'
+      ],
     },
   },
 };
