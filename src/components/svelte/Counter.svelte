@@ -6,7 +6,7 @@
   }
 </script>
 
-<div data-test-id="svelte-counter">
+<div data-testid="svelte-counter">
   <span>Svelte counter: {count}</span>
   <button on:click={increment}>+1</button>
 </div>

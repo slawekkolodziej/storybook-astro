@@ -1,4 +1,4 @@
-import { JSDOM } from 'jsdom';
+import { screen } from '@testing-library/dom';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import reactRenderer from '@astrojs/react/server.js';
 import solidRenderer from '@astrojs/solid-js/server.js';
@@ -66,47 +66,43 @@ async function renderAstroComponent(Component: AstroComponentFactory, renderingO
     entrypoint: '@astrojs/vue/client.js'
   });
 
-  const html = await container.renderToString(Component, renderingOptions);
-
-  return new JSDOM(html);
+  document.body.innerHTML = await container.renderToString(Component, renderingOptions);
 }
 
 test('Card with slots', async () => {
-  const result = await renderAstroComponent(Counter);
-  const doc = result.window.document;
+  await renderAstroComponent(Counter);
 
-  expect(doc.querySelector('[data-test-id="astro-paragraph"]')?.textContent).toEqual(
+  expect(screen.getByTestId('astro-paragraph')).toHaveTextContent(
     'This is astro component!'
   );
 
-  expect(doc.querySelector('[data-test-id="react-counter"] > span')?.textContent).toEqual(
+  expect(screen.getByTestId('react-counter')).toHaveTextContent(
     'React counter: 1'
   );
 
-  expect(doc.querySelector('[data-test-id="solid-counter"] > span')?.textContent).toEqual(
+  expect(screen.getByTestId('solid-counter')).toHaveTextContent(
     'Solid counter: 1'
   );
 
-  expect(doc.querySelector('[data-test-id="preact-counter"] > span')?.textContent).toEqual(
+  expect(screen.getByTestId('preact-counter')).toHaveTextContent(
     'Preact counter: 1'
   );
 
-  expect(doc.querySelector('[data-test-id="svelte-counter"] > span')?.textContent).toEqual(
+  expect(screen.getByTestId('svelte-counter')).toHaveTextContent(
     'Svelte counter: 1'
   );
 
-  expect(doc.querySelector('[data-test-id="vue-counter"] > span')?.textContent).toEqual(
+  expect(screen.getByTestId('vue-counter')).toHaveTextContent(
     'Vue counter: 1'
   );
 });
 
 test('Card with custom title', async () => {
-  const result = await renderAstroComponent(Counter, {
+  await renderAstroComponent(Counter, {
     props: {
       title: 'Custom title'
     }
   });
-  const doc = result.window.document;
 
-  expect(doc.querySelector('h2')?.textContent).toEqual('Custom title');
+  expect(screen.getByText('Custom title')).toBeInTheDocument();
 });

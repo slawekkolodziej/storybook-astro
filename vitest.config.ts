@@ -12,7 +12,10 @@ import { solidVitestPatch } from './lib/test-utils';
 
 const vitestConfig = defineConfig({
   mode: 'test',
-  test: {}
+  test: {
+    // environment: 'happy-dom',
+    setupFiles: ['./lib/vitest-setup.ts']
+  }
 });
 
 export default getViteConfig(vitestConfig as UserConfig, {

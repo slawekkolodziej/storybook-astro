@@ -11,7 +11,7 @@ const title = Astro.props.title ?? 'Hello World!';
 
 <div id="container">
   <h2>{title}</h2>
-  <p data-test-id="astro-paragraph">This is astro component!</p>
+  <p data-testid="astro-paragraph">This is astro component!</p>
   <ReactCounter client:load />
   <SolidCounter client:load />
   <PreactCounter client:load />
