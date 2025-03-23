@@ -4,8 +4,8 @@ function Counter() {
   const [count, setCount] = useState(1);
 
   return (
-    <div>
-      React counter: {count}
+    <div data-test-id="react-counter">
+      <span>React counter: {count}</span>
       <button onClick={() => setCount(count + 1)}>+1</button>
     </div>
   );

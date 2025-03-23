@@ -1,6 +1,6 @@
 <template>
-  <div>
-    Vue counter: {{ count }}
+  <div data-test-id="vue-counter">
+    <span>Vue counter: {{ count }}</span>
     <button @click="increment">+1</button>
   </div>
 </template>

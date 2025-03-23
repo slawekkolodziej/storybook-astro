@@ -4,8 +4,8 @@ const Counter = () => {
   const [count, setCount] = createSignal(1);
 
   return (
-    <div>
-      Solid counter: {count()}
+    <div data-test-id="solid-counter">
+      <span>Solid counter: {count()}</span>
       <button
         onClick={() => {
           setCount((prev) => prev + 1);

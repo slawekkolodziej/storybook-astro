@@ -4,8 +4,8 @@ function Counter() {
   const [count, setCount] = useState(1);
 
   return (
-    <div>
-      Preact counter: {count}
+    <div data-test-id="preact-counter">
+      <span>Preact counter: {count}</span>
       <button onClick={() => setCount(count + 1)}>+1</button>
     </div>
   );

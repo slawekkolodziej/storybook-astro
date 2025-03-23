@@ -1,3 +1,4 @@
+import { JSDOM } from 'jsdom';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import reactRenderer from '@astrojs/react/server.js';
 import solidRenderer from '@astrojs/solid-js/server.js';
@@ -65,19 +66,38 @@ async function renderAstroComponent(Component: AstroComponentFactory, renderingO
     entrypoint: '@astrojs/vue/client.js'
   });
 
-  return container.renderToString(Component, renderingOptions);
+  const html = await container.renderToString(Component, renderingOptions);
+
+  return new JSDOM(html);
 }
 
 test('Card with slots', async () => {
   const result = await renderAstroComponent(Counter);
+  const doc = result.window.document;
 
-  expect(result).toContain('Hello World!');
-  expect(result).toContain('This is astro component!');
-  expect(result).toContain('React counter: <!-- -->1');
-  expect(result).toContain('Solid counter: <!-- -->1');
-  expect(result).toContain('Preact counter: 1');
-  expect(result).toContain('Svelte counter: 1');
-  expect(result).toContain('Vue counter: 1');
+  expect(doc.querySelector('[data-test-id="astro-paragraph"]')?.textContent).toEqual(
+    'This is astro component!'
+  );
+
+  expect(doc.querySelector('[data-test-id="react-counter"] > span')?.textContent).toEqual(
+    'React counter: 1'
+  );
+
+  expect(doc.querySelector('[data-test-id="solid-counter"] > span')?.textContent).toEqual(
+    'Solid counter: 1'
+  );
+
+  expect(doc.querySelector('[data-test-id="preact-counter"] > span')?.textContent).toEqual(
+    'Preact counter: 1'
+  );
+
+  expect(doc.querySelector('[data-test-id="svelte-counter"] > span')?.textContent).toEqual(
+    'Svelte counter: 1'
+  );
+
+  expect(doc.querySelector('[data-test-id="vue-counter"] > span')?.textContent).toEqual(
+    'Vue counter: 1'
+  );
 });
 
 test('Card with custom title', async () => {
@@ -86,12 +106,7 @@ test('Card with custom title', async () => {
       title: 'Custom title'
     }
   });
+  const doc = result.window.document;
 
-  expect(result).toContain('Custom title');
-  expect(result).toContain('This is astro component!');
-  expect(result).toContain('React counter: <!-- -->1');
-  expect(result).toContain('Solid counter: <!-- -->1');
-  expect(result).toContain('Preact counter: 1');
-  expect(result).toContain('Svelte counter: 1');
-  expect(result).toContain('Vue counter: 1');
+  expect(doc.querySelector('h2')?.textContent).toEqual('Custom title');
 });
