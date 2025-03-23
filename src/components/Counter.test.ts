@@ -1,6 +1,6 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import reactRenderer from '@astrojs/react/server.js';
-// import solidRenderer from '@astrojs/solid-js/server.js';
+import solidRenderer from '@astrojs/solid-js/server.js';
 import preactRenderer from '@astrojs/preact/server.js';
 import svelteRenderer from '@astrojs/svelte/server.js';
 import vueRenderer from '@astrojs/vue/server.js';
@@ -22,18 +22,18 @@ async function renderAstroComponent(Component: AstroComponentFactory, renderingO
     entrypoint: '@astrojs/react/client.js'
   });
 
-  // container.addServerRenderer({
-  //   name: '@astrojs/solid-js',
-  //   renderer: {
-  //     ...solidRenderer,
-  //     name: '@astrojs/solid-js'
-  //   }
-  // });
+  container.addServerRenderer({
+    name: '@astrojs/solid-js',
+    renderer: {
+      ...solidRenderer,
+      name: '@astrojs/solid-js'
+    }
+  });
 
-  // container.addClientRenderer({
-  //   name: '@astrojs/solid-js',
-  //   entrypoint: '@astrojs/solid-js/client.js'
-  // });
+  container.addClientRenderer({
+    name: '@astrojs/solid-js',
+    entrypoint: '@astrojs/solid-js/client.js'
+  });
 
   container.addServerRenderer({
     name: '@astrojs/preact',
@@ -74,7 +74,7 @@ test('Card with slots', async () => {
   expect(result).toContain('Hello World!');
   expect(result).toContain('This is astro component!');
   expect(result).toContain('React counter: <!-- -->1');
-  // expect(result).toContain('Solid counter: <!-- -->1');
+  expect(result).toContain('Solid counter: <!-- -->1');
   expect(result).toContain('Preact counter: 1');
   expect(result).toContain('Svelte counter: 1');
   expect(result).toContain('Vue counter: 1');
@@ -90,7 +90,7 @@ test('Card with custom title', async () => {
   expect(result).toContain('Custom title');
   expect(result).toContain('This is astro component!');
   expect(result).toContain('React counter: <!-- -->1');
-  // expect(result).toContain('Solid counter: <!-- -->1');
+  expect(result).toContain('Solid counter: <!-- -->1');
   expect(result).toContain('Preact counter: 1');
   expect(result).toContain('Svelte counter: 1');
   expect(result).toContain('Vue counter: 1');
