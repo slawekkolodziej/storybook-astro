@@ -4,14 +4,14 @@
   "module": "index.js",
   "type": "module",
   "devDependencies": {
-    "astro": "^5.5.3"
+    "astro": "^5.6.1"
   },
   "peerDependencies": {
     "@storybook/react": "*",
     "astro": "^5.5.3"
   },
   "dependencies": {
-    "@types/node": "^20.17.24"
+    "@types/node": "^20.17.30"
   },
   "peerDependenciesMeta": {
     "@storybook/react": {

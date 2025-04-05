@@ -4,8 +4,8 @@
   "module": "index.js",
   "type": "module",
   "devDependencies": {
-    "@types/node": "^20.17.24",
-    "astro": "^5.5.3"
+    "@types/node": "^20.17.30",
+    "astro": "^5.6.1"
   },
   "peerDependencies": {
     "@astrojs/react": "*",
