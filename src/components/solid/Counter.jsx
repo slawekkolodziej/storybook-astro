@@ -6,6 +6,7 @@ const Counter = () => {
   return (
     <div data-testid="solid-counter">
       <span>Solid counter: {count()}</span>
+      {' '}
       <button
         onClick={() => {
           setCount((prev) => prev + 1);

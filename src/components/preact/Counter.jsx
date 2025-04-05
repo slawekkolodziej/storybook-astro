@@ -6,6 +6,7 @@ function Counter() {
   return (
     <div data-testid="preact-counter">
       <span>Preact counter: {count}</span>
+      {' '}
       <button onClick={() => setCount(count + 1)}>+1</button>
     </div>
   );
