@@ -3,11 +3,14 @@ import eslintPluginNode from 'eslint-plugin-n';
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginWorkspaces from 'eslint-plugin-workspaces';
 import svelte from 'eslint-plugin-svelte';
+import svelteParser from 'svelte-eslint-parser';
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import globals from 'globals';
+import vue from 'eslint-plugin-vue';
 import svelteConfig from './svelte.config.js';
+import astro from 'eslint-plugin-astro';
 
 const ALL_EXTENSIONS = 'js,ts,jsx,tsx,cjs,mjs,mts,astro,svelte,vue';
 const NODE_JS_FILES = [
@@ -19,7 +22,7 @@ const NODE_JS_FILES = [
 const JSX_EXTENSIONS = 'js,ts,jsx,tsx,cjs,mjs,mts';
 const JSX_FILES = [
   `./packages/@storybook/astro-renderer/**/*.{${JSX_EXTENSIONS}}`,
-  `./src/**/*.{${JSX_EXTENSIONS}}`,
+  `./src/**/*.{${JSX_EXTENSIONS}}`
 ];
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -28,6 +31,20 @@ export default [
   ...ts.configs.recommended,
   eslintConfigPrettier,
   eslintPluginPromise.configs['flat/recommended'],
+
+  ...astro.configs.recommended,
+  ...vue.configs['flat/recommended'],
+
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parserOptions: {
+        parser: ts.parser,
+        // project: './tsconfig.json',
+        extraFileExtensions: ['.vue']
+      }
+    }
+  },
 
   // Node JS specific config
   {
@@ -58,25 +75,44 @@ export default [
 
   // Svelte overrides
   {
-    files: [
-      './src/**/*.svelte',
-      './src/**/*.svelte.js',
-      './packages/**/*.svelte',
-      './packages/**/*.svelte.js'
-    ],
-
+    files: ['**/*.svelte'],
     languageOptions: {
+      parser: svelteParser,
       parserOptions: {
-        svelteConfig
+        svelteConfig,
+        parser: ts.parser,
+        project: './tsconfig.json',
+        extraFileExtensions: ['.svelte']
       }
     },
-
-    ...svelte.configs.recommended,
+    plugins: {
+      svelte,
+      '@typescript-eslint': ts.plugin
+    },
+    rules: {
+      ...ts.plugin.configs.recommended.rules,
+      ...flattenConfigs(svelte.configs.recommended)
+    }
   },
+
+  // Astro overrides
+  // {
+  //   files: ["**/*.astro"],
+  //   languageOptions: {
+  //     parser: astroParser,
+  //     parserOptions: {
+  //       parser: ts.parser,
+  //       extraFileExtensions: [".astro"],
+  //     }
+  //   },
+  //   rules: {
+  //     ...flattenConfigs()
+  //   }
+  // },
 
   // Custom global overrides
   {
-    files: ['**/*.{js,ts,jsx,tsx,cjs,mjs,mts}'],
+    files: [`**/*.{${ALL_EXTENSIONS}}`],
 
     plugins: {
       workspaces: eslintPluginWorkspaces
@@ -126,9 +162,12 @@ export default [
       // Type import/exports
       '@typescript-eslint/no-import-type-side-effects': ['error'],
 
-      '@typescript-eslint/no-empty-object-type': ['error', {
-        allowInterfaces: 'always'
-      }],
+      '@typescript-eslint/no-empty-object-type': [
+        'error',
+        {
+          allowInterfaces: 'always'
+        }
+      ],
 
       'workspaces/no-relative-imports': 'error',
       'workspaces/no-absolute-imports': 'error',
@@ -147,13 +186,13 @@ export default [
 
   // Global ignores
   {
-    ignores: [
-      '.yarn/',
-      '.astro',
-      '**/coverage/',
-      '**/@types/',
-      '.vscode/',
-      '.idea/'
-    ]
+    ignores: ['.yarn/', '.astro', '**/coverage/', '**/@types/', '.vscode/', '.idea/']
   }
 ];
+
+/**
+ * @param {Linter.RulesRecord[]} rules
+ */
+function flattenConfigs(configs) {
+  return configs.reduce((acc, obj) => Object.assign(acc, obj.rules), {});
+}

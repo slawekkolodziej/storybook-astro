@@ -1,8 +1,10 @@
 <template>
   <div data-testid="vue-counter">
     <span>Vue counter: {{ count }}</span>
-    {{' '}}
-    <button @click="increment">+1</button>
+    {{ ' ' }}
+    <button @click="increment">
+      +1
+    </button>
   </div>
 </template>
 
@@ -10,7 +12,7 @@
 import { ref } from 'vue';
 
 export default {
-  name: 'Counter',
+  name: 'CounterComponent',
   setup() {
     const count = ref(1);
 
@@ -20,8 +22,8 @@ export default {
 
     return {
       count,
-      increment,
+      increment
     };
-  },
+  }
 };
 </script>

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   let count = 1;
 
   function increment() {
