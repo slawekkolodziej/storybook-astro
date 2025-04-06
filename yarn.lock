@@ -2232,12 +2232,17 @@ __metadata:
     "@types/node": "npm:^20.17.30"
     astro: "npm:^5.6.1"
   peerDependencies:
+    "@astrojs/preact": "*"
     "@astrojs/react": "*"
     "@astrojs/solid-js": "*"
     "@astrojs/svelte": "*"
     "@astrojs/vue": "*"
     astro: ^4.14.6
+    storybook: "*"
+    vite: "*"
   peerDependenciesMeta:
+    "@astrojs/preact":
+      optional: true
     "@astrojs/react":
       optional: true
     "@astrojs/solid-js":

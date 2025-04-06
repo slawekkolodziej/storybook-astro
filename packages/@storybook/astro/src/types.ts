@@ -1,4 +1,6 @@
-import type { CompatibleString } from 'storybook/internal/types';
+import type { CompatibleString, Options } from 'storybook/internal/types';
+import type { InlineConfig } from 'vite';
+
 type FrameworkName = CompatibleString<'@storybook/astro'>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,4 +26,8 @@ type StorybookConfigFramework = {
 
 export type StorybookConfig = StorybookConfigFramework;
 
-export type { StorybookConfigVite } from '@storybook/builder-vite';
+type ViteFinal = (config: InlineConfig, options: Options) => InlineConfig | Promise<InlineConfig>;
+
+export type StorybookConfigVite = {
+    viteFinal?: ViteFinal;
+};

@@ -1,5 +1,3 @@
-import path from "node:path";
-import { transform } from "@astrojs/compiler";
 import { mergeConfig, type InlineConfig } from "vite";
 
 const ASTRO_PLUGINS_THAT_ARE_SUPPOSEDLY_NOT_NEEDED_IN_STORYBOOK = [
@@ -54,23 +52,3 @@ export async function mergeWithAstroConfig(config: InlineConfig) {
     plugins: filteredPlugins,
   });
 }
-
-export const vitePluginAstro = {
-  name: "vite-plugin-astro-files",
-  async transform(code: string, id: string) {
-    if (id.endsWith(".astro")) {
-      const result = await transform(code, {
-        filename: id,
-        sourcemap: "external",
-        internalURL: "astro/runtime/server/index.js",
-        resolvePath: async (specifier: string) =>
-          path.resolve(path.dirname(id), specifier),
-      });
-
-      return {
-        code: result.code,
-        map: result.map,
-      };
-    }
-  },
-};

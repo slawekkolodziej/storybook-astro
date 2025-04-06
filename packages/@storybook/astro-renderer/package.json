@@ -1,8 +1,12 @@
 {
   "name": "@storybook/astro-renderer",
   "version": "0.0.1",
-  "module": "index.js",
+  "module": "./preset.js",
   "type": "module",
+  "exports": {
+    "./types": "./src/types.ts",
+    "./*": "./src/*"
+  },
   "devDependencies": {
     "astro": "^5.6.1"
   },

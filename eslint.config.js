@@ -54,7 +54,9 @@ export default [
 
     rules: {
       ...eslintPluginNode.configs['flat/recommended-script'].rules,
-      'n/no-unpublished-import': ['off']
+      'n/no-unpublished-import': ['off'],
+      // Missing imports are still tracked by TS
+      'n/no-missing-import': ['off']
     }
   },
 

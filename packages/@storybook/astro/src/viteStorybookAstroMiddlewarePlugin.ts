@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { createServer, type PluginOption } from 'vite';
-import type { AstroInlineConfig } from 'astro/config';
+import type { AstroInlineConfig } from 'astro';
 import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/astro-renderer/types';
 import type { FrameworkOptions, SupportedFramework } from './types';
 
