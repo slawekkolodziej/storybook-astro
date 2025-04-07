@@ -1,6 +1,5 @@
 import type { Integration } from './base';
 import type { PreactPluginOptions } from '@preact/preset-vite';
-import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { RenderContext } from 'storybook/internal/types';
 
 export type Options = Pick<PreactPluginOptions, 'include' | 'exclude'> & {
@@ -10,29 +9,22 @@ export type Options = Pick<PreactPluginOptions, 'include' | 'exclude'> & {
 
 export class PreactIntegration implements Integration {
   readonly name = 'preact';
-  readonly dependencies = [
-    '@astrojs/preact',
-    '@storybook/preact',
-    'preact'
-  ];
+  readonly dependencies = ['@astrojs/preact', '@storybook/preact', 'preact'];
   readonly options: Options;
+
+  readonly renderer = {
+    server: {
+      name: '@astrojs/preact',
+      entrypoint: '@astrojs/preact/server.js'
+    },
+    client: {
+      name: '@astrojs/preact',
+      entrypoint: '@astrojs/preact/client.js'
+    }
+  };
 
   constructor(options: Options = {}) {
     this.options = options;
-  }
-
-  async addRenderer(container: AstroContainer): Promise<void> {
-    const mod = await import('@astrojs/preact/server.js');
-
-    container.addServerRenderer({
-      renderer: mod.default,
-      name: '@astrojs/preact'
-    });
-
-    container.addClientRenderer({
-      name: '@astrojs/preact',
-      entrypoint: '@astrojs/preact/client.js'
-    });
   }
 
   resolveClient(moduleName: string): string | undefined {

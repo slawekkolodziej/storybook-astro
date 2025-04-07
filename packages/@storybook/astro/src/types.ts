@@ -1,20 +1,15 @@
 import type { CompatibleString, Options } from 'storybook/internal/types';
 import type { InlineConfig } from 'vite';
+import type { Integration } from './integrations';
 
 type FrameworkName = CompatibleString<'@storybook/astro'>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type $FIXME = any;
 
-export type SupportedFramework =
-  | 'react'
-  | 'svelte'
-  | 'vue'
-  | 'solid'
-  | 'preact';
-
+export type { Integration };
 export type FrameworkOptions = {
-  integrations: SupportedFramework[];
+  integrations: Integration[];
 };
 
 type StorybookConfigFramework = {
