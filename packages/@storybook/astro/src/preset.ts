@@ -1,5 +1,5 @@
 import { dirname, join } from 'node:path';
-import type { StorybookConfigVite, FrameworkOptions } from './types';
+import type { StorybookConfigVite, FrameworkOptions, Integration } from './types';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
 import { mergeWithAstroConfig } from './vitePluginAstro';
 
@@ -13,7 +13,6 @@ export const core = {
 };
 
 export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { presets }) => {
-
   const options = await presets.apply<FrameworkOptions>('frameworkOptions');
   const { vitePlugin: storybookAstroMiddlewarePlugin, viteConfig } =
     await vitePluginStorybookAstroMiddleware(options);
@@ -22,9 +21,37 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
     config.plugins = [];
   }
 
-  config.plugins.push(storybookAstroMiddlewarePlugin, ...viteConfig.plugins);
+  config.plugins.push(
+    storybookAstroMiddlewarePlugin,
+    storybookRenderersPlugin(options.integrations),
+    ...viteConfig.plugins
+  );
 
   const finalConfig = await mergeWithAstroConfig(config, options.integrations);
 
   return finalConfig;
 };
+
+function storybookRenderersPlugin(integrations: Integration[]) {
+  const virtualModuleId = 'virtual:storybook-renderers';
+  const resolvedVirtualModuleId = '\0' + virtualModuleId;
+
+  return {
+    name: 'virtual-module-plugin',
+
+    resolveId(id: string) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+
+    load(id: string) {
+      if (id === resolvedVirtualModuleId) {
+        return integrations
+          .filter((integration) => integration.storybookEntryPreview)
+          .map((integration) => `export * as ${integration.name} from '${integration.storybookEntryPreview}';`)
+          .join('\n');
+      }
+    }
+  };
+}

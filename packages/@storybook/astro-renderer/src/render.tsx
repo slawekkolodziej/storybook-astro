@@ -1,15 +1,21 @@
-import { isValidElement } from 'react';
-import { renderToCanvas as renderToCanvasReact } from '@storybook/react/dist/entry-preview.mjs';
 import { simulateDOMContentLoaded, simulatePageLoad } from 'storybook/internal/preview-api';
 import type { ArgsStoryFn, RenderContext } from 'storybook/internal/types';
 import { dedent } from 'ts-dedent';
 import 'astro:scripts/page.js';
 import type { $FIXME, RenderComponentInput, RenderPromise, RenderResponseMessage } from './types';
+import * as renderers from 'virtual:storybook-renderers';
 
 const messages = new Map<string, RenderPromise>();
 
 export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const { id, component: Component } = context;
+  
+  const renderer = context.parameters?.renderer;
+
+  
+  if (renderer && Object.hasOwn(renderers, renderer)) {
+    return renderers[renderer].render(args, context);
+  }
 
   if (!Component) {
     throw new Error(
@@ -17,13 +23,13 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
     );
   }
 
-  if (typeof Component === "string") {
+  if (typeof Component === 'string') {
     let output = Component;
 
     Object.keys(args).forEach((key) => {
       output = output.replace(`{{${key}}}`, args[key]);
     });
-    
+
     return output;
   }
 
@@ -33,14 +39,14 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
     Object.keys(args).forEach((key) => {
       output.setAttribute(
         key,
-        typeof args[key] === "string" ? args[key] : JSON.stringify(args[key])
+        typeof args[key] === 'string' ? args[key] : JSON.stringify(args[key])
       );
     });
 
     return output;
   }
 
-  if (typeof Component === "function") {
+  if (typeof Component === 'function') {
     if (Component.isAstroComponentFactory) {
       return Component;
     }
@@ -66,6 +72,8 @@ export async function renderToCanvas(
 
   showMain();
 
+  const renderer = ctx.storyContext.parameters?.renderer;
+
   if (element?.isAstroComponentFactory) {
     const { slots = {}, ...args } = storyContext.args;
     const { html } = await renderAstroComponent({
@@ -80,6 +88,9 @@ export async function renderToCanvas(
   } else if (typeof element === 'string') {
     canvasElement.innerHTML = element;
     simulatePageLoad(canvasElement);
+  } else if (Object.hasOwn(renderers, renderer)) {
+    // canvasElement.innerHTML = 'just a sec';
+    return renderers[renderer].renderToCanvas(ctx, canvasElement);
   } else if (element instanceof window.Node) {
     if (canvasElement.firstChild === element && forceRemount === false) {
       return;
@@ -88,8 +99,6 @@ export async function renderToCanvas(
     canvasElement.innerHTML = '';
     canvasElement.appendChild(element);
     simulateDOMContentLoaded();
-  } else if (isValidElement(element)) {
-    return renderToCanvasReact(ctx, canvasElement);
   } else {
     showError({
       title: `Expecting an HTML snippet or DOM node from the story: "${name}" of "${kind}".`,

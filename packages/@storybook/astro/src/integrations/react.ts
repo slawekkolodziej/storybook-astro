@@ -1,6 +1,5 @@
 import type { Integration } from './base';
 import type { Options as ViteReactPluginOptions } from '@vitejs/plugin-react';
-import type { RenderContext } from 'storybook/internal/types';
 
 export type Options = Pick<ViteReactPluginOptions, 'include' | 'exclude'>;
 
@@ -8,6 +7,7 @@ export class ReactIntegration implements Integration {
   readonly name = 'react';
   readonly dependencies = ['@astrojs/react', '@storybook/react', 'react', 'react-dom'];
   readonly options: Options;
+  readonly storybookEntryPreview = '@storybook/react/dist/entry-preview.mjs';
 
   readonly renderer = {
     server: {
@@ -34,15 +34,5 @@ export class ReactIntegration implements Integration {
     const framework = await import('@astrojs/react');
 
     return framework.default(this.options);
-  }
-
-  async loadIntegration2() {
-    return Promise.all([import('@astrojs/react'), import('@astrojs/react/server.js')]);
-  }
-
-  async renderToCanvas(ctx: RenderContext, element: HTMLElement): Promise<void> {
-    const { renderToCanvas } = await import('@storybook/react/dist/entry-preview.mjs');
-
-    return renderToCanvas(ctx, element);
   }
 }
