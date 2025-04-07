@@ -33,11 +33,12 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
 };
 
 function storybookRenderersPlugin(integrations: Integration[]) {
-  const virtualModuleId = 'virtual:storybook-renderers';
-  const resolvedVirtualModuleId = '\0' + virtualModuleId;
+  const name = 'storybook-renderers';
+  const virtualModuleId = `virtual:${name}`;
+  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
 
   return {
-    name: 'virtual-module-plugin',
+    name,
 
     resolveId(id: string) {
       if (id === virtualModuleId) {
