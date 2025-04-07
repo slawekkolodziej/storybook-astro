@@ -89,7 +89,6 @@ export async function renderToCanvas(
     canvasElement.innerHTML = element;
     simulatePageLoad(canvasElement);
   } else if (Object.hasOwn(renderers, renderer)) {
-    // canvasElement.innerHTML = 'just a sec';
     return renderers[renderer].renderToCanvas(ctx, canvasElement);
   } else if (element instanceof window.Node) {
     if (canvasElement.firstChild === element && forceRemount === false) {
