@@ -4,6 +4,7 @@
   "module": "./preset.js",
   "type": "module",
   "exports": {
+    "./package.json": "./package.json",
     "./types": "./src/types.ts",
     "./*": "./src/*"
   },

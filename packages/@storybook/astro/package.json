@@ -1,23 +1,50 @@
 {
   "name": "@storybook/astro",
   "version": "0.0.1",
-  "module": "./preset.js",
   "type": "module",
+  "exports": {
+    "./integrations": "./src/integrations/index.ts",
+    "./preset": "./preset.ts",
+    "./package.json": "./package.json",
+    "./*": "./src/*"
+  },
   "devDependencies": {
+    "@storybook/preact": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/svelte": "^8.6.12",
+    "@storybook/vue3": "^8.6.12",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/node": "^20.17.30",
-    "astro": "^5.6.1"
+    "@vitejs/plugin-react": "^4.3.4",
+    "alpinejs": "^3.14.9",
+    "astro": "^5.6.1",
+    "storybook-solidjs": "^1.0.0-beta.7",
+    "vite-plugin-solid": "^2.11.6"
   },
   "peerDependencies": {
-    "@astrojs/preact": "*",
-    "@astrojs/react": "*",
-    "@astrojs/solid-js": "*",
-    "@astrojs/svelte": "*",
-    "@astrojs/vue": "*",
+    "@astrojs/alpinejs": "^0.4.5",
+    "@astrojs/preact": "^4.0.8",
+    "@astrojs/react": "^4.2.3",
+    "@astrojs/solid-js": "^5.0.7",
+    "@astrojs/svelte": "^7.0.9",
+    "@astrojs/vue": "^5.0.9",
+    "@preact/preset-vite": "^2.10.1",
+    "@storybook/preact": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/svelte": "^8.6.12",
+    "@storybook/vue3": "^8.6.12",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue-jsx": "^4.1.2",
     "astro": "^4.14.6",
-    "storybook": "*",
-    "vite": "*"
+    "storybook": "^8.6.12",
+    "storybook-solidjs": "^1.0.0-beta.7",
+    "vite": "^6.2.5"
   },
   "peerDependenciesMeta": {
+    "@astrojs/alpinejs": {
+      "optional": true
+    },
     "@astrojs/preact": {
       "optional": true
     },
@@ -31,6 +58,30 @@
       "optional": true
     },
     "@astrojs/vue": {
+      "optional": true
+    },
+    "@preact/preset-vite": {
+      "optional": true
+    },
+    "@storybook/preact": {
+      "optional": true
+    },
+    "@storybook/react": {
+      "optional": true
+    },
+    "@storybook/svelte": {
+      "optional": true
+    },
+    "@storybook/vue3": {
+      "optional": true
+    },
+    "@vitejs/plugin-vue": {
+      "optional": true
+    },
+    "@vitejs/plugin-vue-jsx": {
+      "optional": true
+    },
+    "storybook-solidjs": {
       "optional": true
     }
   },
