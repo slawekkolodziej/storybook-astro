@@ -3,16 +3,15 @@ import type { ArgsStoryFn, RenderContext } from 'storybook/internal/types';
 import { dedent } from 'ts-dedent';
 import 'astro:scripts/page.js';
 import type { $FIXME, RenderComponentInput, RenderPromise, RenderResponseMessage } from './types';
-import * as renderers from 'virtual:storybook-renderers';
+import * as renderers from 'virtual:storybook-renderer-fallback';
 
 const messages = new Map<string, RenderPromise>();
 
 export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const { id, component: Component } = context;
-  
+
   const renderer = context.parameters?.renderer;
 
-  
   if (renderer && Object.hasOwn(renderers, renderer)) {
     return renderers[renderer].render(args, context);
   }

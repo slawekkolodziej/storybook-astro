@@ -1,6 +1,7 @@
 import { dirname, join } from 'node:path';
-import type { StorybookConfigVite, FrameworkOptions, Integration } from './types';
+import type { StorybookConfigVite, FrameworkOptions } from './types';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
+import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
 import { mergeWithAstroConfig } from './vitePluginAstro';
 
 const getAbsolutePath = <I extends string>(input: I): I =>
@@ -23,7 +24,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
 
   config.plugins.push(
     storybookAstroMiddlewarePlugin,
-    storybookRenderersPlugin(options.integrations),
+    viteStorybookRendererFallbackPlugin(options.integrations),
     ...viteConfig.plugins
   );
 
@@ -31,28 +32,3 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
 
   return finalConfig;
 };
-
-function storybookRenderersPlugin(integrations: Integration[]) {
-  const name = 'storybook-renderers';
-  const virtualModuleId = `virtual:${name}`;
-  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
-
-  return {
-    name,
-
-    resolveId(id: string) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId;
-      }
-    },
-
-    load(id: string) {
-      if (id === resolvedVirtualModuleId) {
-        return integrations
-          .filter((integration) => integration.storybookEntryPreview)
-          .map((integration) => `export * as ${integration.name} from '${integration.storybookEntryPreview}';`)
-          .join('\n');
-      }
-    }
-  };
-}
