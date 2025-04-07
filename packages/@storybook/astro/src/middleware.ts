@@ -1,6 +1,12 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { Integration } from './integrations';
-import { addRenderers } from 'virtual:astro-renderers';
+import { addRenderers } from 'virtual:astro-container-renderers';
+
+export type HandlerProps = {
+  component: string;
+  args?: Record<string, unknown>;
+  slots?: Record<string, unknown>;
+};
 
 export async function handlerFactory(integrations: Integration[]) {
   const container = await AstroContainer.create({
@@ -23,12 +29,6 @@ export async function handlerFactory(integrations: Integration[]) {
   });
 
   addRenderers(container);
-  
-  type HandlerProps = {
-    component: string;
-    args?: Record<string, unknown>;
-    slots?: Record<string, unknown>;
-  };
 
   return async function handler(data: HandlerProps) {
     const { default: Component } = await import(/* @vite-ignore */ data.component);
