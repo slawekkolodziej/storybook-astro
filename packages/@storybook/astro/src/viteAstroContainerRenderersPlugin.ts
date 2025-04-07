@@ -75,7 +75,7 @@ function buildClientRenderer(integration: Integration) {
     return `
       container.addClientRenderer({
         name: '${clientRenderer.name}',
-        renderer: '${clientRenderer.entrypoint}'
+        entrypoint: '${clientRenderer.entrypoint}'
       });
     `;
   }
