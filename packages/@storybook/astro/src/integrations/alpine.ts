@@ -1,5 +1,4 @@
 import type { Integration } from './base';
-import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { RenderContext } from 'storybook/internal/types';
 
 export type Options = Record<string, unknown>;
@@ -11,12 +10,11 @@ export class AlpineIntegration implements Integration {
     'alpinejs'
   ];
   readonly options: Options;
+  readonly renderer = {};
 
   constructor(options: Options = {}) {
     this.options = options;
   }
-
-  async addRenderer(_container: AstroContainer): Promise<void> {}
 
   resolveClient(_moduleName: string): undefined {}
 

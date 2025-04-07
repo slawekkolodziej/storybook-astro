@@ -1,3 +1,5 @@
+import { react, solid, preact, vue, svelte, alpinejs } from '@storybook/astro/integrations';
+
 /** @type { import('@storybook/astro').StorybookConfig } */
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -10,13 +12,19 @@ const config = {
     name: '@storybook/astro',
     options: {
       integrations: [
-        'alpine',
-        'svelte',
-        'preact',
-        'vue',
-        'react',
-        'solid'
-      ],
+        react({
+          include: ['**/react/*']
+        }),
+        solid({
+          include: ['**/solid/*']
+        }),
+        preact({
+          include: ['**/preact/*']
+        }),
+        vue(),
+        svelte(),
+        alpinejs()
+      ]
     },
   },
 };

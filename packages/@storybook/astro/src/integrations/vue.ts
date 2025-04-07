@@ -1,5 +1,4 @@
 import type { Integration } from './base';
-import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { RenderContext } from 'storybook/internal/types';
 import type { Options as VueOptions } from '@vitejs/plugin-vue';
 import type { Options as VueJsxOptions } from '@vitejs/plugin-vue-jsx';
@@ -18,22 +17,19 @@ export class VueIntegration implements Integration {
   readonly dependencies = ['@astrojs/vue', '@storybook/vue3'];
   readonly options: Options;
 
-  constructor(options: Options = DEFAULT_OPTIONS) {
-    this.options = options;
-  }
-
-  async addRenderer(container: AstroContainer): Promise<void> {
-    const mod = await import('@astrojs/vue/server.js');
-
-    container.addServerRenderer({
-      renderer: mod.default,
-      name: '@astrojs/vue'
-    });
-
-    container.addClientRenderer({
+  readonly renderer = {
+    server: {
+      name: '@astrojs/vue',
+      entrypoint: '@astrojs/vue/server.js'
+    },
+    client: {
       name: '@astrojs/vue',
       entrypoint: '@astrojs/vue/client.js'
-    });
+    }
+  };
+
+  constructor(options: Options = DEFAULT_OPTIONS) {
+    this.options = options;
   }
 
   resolveClient(moduleName: string): string | undefined {

@@ -1,6 +1,5 @@
 import type { Integration } from './base';
 import type { Options as ViteReactPluginOptions } from '@vitejs/plugin-react';
-import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { RenderContext } from 'storybook/internal/types';
 
 export type Options = Pick<ViteReactPluginOptions, 'include' | 'exclude'>;
@@ -10,34 +9,19 @@ export class ReactIntegration implements Integration {
   readonly dependencies = ['@astrojs/react', '@storybook/react', 'react', 'react-dom'];
   readonly options: Options;
 
-  constructor(options: Options = {}) {
-    this.options = options;
-  }
-
-  async addRenderer(container: AstroContainer): Promise<void> {
-    // const mod = await import('@astrojs/react/server.js');
-
-    // container.addServerRenderer({
-    //   renderer: mod.default,
-    //   name: '@astrojs/react'
-    // });
-
-    // container.addClientRenderer({
-    //   name: '@astrojs/react',
-    //   entrypoint: '@astrojs/react/client.js'
-    // });
-
-    const { default: reactRenderer } = await import('@astrojs/react/server.js');
-
-    container.addServerRenderer({
-      renderer: reactRenderer,
-      name: '@astrojs/react'
-    });
-
-    container.addClientRenderer({
+  readonly renderer = {
+    server: {
+      name: '@astrojs/react',
+      entrypoint: '@astrojs/react/server.js'
+    },
+    client: {
       name: '@astrojs/react',
       entrypoint: '@astrojs/react/client.js'
-    });
+    }
+  };
+
+  constructor(options: Options = {}) {
+    this.options = options;
   }
 
   resolveClient(moduleName: string): string | undefined {
@@ -52,7 +36,12 @@ export class ReactIntegration implements Integration {
     return framework.default(this.options);
   }
 
-  async renderToCanvas(ctx: RenderContext, element: HTMLElement) {
+  async loadIntegration2() {
+    return Promise.all([import('@astrojs/react'), import('@astrojs/react/server.js')]);
+  }
+
+  async renderToCanvas(ctx: RenderContext, element: HTMLElement): Promise<void> {
+    const { renderToCanvas } = await import('@storybook/react/dist/entry-preview.mjs');
 
     return renderToCanvas(ctx, element);
   }
