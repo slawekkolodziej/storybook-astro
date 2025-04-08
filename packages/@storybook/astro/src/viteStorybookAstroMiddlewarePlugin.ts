@@ -15,9 +15,7 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
       const middleware = await viteServer.ssrLoadModule(filePath, {
         fixStacktrace: true
       });
-      const loadModule = (filePath: string) =>
-        viteServer.ssrLoadModule(filePath, { fixStacktrace: true });
-      const handler = await middleware.handlerFactory(options.integrations, loadModule);
+      const handler = await middleware.handlerFactory(options.integrations);
 
       server.ws.on('astro:render:request', async (data: RenderRequestMessage['data']) => {
         try {
