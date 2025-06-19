@@ -9,6 +9,9 @@ declare module 'virtual:astro-container-renderers' {
 declare module 'virtual:storybook-astro-renderer' {
   export function init(): void;
   export function render(data: RenderComponentInput): void;
+
+  type ApplyStylesFunc = () => void;
+  export const applyStyles = ApplyStylesFunc | undefined;
 }
 
 declare module 'virtual:storybook-renderer-fallback' {}
