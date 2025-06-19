@@ -3,6 +3,7 @@ import type { StorybookConfigVite, FrameworkOptions } from './types';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
 import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
 import { mergeWithAstroConfig } from './vitePluginAstro';
+import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin';
 
 const getAbsolutePath = <I extends string>(input: I): I =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,22 +14,55 @@ export const core = {
   renderer: getAbsolutePath('@storybook/astro-renderer')
 };
 
-export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { presets }) => {
+export const viteFinal: StorybookConfigVite['viteFinal'] = async (
+  config,
+  { configType, presets }
+) => {
   const options = await presets.apply<FrameworkOptions>('frameworkOptions');
-  const { vitePlugin: storybookAstroMiddlewarePlugin, viteConfig } =
-    await vitePluginStorybookAstroMiddleware(options);
 
   if (!config.plugins) {
     config.plugins = [];
   }
 
   config.plugins.push(
-    storybookAstroMiddlewarePlugin,
     viteStorybookRendererFallbackPlugin(options.integrations),
-    ...viteConfig.plugins
+    viteStorybookAstroRendererPlugin({
+      mode: configType === 'DEVELOPMENT' ? 'development' : 'production'
+    })
   );
 
-  const finalConfig = await mergeWithAstroConfig(config, options.integrations);
+  /** Start Astro dev middleware only when running storybook in DEVELOPMENT mode */
+  if (configType === 'DEVELOPMENT') {
+    const { vitePlugin: storybookAstroMiddlewarePlugin, viteConfig } =
+      await vitePluginStorybookAstroMiddleware(options);
+
+    config.plugins.push(storybookAstroMiddlewarePlugin, ...viteConfig.plugins);
+
+    const finalConfig = await mergeWithAstroConfig(
+      config,
+      options.integrations,
+      'development',
+      'serve'
+    );
+
+    return finalConfig;
+  }
+
+  config.plugins.push(...astroStaticRenderPlugin());
+
+  const finalConfig = await mergeWithAstroConfig(
+    config,
+    options.integrations,
+    'production',
+    'build'
+  );
 
   return finalConfig;
 };
+
+export function astroStaticRenderPlugin() {
+  const storiesMap = new Map<string, Set<string>>();
+
+  return [
+  ] as const;
+}

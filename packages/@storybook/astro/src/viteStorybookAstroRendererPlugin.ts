@@ -1,4 +1,4 @@
-export function viteStorybookAstroRendererPlugin(options = { mode: 'development' }) {
+export function viteStorybookAstroRendererPlugin(options: { mode: 'development' | 'production' }) {
   const name = 'storybook-astro-renderer';
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
