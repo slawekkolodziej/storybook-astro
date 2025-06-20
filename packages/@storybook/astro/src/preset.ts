@@ -1,4 +1,5 @@
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import type { PluginContext as RollupPluginContext } from 'rollup';
 import type { StorybookConfigVite, FrameworkOptions } from './types';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
 import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
@@ -64,5 +65,32 @@ export function astroStaticRenderPlugin() {
   const storiesMap = new Map<string, Set<string>>();
 
   return [
+    {
+      name: 'storybook-astro:static-render:pre',
+      enforce: 'pre',
+      /**
+       * Build a map of files that import *.astro files
+       **/
+      resolveId(id: string, importer?: string) {
+        if (id.endsWith('.astro')) {
+          if (importer) {
+            const absAstroPath = resolve(dirname(importer), id);
+
+            if (!storiesMap.has(absAstroPath)) {
+              storiesMap.set(absAstroPath, new Set());
+            }
+
+            storiesMap.get(absAstroPath)!.add(importer);
+          }
+        }
+      }
+    },
+    {
+      name: 'storybook-astro:static-render:post',
+
+      async closeBundle() {
+        console.log(`Conversion done, story files:`, Array.from(storiesMap.keys()));
+      }
+    }
   ] as const;
 }
