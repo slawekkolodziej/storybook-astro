@@ -33,22 +33,8 @@ app.post('/render', async (c) => {
 
 export default app;
 
-// Start server if this file is run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const port = process.env.PORT || 3000;
-
-  console.log(`Starting Astro Storybook server on port ${port}...`);
-
-  // Use Hono's Node.js adapter
-  const { serve } = await import('@hono/node-server');
-
-  serve({
-    fetch: app.fetch,
-    port: Number(port)
-  });
-
-  console.log(`Server running at http://localhost:${port}`);
-}
+// Export the app for external server setup
+// The server startup will be handled by a separate script
 async function handlerFactory() {
   const container = await AstroContainer.create({
     // Somewhat hacky way to force client-side Storybook's Vite to resolve modules properly
