@@ -20,8 +20,27 @@ export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
 
         const code = `
           ${importStatements}
+        
           export function addRenderers(container) {
             ${integrations.map((integration) => buildServerRenderer(integration) + '\n' + buildClientRenderer(integration)).join('\n')}
+          }
+
+
+          const clientModulesResolvers = [
+            ${integrations
+              .filter((integration) => typeof integration.resolveClient === 'function')
+              .map((integration) => integration.resolveClient.toString().replace(/^resolveClient/, 'function'))
+              .join(',\n')}
+          ];
+          
+          export function resolveClientModules(s) {
+            for (let resolver of clientModulesResolvers) {
+              const resolution = resolver(s);
+
+              if (resolution) {
+                return resolution;
+              }
+            }
           }
         `;
 
