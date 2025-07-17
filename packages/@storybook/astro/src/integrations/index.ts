@@ -9,6 +9,7 @@ import { VueIntegration, type Options as VueOptions } from './vue';
 export function alpinejs(options?: AlpineOptions) {
   return new AlpineIntegration(options);
 }
+export const alpine = alpinejs;
 
 export function preact(options?: PreactOptions) {
   return new PreactIntegration(options);
