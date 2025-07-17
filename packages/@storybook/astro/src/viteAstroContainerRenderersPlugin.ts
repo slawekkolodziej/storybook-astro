@@ -29,7 +29,9 @@ export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
           const clientModulesResolvers = [
             ${integrations
               .filter((integration) => typeof integration.resolveClient === 'function')
-              .map((integration) => integration.resolveClient.toString().replace(/^resolveClient/, 'function'))
+              .map((integration) =>
+                integration.resolveClient.toString().replace(/^resolveClient/, 'function')
+              )
               .join(',\n')}
           ];
           
@@ -41,6 +43,30 @@ export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
                 return resolution;
               }
             }
+          }
+
+          // Generate script content for astro:scripts virtual modules
+          export function getScriptContent(scriptName) {
+            const beforeHydrationScripts = [
+              ${integrations
+                .map((integration) => {
+                  // For now, return empty array - integrations would add scripts here
+                  return '// Scripts from ' + integration.name + ' integration';
+                })
+                .map((comment) => `"${comment}"`)
+                .join(',\n')}
+            ].filter(Boolean);
+            
+            const pageScripts = [
+              // Page scripts would go here
+            ].filter(Boolean);
+            
+            const scripts = {
+              'before-hydration.js': beforeHydrationScripts,
+              'page.js': pageScripts
+            };
+            
+            return scripts[scriptName] ? scripts[scriptName].join('\\n') : '';
           }
         `;
 
