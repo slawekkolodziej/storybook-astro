@@ -1,10 +1,10 @@
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 import type { StorybookConfigVite, FrameworkOptions } from './types';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
 import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
 import { mergeWithAstroConfig } from './vitePluginAstro';
 import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin';
-import { runAstroServerBuild } from './build-server';
+import { astroServerRenderPlugin } from './vite/astroServerRenderPlugin';
 
 const getAbsolutePath = <I extends string>(input: I): I =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,10 +51,12 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
 
   const outDir = config.build?.outDir ? dirname(config.build.outDir) : process.cwd();
 
-  config.plugins.push(...astroStaticRenderPlugin({
-    integrations: options.integrations,
-    outDir: join(outDir, 'storybook-server')
-  }));
+  config.plugins.push(
+    ...astroServerRenderPlugin({
+      integrations: options.integrations,
+      outDir: join(outDir, 'storybook-server')
+    })
+  );
 
   const finalConfig = await mergeWithAstroConfig(
     config,
@@ -65,46 +67,3 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
 
   return finalConfig;
 };
-
-export function astroStaticRenderPlugin(options: {
-  integrations: FrameworkOptions['integrations'],
-  outDir: string
-}) {
-  const storiesMap = new Map<string, Set<string>>();
-
-  return [
-    {
-      name: 'storybook-astro:static-render:pre',
-      enforce: 'pre',
-      /**
-       * Build a map of files that import *.astro files
-       **/
-      resolveId(id: string, importer?: string) {
-        if (id.endsWith('.astro')) {
-          if (importer) {
-            const absAstroPath = resolve(dirname(importer), id);
-
-            if (!storiesMap.has(absAstroPath)) {
-              storiesMap.set(absAstroPath, new Set());
-            }
-
-            storiesMap.get(absAstroPath)!.add(importer);
-          }
-        }
-      }
-    },
-    {
-      name: 'storybook-astro:static-render:post',
-
-      async closeBundle() {
-        const astroComponents = Array.from(storiesMap.keys());
-
-        await runAstroServerBuild({
-          integrations: options.integrations,
-          astroComponents,
-          outDir: options.outDir
-        });
-      }
-    }
-  ] as const;
-}
