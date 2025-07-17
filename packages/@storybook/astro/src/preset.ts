@@ -1,10 +1,10 @@
 import { dirname, join, resolve } from 'node:path';
-import type { PluginContext as RollupPluginContext } from 'rollup';
 import type { StorybookConfigVite, FrameworkOptions } from './types';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
 import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
 import { mergeWithAstroConfig } from './vitePluginAstro';
 import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin';
+import { runAstroServerBuild } from './build-server';
 
 const getAbsolutePath = <I extends string>(input: I): I =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +49,12 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
     return finalConfig;
   }
 
-  config.plugins.push(...astroStaticRenderPlugin());
+  const outDir = config.build?.outDir ? dirname(config.build.outDir) : process.cwd();
+
+  config.plugins.push(...astroStaticRenderPlugin({
+    integrations: options.integrations,
+    outDir: join(outDir, 'storybook-server')
+  }));
 
   const finalConfig = await mergeWithAstroConfig(
     config,
@@ -61,7 +66,10 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
   return finalConfig;
 };
 
-export function astroStaticRenderPlugin() {
+export function astroStaticRenderPlugin(options: {
+  integrations: FrameworkOptions['integrations'],
+  outDir: string
+}) {
   const storiesMap = new Map<string, Set<string>>();
 
   return [
@@ -89,7 +97,13 @@ export function astroStaticRenderPlugin() {
       name: 'storybook-astro:static-render:post',
 
       async closeBundle() {
-        console.log(`Conversion done, story files:`, Array.from(storiesMap.keys()));
+        const astroComponents = Array.from(storiesMap.keys());
+
+        await runAstroServerBuild({
+          integrations: options.integrations,
+          astroComponents,
+          outDir: options.outDir
+        });
       }
     }
   ] as const;
