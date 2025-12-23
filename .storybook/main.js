@@ -13,13 +13,13 @@ const config = {
     options: {
       integrations: [
         react({
-          include: ['**/react/*']
+          include: ['**/CounterReact/*']
         }),
         solid({
-          include: ['**/solid/*']
+          include: ['**/CounterSolid/*']
         }),
         preact({
-          include: ['**/preact/*']
+          include: ['**/CounterPreact/*']
         }),
         vue(),
         svelte(),

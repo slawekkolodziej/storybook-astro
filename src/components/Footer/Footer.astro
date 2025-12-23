@@ -1,0 +1,25 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+  <p>&copy; {currentYear} Astro Widgets. All rights reserved.</p>
+</footer>
+
+<style>
+  footer {
+    background-color: #1a1a2e;
+    width: 100%;
+    padding: 2rem 0;
+    margin-top: auto;
+  }
+
+  footer p {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    color: #e0e0e0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+</style>

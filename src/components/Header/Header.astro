@@ -1,0 +1,86 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header>
+  <div class="header-content">
+    <a href="/" class="logo">Astro Widgets</a>
+    <nav>
+      <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
+      <a href="/about" class:list={[{ active: currentPath === '/about' || currentPath === '/about/' }]}>About</a>
+      <a href="/widgets" class:list={[{ active: currentPath === '/widgets' || currentPath === '/widgets/' }]}>Widgets</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    background-color: #1a1a2e;
+    width: 100%;
+    padding: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .logo:hover {
+    color: #4ecca3;
+  }
+
+  nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  nav a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  nav a:hover {
+    color: #4ecca3;
+  }
+
+  nav a.active {
+    color: #4ecca3;
+    border-bottom: 2px solid #4ecca3;
+    padding-bottom: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    nav {
+      gap: 1rem;
+      width: 100%;
+    }
+
+    nav a {
+      font-size: 0.95rem;
+    }
+  }
+</style>

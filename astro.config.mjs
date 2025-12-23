@@ -11,16 +11,16 @@ import alpinejs from '@astrojs/alpinejs';
 export default defineConfig({
   integrations: [
     react({
-      include: ['**/react/*'],
+      include: ['**/components/CounterReact/**'],
     }),
     solid({
-      include: ['**/solid/*'],
+      include: ['**/components/CounterSolid/**'],
     }),
     preact({
-      include: ['**/preact/*'],
+      include: ['**/components/CounterPreact/**'],
     }),
     vue(),
-    svelte({ extensions: ['.svelte'] }),
+    svelte(),
     alpinejs(),
   ],
 });

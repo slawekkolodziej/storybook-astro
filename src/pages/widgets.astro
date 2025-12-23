@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Counter from '../components/Counter/Counter.astro';
+import CounterAlpine from '../components/CounterAlpine/CounterAlpine.astro';
+import CounterReact from '../components/CounterReact/CounterReact.jsx';
+import CounterVue from '../components/CounterVue/CounterVue.vue';
+import CounterSolid from '../components/CounterSolid/CounterSolid.jsx';
+import CounterPreact from '../components/CounterPreact/CounterPreact.jsx';
+import CounterSvelte from '../components/CounterSvelte/CounterSvelte.svelte';
+---
+
+<Layout title="Widgets - Astro Widgets">
+  <h1>Our Widgets</h1>
+  <p>
+    Explore our collection of interactive counter widgets built with different JavaScript frameworks.
+    Each demonstrates how the same functionality can be implemented across various technologies.
+  </p>
+
+  <div class="widgets-grid">
+    <div class="widget-item">
+      <h2>Astro</h2>
+      <Counter />
+    </div>
+
+    <div class="widget-item">
+      <h2>Alpine.js</h2>
+      <CounterAlpine />
+    </div>
+
+    <div class="widget-item">
+      <h2>React</h2>
+      <CounterReact client:only="react" />
+    </div>
+
+    <div class="widget-item">
+      <h2>Vue</h2>
+      <CounterVue client:only="vue" />
+    </div>
+
+    <div class="widget-item">
+      <h2>Solid</h2>
+      <CounterSolid client:only="solid-js" />
+    </div>
+
+    <div class="widget-item">
+      <h2>Preact</h2>
+      <CounterPreact client:only="preact" />
+    </div>
+
+    <div class="widget-item">
+      <h2>Svelte</h2>
+      <CounterSvelte client:only="svelte" />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .widget-item {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .widget-item h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #1a1a2e;
+  }
+</style>
