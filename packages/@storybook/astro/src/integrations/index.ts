@@ -1,9 +1,9 @@
-import { AlpineIntegration, type Options as AlpineOptions } from './alpine';
-import { PreactIntegration, type Options as PreactOptions } from './preact';
-import { ReactIntegration, type Options as ReactOptions } from './react';
-import { SolidIntegration, type Options as SolidOptions } from './solid';
-import { SvelteIntegration, type Options as SvelteOptions } from './svelte';
-import { VueIntegration, type Options as VueOptions } from './vue';
+import { AlpineIntegration, type Options as AlpineOptions } from './alpine.ts';
+import { PreactIntegration, type Options as PreactOptions } from './preact.ts';
+import { ReactIntegration, type Options as ReactOptions } from './react.ts';
+import { SolidIntegration, type Options as SolidOptions } from './solid.ts';
+import { SvelteIntegration, type Options as SvelteOptions } from './svelte.ts';
+import { VueIntegration, type Options as VueOptions } from './vue.ts';
 
 
 export function alpinejs(options?: AlpineOptions) {
@@ -30,4 +30,4 @@ export function vue(options?: VueOptions) {
   return new VueIntegration(options);
 }
 
-export type { Integration } from './base';
+export type { Integration } from './base.ts';

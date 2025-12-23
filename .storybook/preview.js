@@ -1,6 +1,6 @@
 import './preview.css';
 
-/** @type { import('@storybook/react').Preview } */
+/** @type { import('@storybook/astro').Preview } */
 const preview = {
   parameters: {
     controls: {

@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url';
 import { createServer, type PluginOption } from 'vite';
 import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/astro-renderer/types';
-import type { FrameworkOptions } from './types';
-import type { Integration } from './integrations';
-import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin';
+import type { FrameworkOptions } from './types.ts';
+import type { Integration } from './integrations.ts';
+import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';
 
 export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptions) {
   const viteServer = await createViteServer(options.integrations);

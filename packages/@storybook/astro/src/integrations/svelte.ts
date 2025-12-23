@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { Options as _foo, PluginOptions, SvelteConfig } from '@sveltejs/vite-plugin-svelte';
 
 // Using Omit with empty string to preserve index signature

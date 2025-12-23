@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginNode from 'eslint-plugin-n';
 import eslintPluginPromise from 'eslint-plugin-promise';
@@ -31,10 +34,8 @@ export default [
   ...ts.configs.recommended,
   eslintConfigPrettier,
   eslintPluginPromise.configs['flat/recommended'],
-
   ...astro.configs.recommended,
   ...vue.configs['flat/recommended'],
-
   {
     files: ['**/*.vue'],
     languageOptions: {
@@ -45,7 +46,6 @@ export default [
       }
     }
   },
-
   // Node JS specific config
   {
     files: NODE_JS_FILES,
@@ -59,7 +59,6 @@ export default [
       'n/no-missing-import': ['off']
     }
   },
-
   // JSX specific config
   {
     files: JSX_FILES,
@@ -74,7 +73,6 @@ export default [
       }
     }
   },
-
   // Svelte overrides
   {
     files: ['**/*.svelte'],
@@ -96,7 +94,6 @@ export default [
       ...flattenConfigs(svelte.configs.recommended)
     }
   },
-
   // Astro overrides
   // {
   //   files: ["**/*.astro"],
@@ -176,7 +173,6 @@ export default [
       'workspaces/require-dependency': 'error'
     }
   },
-
   // Tests specific config
   {
     files: [`**/__tests__/**/*.{spec,test}.{${ALL_EXTENSIONS}}`],
@@ -185,11 +181,11 @@ export default [
       jest: eslintPluginJest
     }
   },
-
   // Global ignores
   {
     ignores: ['.yarn/', '.astro', '**/coverage/', '**/@types/', '.vscode/', '.idea/']
-  }
+  },
+  ...storybook.configs["flat/recommended"]
 ];
 
 /**

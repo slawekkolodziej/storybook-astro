@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 
 export type Options = Record<string, unknown>;
 

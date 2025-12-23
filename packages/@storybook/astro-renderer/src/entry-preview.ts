@@ -2,4 +2,4 @@
 
 export const parameters = { renderer: 'astro' };
 
-export { renderToCanvas, render } from './render';
+export { renderToCanvas, render } from './render.tsx';

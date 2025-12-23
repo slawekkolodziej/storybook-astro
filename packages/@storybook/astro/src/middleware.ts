@@ -1,5 +1,5 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import type { Integration } from './integrations';
+import type { Integration } from './integrations.ts';
 import { addRenderers } from 'virtual:astro-container-renderers';
 
 export type HandlerProps = {

@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { Options as ViteReactPluginOptions } from '@vitejs/plugin-react';
 
 export type Options = Pick<ViteReactPluginOptions, 'include' | 'exclude'>;

@@ -1,16 +1,11 @@
-import { dirname, join } from 'node:path';
-import type { StorybookConfigVite, FrameworkOptions } from './types';
-import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
-import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
-import { mergeWithAstroConfig } from './vitePluginAstro';
-
-const getAbsolutePath = <I extends string>(input: I): I =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dirname(require.resolve(join(input, 'package.json'))) as any;
+import type { StorybookConfigVite, FrameworkOptions } from './types.ts';
+import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin.ts';
+import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin.ts';
+import { mergeWithAstroConfig } from './vitePluginAstro.ts';
 
 export const core = {
-  builder: getAbsolutePath('@storybook/builder-vite'),
-  renderer: getAbsolutePath('@storybook/astro-renderer')
+  builder: '@storybook/builder-vite',
+  renderer: '@storybook/astro-renderer'
 };
 
 export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { presets }) => {

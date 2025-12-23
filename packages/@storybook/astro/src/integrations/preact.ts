@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { PreactPluginOptions } from '@preact/preset-vite';
 
 export type Options = Pick<PreactPluginOptions, 'include' | 'exclude'> & {

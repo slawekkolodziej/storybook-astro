@@ -1,6 +1,6 @@
 import type { CompatibleString, Options } from 'storybook/internal/types';
 import type { InlineConfig } from 'vite';
-import type { Integration } from './integrations';
+import type { Integration } from './integrations.ts';
 
 type FrameworkName = CompatibleString<'@storybook/astro'>;
 

@@ -1,27 +1,14 @@
-import { join } from 'node:path';
-// @ts-expect-error FIXME: Missing type declaration
-import * as reactPreset from '@storybook/react/preset';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { $FIXME } from './types';
 
-
-// export function renderToCanvas(html: string) {
-//   throw new Error('Not implemented');
-// }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const previewAnnotations = async (input = [], _options: $FIXME) => {
-  // const docsConfig = await options.presets.apply('docs', {}, options);
-  // const features = await options.presets.apply('features', {}, options);
-  // const docsEnabled = Object.keys(docsConfig).length > 0;
   const result: string[] = [];
 
   return result
     .concat(input)
-    .concat([join(__dirname, 'entry-preview.ts')]);
-    // .concat(docsEnabled ? [join(__dirname, 'entry-preview-docs.mjs')] : [])
-    // .concat(features?.experimentalRSC ? [join(__dirname, 'entry-preview-rsc.mjs')] : []);
+    .concat([join(__dirname, './entry-preview.ts')]);
 };
-
-
-export const addons = reactPreset.addons;
-
-export const resolvedReact = reactPreset.resolvedReact;

@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { Options as ViteSolidPluginOptions } from 'vite-plugin-solid';
 
 export type Options = Pick<ViteSolidPluginOptions, 'include' | 'exclude'>;
