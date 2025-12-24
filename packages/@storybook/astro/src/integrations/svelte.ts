@@ -13,7 +13,7 @@ export class SvelteIntegration implements Integration {
   readonly name = 'svelte';
   readonly dependencies = ['@astrojs/svelte', '@storybook/svelte', 'svelte'];
   readonly options: Options;
-  readonly storybookEntryPreview = '@storybook/svelte/dist/entry-preview.mjs';
+  readonly storybookEntryPreview = '@storybook/svelte/entry-preview';
   readonly renderer = {
     server: {
       entrypoint: '@astrojs/svelte/server.js',

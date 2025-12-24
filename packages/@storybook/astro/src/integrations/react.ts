@@ -7,7 +7,7 @@ export class ReactIntegration implements Integration {
   readonly name = 'react';
   readonly dependencies = ['@astrojs/react', '@storybook/react', 'react', 'react-dom'];
   readonly options: Options;
-  readonly storybookEntryPreview = '@storybook/react/dist/entry-preview.mjs';
+  readonly storybookEntryPreview = '@storybook/react/entry-preview';
 
   readonly renderer = {
     server: {

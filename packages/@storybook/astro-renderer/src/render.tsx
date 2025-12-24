@@ -165,7 +165,11 @@ async function renderAstroComponent(data: RenderComponentInput, timeoutMs = 5000
 
 (function init() {
   if ('Alpine' in window) {
-    (window.Alpine as $FIXME).start();
+    const alpine = window.Alpine as $FIXME;
+    // Only start Alpine if it hasn't been started yet
+    if (!alpine._isStarted) {
+      alpine.start();
+    }
   }
 
   // Subscribe to Vite hot updates - we use it to re-apply Astro styles

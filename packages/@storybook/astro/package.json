@@ -86,6 +86,14 @@
     }
   },
   "dependencies": {
-    "@storybook/astro-renderer": "workspace:*"
+    "@storybook/astro-renderer": "workspace:*",
+    "preact": "*",
+    "react": "*",
+    "react-dom": "*",
+    "solid-js": "*",
+    "storybook": "*",
+    "svelte": "*",
+    "vite": "^6.2.5",
+    "vue": "*"
   }
 }

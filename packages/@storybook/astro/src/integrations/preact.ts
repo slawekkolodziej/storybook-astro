@@ -10,7 +10,7 @@ export class PreactIntegration implements Integration {
   readonly name = 'preact';
   readonly dependencies = ['@astrojs/preact', '@storybook/preact', 'preact'];
   readonly options: Options;
-  readonly storybookEntryPreview = '@storybook/preact/dist/entry-preview.mjs';
+  readonly storybookEntryPreview = '@storybook/preact/entry-preview';
   
   readonly renderer = {
     server: {
