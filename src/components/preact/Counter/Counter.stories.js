@@ -1,4 +1,4 @@
-import Counter from './CounterPreact.jsx';
+import Counter from './Counter.jsx';
 
 export default {
   parameters: {

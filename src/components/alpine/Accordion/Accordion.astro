@@ -1,0 +1,91 @@
+---
+interface AccordionItem {
+  title: string;
+  content: string;
+}
+
+interface Props {
+  items?: AccordionItem[];
+  allowMultiple?: boolean;
+}
+
+const { items = [], allowMultiple = false } = Astro.props;
+---
+
+<div 
+  x-data={`{ 
+    openIndexes: [], 
+    allowMultiple: ${allowMultiple},
+    toggleItem(index) {
+      if (this.allowMultiple) {
+        const idx = this.openIndexes.indexOf(index);
+        if (idx > -1) {
+          this.openIndexes.splice(idx, 1);
+        } else {
+          this.openIndexes.push(index);
+        }
+      } else {
+        this.openIndexes = this.openIndexes.includes(index) ? [] : [index];
+      }
+    },
+    isOpen(index) {
+      return this.openIndexes.includes(index);
+    }
+  }`}
+  class="accordion"
+>
+  {items.map((item, index) => (
+    <div class="accordion-item">
+      <button
+        class="accordion-header"
+        x-on:click={`toggleItem(${index})`}
+        x-bind:aria-expanded={`isOpen(${index})`}
+      >
+        {item.title}
+        <span class="accordion-icon" x-text={`isOpen(${index}) ? '−' : '+'`}>+</span>
+      </button>
+      <div x-show={`isOpen(${index})`} class="accordion-content">
+        {item.content}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .accordion {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .accordion-item {
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .accordion-item:last-child {
+    border-bottom: none;
+  }
+  .accordion-header {
+    width: 100%;
+    padding: 1rem;
+    background: #f5f5f5;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .accordion-header:hover {
+    background: #ebebeb;
+  }
+  .accordion-icon {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  .accordion-content {
+    padding: 1rem;
+    background: white;
+  }
+</style>

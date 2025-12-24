@@ -1,4 +1,4 @@
-import Counter from './CounterVue.vue';
+import Counter from './Counter.vue';
 
 export default {
   parameters: {

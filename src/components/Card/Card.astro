@@ -1,9 +1,9 @@
 ---
-const { title = 'Default title', content = 'Default content' } = Astro.props;
+const { title = 'Default title', content = 'Default content', highlight = false } = Astro.props;
 
 ---
 
-<div class="card">
+<div class="card" class:list={{ highlight }}>
   <h2>{title}</h2>
   <p>{content}</p>
   <div class="slot-content">
@@ -22,6 +22,11 @@ const { title = 'Default title', content = 'Default content' } = Astro.props;
 
   .card:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .card.highlight {
+    background: #fffacd;
+    border: 2px solid #f0e68c;
   }
 
   .card h2 {

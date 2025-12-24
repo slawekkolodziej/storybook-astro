@@ -1,4 +1,4 @@
-import Counter from './CounterAlpine.astro';
+import Counter from './Counter.astro';
 
 export default {
   title: 'Alpine/Counter',

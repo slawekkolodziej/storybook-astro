@@ -1,65 +1,143 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Counter from '../components/Counter/Counter.astro';
-import CounterAlpine from '../components/CounterAlpine/CounterAlpine.astro';
-import CounterReact from '../components/CounterReact/CounterReact.jsx';
-import CounterVue from '../components/CounterVue/CounterVue.vue';
-import CounterSolid from '../components/CounterSolid/CounterSolid.jsx';
-import CounterPreact from '../components/CounterPreact/CounterPreact.jsx';
-import CounterSvelte from '../components/CounterSvelte/CounterSvelte.svelte';
+import CounterAlpine from '../components/alpine/Counter/Counter.astro';
+import CounterReact from '../components/react/Counter/Counter.jsx';
+import CounterVue from '../components/vue/Counter/Counter.vue';
+import CounterSolid from '../components/solid/Counter/Counter.jsx';
+import CounterPreact from '../components/preact/Counter/Counter.jsx';
+import CounterSvelte from '../components/svelte/Counter/Counter.svelte';
+import Accordion from '../components/Accordion/Accordion.astro';
+import AccordionAlpine from '../components/alpine/Accordion/Accordion.astro';
+import AccordionReact from '../components/react/Accordion/Accordion.jsx';
+import AccordionVue from '../components/vue/Accordion/Accordion.vue';
+import AccordionSolid from '../components/solid/Accordion/Accordion.jsx';
+import AccordionPreact from '../components/preact/Accordion/Accordion.jsx';
+import AccordionSvelte from '../components/svelte/Accordion/Accordion.svelte';
+
+const accordionItems = [
+  { title: 'What is Astro?', content: 'Astro is a modern web framework for building fast, content-focused websites.' },
+  { title: 'Why use Storybook?', content: 'Storybook helps you build UI components in isolation and document them.' },
+  { title: 'Framework Support', content: 'This project supports React, Vue, Svelte, Solid, Preact, and Alpine.js!' },
+];
 ---
 
 <Layout title="Widgets - Astro Widgets">
   <h1>Our Widgets</h1>
   <p>
-    Explore our collection of interactive counter widgets built with different JavaScript frameworks.
+    Explore our collection of interactive widgets built with different JavaScript frameworks.
     Each demonstrates how the same functionality can be implemented across various technologies.
   </p>
 
-  <div class="widgets-grid">
-    <div class="widget-item">
-      <h2>Astro</h2>
-      <Counter />
-    </div>
+  <section class="widget-section">
+    <h2>Counter Widgets</h2>
+    <p>Simple counters showing basic state management across frameworks.</p>
 
-    <div class="widget-item">
-      <h2>Alpine.js</h2>
-      <CounterAlpine />
-    </div>
+    <div class="widgets-grid">
+      <div class="widget-item">
+        <h3>Astro</h3>
+        <Counter />
+      </div>
 
-    <div class="widget-item">
-      <h2>React</h2>
-      <CounterReact client:only="react" />
-    </div>
+      <div class="widget-item">
+        <h3>Alpine.js</h3>
+        <CounterAlpine />
+      </div>
 
-    <div class="widget-item">
-      <h2>Vue</h2>
-      <CounterVue client:only="vue" />
-    </div>
+      <div class="widget-item">
+        <h3>React</h3>
+        <CounterReact client:only="react" />
+      </div>
 
-    <div class="widget-item">
-      <h2>Solid</h2>
-      <CounterSolid client:only="solid-js" />
-    </div>
+      <div class="widget-item">
+        <h3>Vue</h3>
+        <CounterVue client:only="vue" />
+      </div>
 
-    <div class="widget-item">
-      <h2>Preact</h2>
-      <CounterPreact client:only="preact" />
-    </div>
+      <div class="widget-item">
+        <h3>Solid</h3>
+        <CounterSolid client:only="solid-js" />
+      </div>
 
-    <div class="widget-item">
-      <h2>Svelte</h2>
-      <CounterSvelte client:only="svelte" />
+      <div class="widget-item">
+        <h3>Preact</h3>
+        <CounterPreact client:only="preact" />
+      </div>
+
+      <div class="widget-item">
+        <h3>Svelte</h3>
+        <CounterSvelte client:only="svelte" />
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section class="widget-section">
+    <h2>Accordion Widgets</h2>
+    <p>Interactive accordions demonstrating more complex state management and UI interactions.</p>
+    
+    <div class="widgets-grid">
+      <div class="widget-item">
+        <h3>Astro</h3>
+        <Accordion items={accordionItems} />
+      </div>
+
+      <div class="widget-item">
+        <h3>Alpine.js</h3>
+        <AccordionAlpine items={accordionItems} />
+      </div>
+
+      <div class="widget-item">
+        <h3>React</h3>
+        <AccordionReact client:only="react" items={accordionItems} />
+      </div>
+
+      <div class="widget-item">
+        <h3>Vue</h3>
+        <AccordionVue client:only="vue" items={accordionItems} />
+      </div>
+
+      <div class="widget-item">
+        <h3>Solid</h3>
+        <AccordionSolid client:only="solid-js" items={accordionItems} />
+      </div>
+
+      <div class="widget-item">
+        <h3>Preact</h3>
+        <AccordionPreact client:only="preact" items={accordionItems} />
+      </div>
+
+      <div class="widget-item">
+        <h3>Svelte</h3>
+        <AccordionSvelte client:only="svelte" items={accordionItems} />
+      </div>
+    </div>
+  </section>
 </Layout>
 
 <style>
+  .widget-section {
+    margin-top: 3rem;
+  }
+
+  .widget-section:first-of-type {
+    margin-top: 2rem;
+  }
+
+  .widget-section h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a2e;
+  }
+
+  .widget-section > p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
   .widgets-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    margin-top: 2rem;
   }
 
   .widget-item {
@@ -72,7 +150,7 @@ import CounterSvelte from '../components/CounterSvelte/CounterSvelte.svelte';
     flex-direction: column;
   }
 
-  .widget-item h2 {
+  .widget-item h3 {
     font-size: 1.25rem;
     margin-bottom: 1rem;
     color: #1a1a2e;

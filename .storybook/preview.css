@@ -38,3 +38,47 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* Vue Accordion styles */
+[data-testid="vue-accordion"].accordion {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+[data-testid="vue-accordion"] .accordion-item {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+[data-testid="vue-accordion"] .accordion-item:last-child {
+  border-bottom: none;
+}
+
+[data-testid="vue-accordion"] .accordion-header {
+  width: 100%;
+  padding: 1rem;
+  background: #f5f5f5;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+[data-testid="vue-accordion"] .accordion-header:hover {
+  background: #ebebeb;
+}
+
+[data-testid="vue-accordion"] .accordion-icon {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+[data-testid="vue-accordion"] .accordion-content {
+  padding: 1rem;
+  background: white;
+}

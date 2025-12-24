@@ -7,3 +7,11 @@ export default {
 };
 
 export const Default = {};
+
+export const Highlight = {
+  args: {
+    title: 'Highlighted Card',
+    content: 'This card has the highlight state enabled.',
+    highlight: true,
+  },
+};

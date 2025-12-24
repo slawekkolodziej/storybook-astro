@@ -13,7 +13,12 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const renderer = context.parameters?.renderer;
 
   if (renderer && Object.hasOwn(renderers, renderer)) {
-    return renderers[renderer].render(args, context);
+    // Deep clone args to avoid issues with frozen objects in Preact/React/Solid
+    const clonedContext = {
+      ...context,
+      args: structuredClone ? structuredClone(args) : JSON.parse(JSON.stringify(args))
+    };
+    return renderers[renderer].render(clonedContext.args, clonedContext);
   }
 
   if (!Component) {
@@ -50,7 +55,9 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
       return Component;
     }
 
-    return <Component {...args} />;
+    // Deep clone args to avoid issues with frozen objects in Preact/React
+    const clonedArgs = JSON.parse(JSON.stringify(args));
+    return <Component {...clonedArgs} />;
   }
 
   console.warn(dedent`

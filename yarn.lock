@@ -2493,15 +2493,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-onboarding@npm:10.1.10":
-  version: 10.1.10
-  resolution: "@storybook/addon-onboarding@npm:10.1.10"
-  peerDependencies:
-    storybook: ^10.1.10
-  checksum: 10c0/2fa5987cd194b3c86c7befb206f0ed1cf5dad3ed2c95e61adf87bc346bd824fd76bd73249f9503d76cd10a64757e003e9445980e1385021e3f50777d74dce384
-  languageName: node
-  linkType: hard
-
 "@storybook/astro-renderer@workspace:*, @storybook/astro-renderer@workspace:packages/@storybook/astro-renderer":
   version: 0.0.0-use.local
   resolution: "@storybook/astro-renderer@workspace:packages/@storybook/astro-renderer"
@@ -8851,7 +8842,6 @@ __metadata:
     "@chromatic-com/storybook": "npm:^4.1.3"
     "@eslint/js": "npm:^9.24.0"
     "@storybook/addon-docs": "npm:10.1.10"
-    "@storybook/addon-onboarding": "npm:10.1.10"
     "@storybook/astro": "workspace:*"
     "@storybook/preact": "npm:^10.1.10"
     "@storybook/react": "npm:^10.1.10"

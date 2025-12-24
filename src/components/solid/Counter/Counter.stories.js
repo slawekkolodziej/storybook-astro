@@ -1,10 +1,10 @@
-import Counter from './CounterSvelte.svelte';
+import Counter from './Counter.jsx';
 
 export default {
   parameters: {
-    renderer: 'svelte'
+    renderer: 'solid'
   },
-  title: 'Svelte/Counter',
+  title: 'Solid/Counter',
   component: Counter,
   args: {},
 };
