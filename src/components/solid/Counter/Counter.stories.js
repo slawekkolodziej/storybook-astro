@@ -1,4 +1,4 @@
-import Counter from './Counter.jsx';
+import Counter from './Counter.tsx';
 
 export default {
   parameters: {

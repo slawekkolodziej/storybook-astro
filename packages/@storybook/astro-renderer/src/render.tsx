@@ -5,202 +5,383 @@ import 'astro:scripts/page.js';
 import type { $FIXME, RenderComponentInput, RenderPromise, RenderResponseMessage } from './types';
 import * as renderers from 'virtual:storybook-renderer-fallback';
 
+// Types for better type safety
+type AstroComponent = {
+  isAstroComponentFactory: boolean;
+  moduleId?: string;
+};
+
+type AlpineJS = {
+  start: () => void;
+  _isStarted?: boolean;
+};
+
+type FallbackRenderer = {
+  render: (args: Record<string, unknown>, context: $FIXME) => unknown;
+  renderToCanvas: (ctx: RenderContext<$FIXME>, canvasElement: $FIXME) => void | Promise<void>;
+};
+
+type RendererRegistry = Record<string, FallbackRenderer>;
+
+// Cache for pending Astro component render requests
 const messages = new Map<string, RenderPromise>();
 
+/**
+ * Renders a Storybook story component with appropriate handling for different component types.
+ * 
+ * This function serves as the main entry point for rendering components in Storybook's canvas.
+ * It handles framework-specific renderers, Astro components, HTML elements, and function components.
+ * 
+ * @param args - The story arguments/props
+ * @param context - Storybook render context containing component and metadata
+ * @returns Rendered component or element
+ */
 export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const { id, component: Component } = context;
+  const renderer = context.parameters?.renderer as string | undefined;
+  const typedRenderers = renderers as RendererRegistry;
 
-  const renderer = context.parameters?.renderer;
 
-  if (renderer && Object.hasOwn(renderers, renderer)) {
-    // Deep clone args to avoid issues with frozen objects in Preact/React/Solid
-    const clonedContext = {
-      ...context,
-      args: structuredClone ? structuredClone(args) : JSON.parse(JSON.stringify(args))
-    };
-    return renderers[renderer].render(clonedContext.args, clonedContext);
+  // Delegate to framework-specific renderers (React, Vue, Solid, etc.)
+  if (renderer && Object.hasOwn(typedRenderers, renderer)) {
+    return typedRenderers[renderer].render(args, context);
   }
 
+  // Validate component exists
   if (!Component) {
     throw new Error(
       `Unable to render story ${id} as the component annotation is missing from the default export`
     );
   }
 
+  // Handle string templates with placeholder substitution
   if (typeof Component === 'string') {
-    let output = Component;
-
-    Object.keys(args).forEach((key) => {
-      output = output.replace(`{{${key}}}`, args[key]);
-    });
-
-    return output;
+    return replaceTemplatePlaceholders(Component, args);
   }
 
+  // Handle HTML elements by cloning and setting attributes
   if (Component instanceof HTMLElement) {
-    const output = Component.cloneNode(true) as HTMLElement;
-
-    Object.keys(args).forEach((key) => {
-      output.setAttribute(
-        key,
-        typeof args[key] === 'string' ? args[key] : JSON.stringify(args[key])
-      );
-    });
-
-    return output;
+    return cloneElementWithArgs(Component, args);
   }
 
+  // Handle function components (including Astro components)
   if (typeof Component === 'function') {
-    if (Component.isAstroComponentFactory) {
+    const astroComponent = Component as AstroComponent;
+    
+    
+    // Return Astro components as-is for server-side rendering
+    if (astroComponent.isAstroComponentFactory) {
       return Component;
     }
 
-    // Deep clone args to avoid issues with frozen objects in Preact/React
-    const clonedArgs = JSON.parse(JSON.stringify(args));
-    return <Component {...clonedArgs} />;
+    // Render regular function components with JSX
+    return <Component {...args} />;
   }
 
+  // Unsupported component type
   console.warn(dedent`
-    Storybook's HTML renderer only supports rendering DOM elements and strings.
-    Received: ${Component}
+    Storybook's Astro renderer only supports rendering Astro components, DOM elements, and strings.
+    Received: ${typeof Component} - ${Component}
   `);
-  throw new Error(`Unable to render story ${id}`);
+  throw new Error(`Unable to render story ${id} - unsupported component type`);
 };
 
+/**
+ * Replaces template placeholders in a string with corresponding argument values.
+ * Placeholders follow the format {{key}} where key matches an argument name.
+ * 
+ * @param template - String template with {{key}} placeholders
+ * @param args - Arguments object with replacement values
+ * @returns String with placeholders replaced
+ */
+function replaceTemplatePlaceholders(template: string, args: Record<string, unknown>): string {
+  let output = template;
+  
+  Object.entries(args).forEach(([key, value]) => {
+    const placeholder = `{{${key}}}`;
+    const replacement = String(value);
+    output = output.replace(new RegExp(placeholder, 'g'), replacement);
+  });
+  
+  return output;
+}
+
+/**
+ * Clones an HTML element and sets attributes based on the provided arguments.
+ * Non-string values are JSON-stringified before being set as attributes.
+ * 
+ * @param element - HTMLElement to clone
+ * @param args - Arguments to set as attributes
+ * @returns Cloned element with attributes set
+ */
+function cloneElementWithArgs(element: HTMLElement, args: Record<string, unknown>): HTMLElement {
+  const output = element.cloneNode(true) as HTMLElement;
+  
+  Object.entries(args).forEach(([key, value]) => {
+    const attributeValue = typeof value === 'string' ? value : JSON.stringify(value);
+    output.setAttribute(key, attributeValue);
+  });
+  
+  return output;
+}
+
+/**
+ * Renders a story component to the Storybook canvas element.
+ * Handles different types of rendered elements including Astro components,
+ * strings, DOM nodes, and framework-specific components.
+ */
 export async function renderToCanvas(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ctx: RenderContext<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  canvasElement: any
-) {
+  ctx: RenderContext<$FIXME>,
+  canvasElement: $FIXME
+): Promise<void> {
   const { storyFn, kind, name, showMain, showError, forceRemount, storyContext } = ctx;
   const element = storyFn();
+  const renderer = ctx.storyContext.parameters?.renderer as string | undefined;
+  const typedRenderers = renderers as RendererRegistry;
+
 
   showMain();
 
-  const renderer = ctx.storyContext.parameters?.renderer;
-
-  if (element?.isAstroComponentFactory) {
-    const { slots = {}, ...args } = storyContext.args;
-    const { html } = await renderAstroComponent({
-      component: element.moduleId,
-      args: args,
-      slots: slots
-    });
-
-    applyStyles();
-    canvasElement.innerHTML = html;
-    invokeScriptTags(canvasElement);
-  } else if (typeof element === 'string') {
-    canvasElement.innerHTML = element;
-    simulatePageLoad(canvasElement);
-  } else if (Object.hasOwn(renderers, renderer)) {
-    return renderers[renderer].renderToCanvas(ctx, canvasElement);
-  } else if (element instanceof window.Node) {
-    if (canvasElement.firstChild === element && forceRemount === false) {
-      return;
-    }
-
-    canvasElement.innerHTML = '';
-    canvasElement.appendChild(element);
-    simulateDOMContentLoaded();
-  } else {
-    showError({
-      title: `Expecting an HTML snippet or DOM node from the story: "${name}" of "${kind}".`,
-      description: dedent`
-        Did you forget to return the HTML snippet from the story?
-        Use "() => <your snippet or node>" or when defining the story.
-      `
-    });
+  // Handle Astro components with server-side rendering
+  if (isAstroComponent(element)) {
+    await renderAstroToCanvas(element, storyContext.args, canvasElement);
+    return;
   }
+
+  // Handle string content
+  if (typeof element === 'string') {
+    renderStringToCanvas(element, canvasElement);
+    return;
+  }
+
+  // Delegate to framework-specific renderers
+  if (renderer && Object.hasOwn(typedRenderers, renderer)) {
+    await typedRenderers[renderer].renderToCanvas(ctx, canvasElement);
+    return;
+  }
+
+  // Handle DOM nodes
+  if (element instanceof window.Node) {
+    renderNodeToCanvas(element, canvasElement, forceRemount);
+    return;
+  }
+
+  // Unsupported element type
+  showError({
+    title: `Expecting an HTML snippet or DOM node from the story: "${name}" of "${kind}".`,
+    description: dedent`
+      Did you forget to return the HTML snippet from the story?
+      Use "() => <your snippet or node>" or when defining the story.
+    `
+  });
 }
 
-function applyStyles() {
-  // FIXME: This can probably be simplified:
-  Array.from(document.querySelectorAll('style[data-vite-dev-id]'))
-    // FIXME: Clean this up
+/**
+ * Type guard to check if an element is an Astro component.
+ */
+function isAstroComponent(element: unknown): element is AstroComponent {
+  const result = (
+    typeof element === 'function' &&
+    element !== null &&
+    'isAstroComponentFactory' in element &&
+    (element as AstroComponent).isAstroComponentFactory === true
+  );
+  
+  
+  return result;
+}
+
+/**
+ * Renders an Astro component to the canvas using server-side rendering.
+ */
+async function renderAstroToCanvas(
+  element: AstroComponent,
+  args: Record<string, unknown>,
+  canvasElement: $FIXME
+): Promise<void> {
+  if (!element.moduleId) {
+    throw new Error('Astro component missing moduleId');
+  }
+
+  const { slots = {}, ...componentArgs } = args;
+  const { html } = await renderAstroComponent({
+    component: element.moduleId,
+    args: componentArgs,
+    slots: slots as Record<string, string>
+  });
+
+  applyAstroStyles();
+  canvasElement.innerHTML = html;
+  activateScriptTags(canvasElement);
+}
+
+/**
+ * Renders string content to the canvas.
+ */
+function renderStringToCanvas(content: string, canvasElement: $FIXME): void {
+  canvasElement.innerHTML = content;
+  simulatePageLoad(canvasElement);
+}
+
+/**
+ * Renders a DOM node to the canvas.
+ */
+function renderNodeToCanvas(
+  element: Node,
+  canvasElement: $FIXME,
+  forceRemount: boolean
+): void {
+  // Skip if same element and no remount needed
+  if (canvasElement.firstChild === element && !forceRemount) {
+    return;
+  }
+
+  canvasElement.innerHTML = '';
+  canvasElement.appendChild(element);
+  simulateDOMContentLoaded();
+}
+
+/**
+ * Applies Astro-specific styles by executing dynamically generated style scripts.
+ * This handles Vite's style injection for Astro components.
+ */
+function applyAstroStyles(): void {
+  const viteStyleElements = document.querySelectorAll('style[data-vite-dev-id]');
+  
+  Array.from(viteStyleElements)
     .filter((el) => /__vite__updateStyle/.test(el.innerHTML))
-    .map((el) => {
-      const newScript = document.createElement('script');
-
-      newScript.type = 'module';
-      const scriptText = document.createTextNode(
-        el.innerHTML
-          .replaceAll('import.meta.hot.accept(', 'import.meta.hot?.accept(')
-          .replaceAll('import.meta.hot.prune(', 'import.meta.hot?.prune(')
-      );
-
-      newScript.appendChild(scriptText);
-      document.head.appendChild(newScript);
-      document.head.removeChild(newScript);
+    .forEach((styleElement) => {
+      const script = document.createElement('script');
+      script.type = 'module';
+      
+      const safeScriptContent = styleElement.innerHTML
+        .replaceAll('import.meta.hot.accept(', 'import.meta.hot?.accept(')
+        .replaceAll('import.meta.hot.prune(', 'import.meta.hot?.prune(');
+      
+      script.appendChild(document.createTextNode(safeScriptContent));
+      
+      // Execute and remove immediately
+      document.head.appendChild(script);
+      document.head.removeChild(script);
     });
 }
 
-function invokeScriptTags(element: HTMLElement) {
-  Array.from<HTMLScriptElement>(element.querySelectorAll('script')).forEach((oldScript) => {
+/**
+ * Activates script tags within a container by replacing them with executable versions.
+ * This is necessary because innerHTML doesn't execute scripts for security reasons.
+ */
+function activateScriptTags(container: $FIXME): void {
+  const scriptElements = container.querySelectorAll('script') as NodeListOf<HTMLScriptElement>;
+  
+  Array.from(scriptElements).forEach((oldScript: HTMLScriptElement) => {
     const newScript = document.createElement('script');
-
-    Array.from(oldScript.attributes).forEach((attr) => {
+    
+    // Copy all attributes
+    Array.from(oldScript.attributes).forEach((attr: Attr) => {
       newScript.setAttribute(attr.name, attr.value);
     });
-
-    const scriptText = document.createTextNode(oldScript.innerHTML);
-
-    newScript.appendChild(scriptText);
-
+    
+    // Copy script content
+    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+    
+    // Replace old script with new executable one
     oldScript.parentNode?.replaceChild(newScript, oldScript);
   });
 }
 
-async function renderAstroComponent(data: RenderComponentInput, timeoutMs = 5000) {
+
+/**
+ * Renders an Astro component using server-side rendering via Vite HMR communication.
+ * 
+ * @param data - Component render request data
+ * @param timeoutMs - Maximum time to wait for rendering (default: 5000ms)
+ * @returns Promise that resolves with the rendered HTML
+ */
+async function renderAstroComponent(
+  data: RenderComponentInput, 
+  timeoutMs = 5000
+): Promise<RenderResponseMessage['data']> {
   const id = crypto.randomUUID();
 
   const promise = new Promise<RenderResponseMessage['data']>((resolve, reject) => {
-    // Abort rendering if it did not finish on time
     const timeoutId = setTimeout(() => {
       messages.delete(id);
-      reject(new Error(`Request ${id} timed out after ${timeoutMs}ms`));
+      reject(new Error(`Astro component render request ${id} timed out after ${timeoutMs}ms`));
     }, timeoutMs);
 
     messages.set(id, { resolve, reject, timeoutId });
   });
 
+  // Send render request via Vite HMR
   import.meta.hot?.send('astro:render:request', { ...data, id });
 
   return promise;
 }
 
-(function init() {
-  if ('Alpine' in window) {
-    const alpine = window.Alpine as $FIXME;
+/**
+ * Initializes the Astro renderer with Alpine.js support and Vite HMR listeners.
+ * This IIFE sets up the necessary event handlers for hot module replacement
+ * and handles Alpine.js initialization for interactive components.
+ */
+(function initializeAstroRenderer(): void {
+  // Initialize Alpine.js if present
+  initializeAlpineJS();
+  
+  // Set up Vite HMR listeners for style updates and component rendering
+  setupViteHMRListeners();
+})();
+
+/**
+ * Initializes Alpine.js if it's available in the window.
+ */
+function initializeAlpineJS(): void {
+  if ('Alpine' in window && window.Alpine) {
+    const alpine = window.Alpine as AlpineJS;
+    
     // Only start Alpine if it hasn't been started yet
     if (!alpine._isStarted) {
       alpine.start();
     }
   }
+}
 
-  // Subscribe to Vite hot updates - we use it to re-apply Astro styles
+/**
+ * Sets up Vite HMR listeners for handling style updates and Astro component responses.
+ */
+function setupViteHMRListeners(): void {
+  // Listen for Vite updates to refresh Astro styles
   import.meta.hot?.on('vite:afterUpdate', (payload) => {
-    if (
-      payload.updates.some((update) => {
-        // FIXME: parse this path better
-        return update.path.endsWith('.astro?astro&type=style&index=0&lang.css');
-      })
-    ) {
-      applyStyles();
+    const hasAstroStyleUpdates = payload.updates.some((update) => 
+      isAstroStyleUpdate(update.path)
+    );
+    
+    if (hasAstroStyleUpdates) {
+      applyAstroStyles();
     }
   });
 
-  // Subscribe to Astro render response messages
+  // Listen for Astro component render responses
   import.meta.hot?.on('astro:render:response', (data: RenderResponseMessage['data']) => {
-    // Check if this is a response to a pending request
-    if (data.id && messages.has(data.id)) {
-      const { resolve, timeoutId } = messages.get(data.id)!;
-
-      // Clear timeout and resolve promise
+    const pendingRequest = messages.get(data.id);
+    
+    if (pendingRequest) {
+      const { resolve, timeoutId } = pendingRequest;
+      
+      // Clean up and resolve
       clearTimeout(timeoutId);
       messages.delete(data.id);
       resolve(data);
     }
   });
-})();
+}
+
+/**
+ * Checks if a file path represents an Astro style update that needs processing.
+ * 
+ * @param path - File path from Vite update
+ * @returns True if this is an Astro style file that needs reprocessing
+ */
+function isAstroStyleUpdate(path: string): boolean {
+  // Match Astro style files: *.astro?astro&type=style&index=0&lang.css
+  return /\.astro\?astro&type=style&index=\d+&lang\.(css|scss|sass|less|stylus)$/.test(path);
+}

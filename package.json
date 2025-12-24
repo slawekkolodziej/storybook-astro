@@ -1,6 +1,9 @@
 {
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20.16.0 || >=22.19.0 || >=24.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

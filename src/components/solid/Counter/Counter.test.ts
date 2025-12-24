@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import Counter from './Counter.jsx';
+import Counter from './Counter.tsx';
 
 test('Solid Counter component can be imported', () => {
   expect(Counter).toBeDefined();

@@ -29,3 +29,14 @@ export type RenderPromise = {
   reject: (reason?: unknown) => void;
   timeoutId: NodeJS.Timeout;
 };
+
+// Global type extensions
+declare global {
+  interface Window {
+    preact?: {
+      h: (type: $FIXME, props: $FIXME, ...children: $FIXME[]) => $FIXME;
+      render: (element: $FIXME, container: HTMLElement) => void;
+    };
+    Alpine?: $FIXME;
+  }
+}

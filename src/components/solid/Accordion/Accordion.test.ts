@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import Accordion from './Accordion.jsx';
+import Accordion from './Accordion.tsx';
 
 test('Solid Accordion component can be imported', () => {
   expect(Accordion).toBeDefined();

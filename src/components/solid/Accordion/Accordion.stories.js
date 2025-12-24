@@ -1,4 +1,4 @@
-import Accordion from './Accordion.jsx';
+import Accordion from './Accordion.tsx';
 
 export default {
   parameters: {

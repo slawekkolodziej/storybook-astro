@@ -4,6 +4,13 @@ An experimental Storybook framework implementation that enables support for Astr
 
 > **⚠️ Experimental**: This is an experimental project and is not ready for production use. The implementation is actively being developed and tested.
 
+## Requirements
+
+- **Node.js**: 20.16.0+, 22.19.0+, or 24.0.0+ (required for Storybook 10's ESM-only support)
+- **Storybook**: 10.0.0+
+- **Astro**: 5.0.0+
+- **Vite**: 6.0.0+
+
 ## What This Package Does
 
 This package provides a complete Storybook framework integration for Astro components, enabling developers to:
@@ -58,6 +65,16 @@ The client-side rendering package that manages how Astro components are displaye
 7. **HMR Updates**: Changes to components trigger re-renders while preserving state when possible
 
 ## Setup Instructions
+
+### Prerequisites
+
+Ensure you have a compatible Node.js version installed:
+```bash
+node --version
+# Should be 20.16.0+, 22.19.0+, or 24.0.0+
+```
+
+### Installation
 
 1. Clone the repository:
    ```bash
