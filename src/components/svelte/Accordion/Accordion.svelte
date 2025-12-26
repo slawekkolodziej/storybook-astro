@@ -4,10 +4,12 @@
     content: string;
   }
 
-  export let items: AccordionItem[] = [];
-  export let allowMultiple = false;
+  let { items = $bindable([]), allowMultiple = false }: {
+    items?: AccordionItem[];
+    allowMultiple?: boolean;
+  } = $props();
 
-  let openIndexes: number[] = [];
+  let openIndexes = $state<number[]>([]);
 
   function toggleItem(index: number) {
     if (allowMultiple) {
