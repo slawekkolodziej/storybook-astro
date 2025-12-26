@@ -157,6 +157,11 @@ export async function renderToCanvas(
   // Delegate to framework-specific renderers
   if (renderer && Object.hasOwn(typedRenderers, renderer)) {
     await typedRenderers[renderer].renderToCanvas(ctx, canvasElement);
+    // Apply Vite styles for frameworks that need it (Svelte)
+    // Vue handles its own styles and this interferes with its CSS processing
+    if (renderer === 'svelte') {
+      applyAstroStyles();
+    }
     return;
   }
 

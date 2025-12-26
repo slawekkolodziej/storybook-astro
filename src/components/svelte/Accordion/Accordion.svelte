@@ -1,8 +1,13 @@
 <script lang="ts">
-  export let items = [];
+  interface AccordionItem {
+    title: string;
+    content: string;
+  }
+
+  export let items: AccordionItem[] = [];
   export let allowMultiple = false;
 
-  let openIndexes = [];
+  let openIndexes: number[] = [];
 
   function toggleItem(index: number) {
     if (allowMultiple) {
