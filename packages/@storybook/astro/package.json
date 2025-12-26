@@ -6,6 +6,7 @@
     "node": ">=20.16.0 || >=22.19.0 || >=24.0.0"
   },
   "exports": {
+    ".": "./src/index.ts",
     "./integrations": "./src/integrations/index.ts",
     "./preset": "./preset.ts",
     "./package.json": "./package.json",
