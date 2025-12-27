@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { createServer, type PluginOption } from 'vite';
 import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/astro-renderer/types';
 import type { FrameworkOptions } from './types.ts';
-import type { Integration } from './integrations.ts';
+import type { Integration } from './integrations/index.ts';
 import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';
 
 export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptions) {
@@ -39,12 +39,29 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
     }
   } satisfies PluginOption;
 
+  // Create asset serving plugin
+  const assetServingPlugin = {
+    name: 'storybook-astro-assets',
+    configureServer(server) {
+      server.middlewares.use('/_image', (req, res, next) => {
+        // Forward the request to the Astro vite server
+        viteServer.middlewares.handle(req, res, (err) => {
+          if (err) {
+            console.error('Asset serving error:', err);
+            next();
+          }
+        });
+      });
+    }
+  };
+
   return {
     vitePlugin,
     viteConfig: {
       plugins: [
         viteServer.config.plugins.find((plugin) => plugin.name === 'vite:css'),
-        viteServer.config.plugins.find((plugin) => plugin.name === 'vite:css-post')
+        viteServer.config.plugins.find((plugin) => plugin.name === 'vite:css-post'),
+        assetServingPlugin
       ].filter(Boolean)
     }
   };

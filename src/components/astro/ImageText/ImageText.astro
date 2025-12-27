@@ -2,17 +2,24 @@
 import { Image } from 'astro:assets';
 
 interface Props {
-  imageSrc: ImageMetadata;
+  imageSrc: ImageMetadata | string;
   imageAlt?: string;
   reversed?: boolean;
 }
 
 const { imageSrc, imageAlt = 'Image', reversed = false } = Astro.props;
+
+// Handle both ImageMetadata objects and string URLs
+const isStringUrl = typeof imageSrc === 'string';
 ---
 
 <div class="image-text" class:list={{ reversed }}>
   <div class="image-container">
-    <Image src={imageSrc} alt={imageAlt} />
+    {isStringUrl ? (
+      <img src={imageSrc} alt={imageAlt} />
+    ) : (
+      <Image src={imageSrc} alt={imageAlt} />
+    )}
   </div>
   <div class="text-container">
     <slot />

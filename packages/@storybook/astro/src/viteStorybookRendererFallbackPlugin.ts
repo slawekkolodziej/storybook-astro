@@ -1,4 +1,4 @@
-import type { Integration } from './integrations.ts';
+import type { Integration } from './integrations/index.ts';
 
 export function viteStorybookRendererFallbackPlugin(integrations: Integration[]) {
   const name = 'storybook-renderer-fallback';

@@ -1,4 +1,4 @@
-import type { Integration } from './integrations.ts';
+import type { Integration } from './integrations/index.ts';
 
 export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
   const name = 'astro-container-renderers';

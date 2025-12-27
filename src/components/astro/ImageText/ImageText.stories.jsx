@@ -1,4 +1,5 @@
 import ImageText from './ImageText.astro';
+import earthImage from '../../../assets/astro-storybook-earth.png';
 
 export default {
   title: 'Astro/ImageText',
@@ -7,12 +8,8 @@ export default {
 
 export const Default = {
   args: {
-    imageSrc: '/src/assets/astro-storybook-earth.png',
+    imageSrc: earthImage,
     imageAlt: 'Astro Storybook Earth',
-  },
-  render: (args) => ({
-    Component: ImageText,
-    props: args,
     slots: {
       default: `
         <h2>Welcome to Storybook Astro</h2>
@@ -22,18 +19,14 @@ export const Default = {
         </p>
       `,
     },
-  }),
+  },
 };
 
 export const ImageRight = {
   args: {
-    imageSrc: '/src/assets/astro-storybook-earth.png',
+    imageSrc: earthImage,
     imageAlt: 'Astro Storybook Earth',
     reversed: true,
-  },
-  render: (args) => ({
-    Component: ImageText,
-    props: args,
     slots: {
       default: `
         <h2>Reversed Layout</h2>
@@ -43,5 +36,5 @@ export const ImageRight = {
         </p>
       `,
     },
-  }),
+  },
 };
