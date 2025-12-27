@@ -41,7 +41,6 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const renderer = context.parameters?.renderer as string | undefined;
   const typedRenderers = renderers as RendererRegistry;
 
-
   // Delegate to framework-specific renderers (React, Vue, Solid, etc.)
   if (renderer && Object.hasOwn(typedRenderers, renderer)) {
     return typedRenderers[renderer].render(args, context);
@@ -68,14 +67,24 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   if (typeof Component === 'function') {
     const astroComponent = Component as AstroComponent;
     
-    
     // Return Astro components as-is for server-side rendering
     if (astroComponent.isAstroComponentFactory) {
       return Component;
     }
 
-    // Render regular function components with JSX
-    return <Component {...args} />;
+    // If we have a renderer parameter but didn't delegate above, the renderer may not be loaded correctly
+    if (renderer) {
+      throw new Error(
+        `Renderer '${renderer}' not found. Available renderers: ${Object.keys(typedRenderers).join(', ')}`
+      );
+    }
+
+    // If we reach here without a renderer, this is a plain function component
+    // For framework components, a renderer parameter should be specified
+    throw new Error(
+      `Component appears to be a framework component but no renderer is specified. ` +
+      `Add 'parameters: { renderer: "framework-name" }' to your story configuration.`
+    );
   }
 
   // Unsupported component type

@@ -5,9 +5,9 @@ export type Options = Pick<ViteSolidPluginOptions, 'include' | 'exclude'>;
 
 export class SolidIntegration implements Integration {
   readonly name = 'solid';
-  readonly dependencies = ['@astrojs/solid-js', 'storybook-solidjs', 'solid-js'];
+  readonly dependencies = ['@astrojs/solid-js', 'storybook-solidjs-vite', 'solid-js'];
   readonly options: Options;
-  readonly storybookEntryPreview = 'storybook-solidjs/dist/entry-preview.mjs';
+  readonly storybookEntryPreview = 'storybook-solidjs-vite/renderer/entry-preview';
   readonly renderer = {
     server: {
       name: '@astrojs/solid-js',

@@ -8,7 +8,7 @@ export type Options = Pick<PreactPluginOptions, 'include' | 'exclude'> & {
 
 export class PreactIntegration implements Integration {
   readonly name = 'preact';
-  readonly dependencies = ['@astrojs/preact', '@storybook/preact', 'preact'];
+  readonly dependencies = ['@astrojs/preact', '@storybook/preact-vite', 'preact'];
   readonly options: Options;
   readonly storybookEntryPreview = '@storybook/preact/entry-preview';
   
