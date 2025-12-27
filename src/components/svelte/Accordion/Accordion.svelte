@@ -34,7 +34,7 @@
     <div class="accordion-item">
       <button
         class="accordion-header"
-        on:click={() => toggleItem(index)}
+        onclick={() => toggleItem(index)}
         aria-expanded={isOpen(index)}
       >
         {item.title}
