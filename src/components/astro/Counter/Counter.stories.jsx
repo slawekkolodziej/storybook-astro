@@ -1,7 +1,7 @@
 import Counter from './Counter.astro';
 
 export default {
-  title: 'Counter',
+  title: 'Astro/Counter',
   component: Counter,
   args: {},
 };

@@ -1,7 +1,7 @@
 import Card from './Card.astro';
 
 export default {
-  title: 'Card',
+  title: 'Astro/Card',
   component: Card,
   args: {},
 };

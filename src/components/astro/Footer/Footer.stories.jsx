@@ -1,8 +1,8 @@
-import Header from './Header.astro';
+import Footer from './Footer.astro';
 
 export default {
-  title: 'Header',
-  component: Header,
+  title: 'Astro/Footer',
+  component: Footer,
   parameters: {
     layout: 'fullscreen',
   },

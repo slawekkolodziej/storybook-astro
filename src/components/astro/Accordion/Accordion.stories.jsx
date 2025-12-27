@@ -1,7 +1,7 @@
 import Accordion from './Accordion.astro';
 
 export default {
-  title: 'Accordion',
+  title: 'Astro/Accordion',
   component: Accordion,
 };
 
