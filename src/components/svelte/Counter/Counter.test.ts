@@ -1,6 +1,11 @@
-import { expect, test } from 'vitest';
-import Counter from './Counter.svelte';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Counter.stories.js';
 
-test('Svelte Counter component can be imported', () => {
-  expect(Counter).toBeDefined();
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Svelte Counter Default', Default);

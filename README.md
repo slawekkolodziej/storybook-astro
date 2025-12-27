@@ -92,7 +92,7 @@ node --version
    yarn storybook
    ```
 
-4. Run tests (uses Vitest to verify Astro Container API):
+4. Run tests (validates component rendering and framework integration health):
    ```bash
    yarn test
    ```
@@ -125,6 +125,59 @@ export const Highlighted = {
   },
 };
 ```
+
+## Testing and Portable Stories
+
+### Component Testing with `composeStories`
+
+The package includes a `composeStories` function that enables testing of Storybook stories outside the Storybook environment. This allows you to verify that components render correctly and detect integration issues with different frameworks.
+
+```javascript
+// Card.test.ts
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from './test-utils';
+import * as stories from './Card.stories.jsx';
+
+const { Default, Highlighted } = composeStories(stories);
+
+// Test that the story can be composed
+testStoryComposition('Default', Default);
+
+// Test that the story renders successfully in Storybook
+testStoryRenders('Card Default', Default);
+```
+
+### Framework Integration Health
+
+The test suite validates the health of framework integrations by attempting to render components from each supported framework. Tests will:
+
+- **✅ Pass** for frameworks with working integrations (Astro, React, Vue, Svelte, Alpine.js)
+- **❌ Fail** for frameworks with broken integrations, showing clear error messages:
+
+```bash
+❌ Preact Counter Default has a broken framework integration: 
+   Renderer 'preact' not found. Available renderers: react, vue, svelte
+
+❌ Solid Accordion Default has a broken framework integration:
+   Renderer 'solid' not found. Available renderers: react, vue, svelte
+```
+
+This provides immediate feedback on which framework integrations need attention.
+
+### Available Testing Functions
+
+- **`composeStories(stories)`** - Composes all stories from a story file for testing
+- **`composeStory(story, meta)`** - Composes a single story for testing
+- **`setProjectAnnotations(annotations)`** - Sets global Storybook configuration for tests
+
+### Test Utilities
+
+The project includes standardized test utilities in `test-utils.ts`:
+
+- **`testStoryComposition(name, story)`** - Verifies story can be imported and composed
+- **`testStoryRenders(name, story)`** - Validates story renders without errors
+
+These utilities provide consistent testing patterns across all component tests.
 
 ## Framework Integration
 

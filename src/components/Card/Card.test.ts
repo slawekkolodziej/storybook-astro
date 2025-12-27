@@ -1,28 +1,18 @@
-import { screen } from '@testing-library/dom';
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { expect, test } from 'vitest';
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import Card from './Card.astro';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../test-utils.js';
+import * as stories from './Card.stories.jsx';
 
-async function renderAstroComponent(Component: AstroComponentFactory, renderingOptions = {}) {
-  const container = await AstroContainer.create();
-  document.body.innerHTML = await container.renderToString(Component, renderingOptions);
-}
+const { Default, Highlight } = composeStories(stories);
 
-test('Card renders with default props', async () => {
-  await renderAstroComponent(Card);
-  expect(document.body.innerHTML).toContain('Default title');
-  expect(document.body.innerHTML).toContain('Default content');
+// Test basic composition
+testStoryComposition('Default', Default);
+
+testStoryComposition('Highlight', Highlight, {
+  title: 'Highlighted Card',
+  content: 'This card has the highlight state enabled.',
+  highlight: true,
 });
 
-test('Card renders with highlight state', async () => {
-  await renderAstroComponent(Card, {
-    props: {
-      title: 'Highlighted Card',
-      content: 'This card has the highlight state enabled.',
-      highlight: true
-    }
-  });
-  expect(document.body.innerHTML).toContain('Highlighted Card');
-  expect(document.body.innerHTML).toContain('highlight');
-});
+// Test actual rendering capability
+testStoryRenders('Card Default', Default);
+testStoryRenders('Card Highlight', Highlight);

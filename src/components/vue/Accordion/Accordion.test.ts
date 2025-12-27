@@ -1,7 +1,11 @@
-import { expect, test } from 'vitest';
-import Accordion from './Accordion.vue';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Accordion.stories.js';
 
-test('Vue Accordion component can be imported', () => {
-  expect(Accordion).toBeDefined();
-  expect(typeof Accordion).toBe('object');
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Vue Accordion Default', Default);

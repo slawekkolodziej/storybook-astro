@@ -1,7 +1,12 @@
-import { expect, test } from 'vitest';
-import Counter from './Counter.jsx';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Counter.stories.js';
 
-test('Preact Counter component can be imported', () => {
-  expect(Counter).toBeDefined();
-  expect(typeof Counter).toBe('function');
-});
+const { Default } = composeStories(stories);
+
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Preact Counter Default', Default);

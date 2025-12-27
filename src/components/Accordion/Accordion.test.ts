@@ -1,7 +1,11 @@
-import { expect, test } from 'vitest';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../test-utils.js';
+import * as stories from './Accordion.stories.jsx';
 
-test('Astro Accordion component file exists', () => {
-  // Astro components with inline scripts
-  // This test verifies the component structure is valid
-  expect(true).toBe(true);
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Accordion Default', Default);

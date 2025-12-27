@@ -1,6 +1,11 @@
-import { expect, test } from 'vitest';
-import Counter from './Counter.vue';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Counter.stories.js';
 
-test('Vue Counter component can be imported', () => {
-  expect(Counter).toBeDefined();
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Vue Counter Default', Default);

@@ -1,14 +1,11 @@
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { expect, test } from 'vitest';
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import Header from './Header.astro';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../test-utils.js';
+import * as stories from './Header.stories.jsx';
 
-async function renderAstroComponent(Component: AstroComponentFactory, renderingOptions = {}) {
-  const container = await AstroContainer.create();
-  document.body.innerHTML = await container.renderToString(Component, renderingOptions);
-}
+const { Default } = composeStories(stories);
 
-test('Header renders correctly', async () => {
-  await renderAstroComponent(Header);
-  expect(document.body.innerHTML).toBeTruthy();
-});
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Header Default', Default);

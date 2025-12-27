@@ -1,7 +1,11 @@
-import { expect, test } from 'vitest';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Accordion.stories.js';
 
-test('Alpine Accordion component file exists', () => {
-  // Alpine components are Astro files that use Alpine.js directives
-  // This test verifies the component can be imported
-  expect(true).toBe(true);
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Alpine Accordion Default', Default);

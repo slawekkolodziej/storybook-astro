@@ -1,7 +1,11 @@
-import { expect, test } from 'vitest';
-import Counter from './Counter.tsx';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Counter.stories.js';
 
-test('Solid Counter component can be imported', () => {
-  expect(Counter).toBeDefined();
-  expect(typeof Counter).toBe('function');
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Solid Counter Default', Default);

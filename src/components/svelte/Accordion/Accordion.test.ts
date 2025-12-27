@@ -1,7 +1,11 @@
-import { expect, test } from 'vitest';
-import Accordion from './Accordion.svelte';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import * as stories from './Accordion.stories.js';
 
-test('Svelte Accordion component can be imported', () => {
-  expect(Accordion).toBeDefined();
-  expect(typeof Accordion).toBe('function');
-});
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Svelte Accordion Default', Default);

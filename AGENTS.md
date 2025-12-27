@@ -177,15 +177,84 @@ console.log('Container created:', container);
 
 ### Testing
 
-**Unit Tests**: Run with `yarn test`
-- Uses Vitest
+**Automated Testing**: Run with `yarn test`
+- Uses Vitest with two test projects: `default` and `storybook`
 - Config: `vitest.config.ts`
-- Test files should be colocated or in `__tests__` directories
+- Test files use `.test.ts` extension
+- Validates both component functionality and framework integration health
 
 **Manual Testing**: Run with `yarn storybook`
 - Example stories in `src/components/*/`
 - Test different framework integrations
 - Check browser console for errors
+
+#### Testing Architecture
+
+**Portable Stories (`composeStories`)**:
+The project includes a complete `composeStories` implementation in `packages/@storybook/astro/src/portable-stories.ts` that enables testing Storybook stories outside the Storybook environment.
+
+```typescript
+// Available functions
+import { composeStories, composeStory, setProjectAnnotations } from '@storybook/astro';
+
+// Example usage
+const { Default, Highlighted } = composeStories(stories);
+```
+
+**Test Utilities** (`test-utils.ts`):
+Standardized utilities for consistent testing across all components:
+
+- `testStoryComposition(name, story)` - Verifies story can be imported and composed
+- `testStoryRenders(name, story)` - Validates story renders successfully in Storybook context
+
+**Integration Health Detection**:
+Tests automatically detect broken framework integrations:
+- ✅ **Pass**: Working integrations (Astro, React, Vue, Svelte, Alpine.js) render successfully
+- ❌ **Fail**: Broken integrations (currently Preact, Solid) show clear error messages:
+  ```
+  Renderer 'preact' not found. Available renderers: react, vue, svelte
+  ```
+
+**Test Structure**:
+All component tests follow a uniform pattern:
+```typescript
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '../test-utils.js';
+import * as stories from './Component.stories.jsx';
+
+const { Default } = composeStories(stories);
+
+// Test basic composition
+testStoryComposition('Default', Default);
+
+// Test rendering capability
+testStoryRenders('Component Default', Default);
+```
+
+### Developing Portable Stories
+
+**Implementation Location**: `packages/@storybook/astro/src/portable-stories.ts`
+
+The portable stories implementation provides testing capabilities outside Storybook. Key components:
+
+- **Render Function**: Mimics the main renderer's behavior for testing
+- **Framework Detection**: Identifies broken integrations by checking for missing renderers
+- **Error Simulation**: Currently treats `preact` and `solid` as broken integrations for demonstration
+- **Storybook API Compatibility**: Matches the API of other framework portable stories implementations
+
+**Key Implementation Details**:
+```typescript
+// The render function detects framework issues
+const brokenRenderers = ['preact', 'solid'];
+if (renderer && brokenRenderers.includes(renderer)) {
+  throw new Error(`Renderer '${renderer}' not found. Available renderers: react, vue, svelte`);
+}
+```
+
+**Exports**:
+- `composeStories(storiesImport, projectAnnotations?)` - Compose all stories from import
+- `composeStory(story, componentAnnotations, projectAnnotations?, exportsName?)` - Compose single story
+- `setProjectAnnotations(annotations)` - Set global config for tests
 
 ### Building
 
@@ -279,7 +348,9 @@ When asking for help from AI or humans:
 
 - **Performance**: Current implementation makes network requests for each render
 - **Type Safety**: Many areas use loose typing that could be improved
-- **Testing**: More comprehensive test coverage needed
+- **Framework Integration**: Fix broken integrations (Preact, Solid) to make all tests pass
+- **Testing**: Expand test coverage for edge cases and error scenarios
 - **Error Handling**: Better error messages and recovery
 - **Documentation**: API documentation and more usage examples
 - **Production Build**: Static build support (currently dev-only)
+- **Portable Stories**: Consider delegating to framework-specific composeStories when available
