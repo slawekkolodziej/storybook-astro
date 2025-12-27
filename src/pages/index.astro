@@ -1,20 +1,47 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ImageText from '../components/astro/ImageText/ImageText.astro';
+import astroStorybook from '../assets/astro-storybook.png';
 ---
 
-<Layout title="Home - Astro Widgets">
-  <h1>Welcome to Astro Widgets</h1>
+<Layout title="Home - Storybook Astro">
+  <h1>Welcome to Storybook Astro</h1>
   <p>
-    At Astro Widgets, we're pioneering the future of web component technology. Our mission is to provide 
-    developers with the most innovative and performant widgets for modern web applications.
+    An experimental Storybook framework implementation that brings Astro components into Storybook's 
+    interactive development environment. Build, test, and document your Astro components with the power 
+    of Storybook's tooling.
   </p>
   <p>
-    Built with cutting-edge technology and a commitment to excellence, our widgets seamlessly integrate 
-    with your favorite frameworks including React, Vue, Svelte, Solid, Preact, and Alpine.js.
+    This project enables server-side rendering of Astro components using Astro's Container API, with 
+    support for multiple UI frameworks including React, Vue, Svelte, Solid, Preact, and Alpine.js—all 
+    within Storybook.
   </p>
-  <p>
-    Whether you're building a small personal project or a large-scale enterprise application, 
-    Astro Widgets has the tools you need to create exceptional user experiences. Check out our 
-    <a href="/widgets">widgets showcase</a> to see them in action.
-  </p>
+
+  <ImageText imageSrc={astroStorybook} imageAlt="Storybook Astro">
+    <h2>See It In Action</h2>
+    <p>
+      Explore our interactive component demos to see how different frameworks work seamlessly within 
+      the Storybook Astro environment.
+    </p>
+    <p>
+      <a href="/widgets" style="color: #4ecca3; font-weight: 600; text-decoration: none;">
+        Check out the Widgets Demo →
+      </a>
+    </p>
+  </ImageText>
 </Layout>
+
+<style>
+  h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .image-text {
+    margin-top: 2.5rem;
+  }
+</style>

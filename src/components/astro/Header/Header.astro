@@ -4,11 +4,11 @@ const currentPath = Astro.url.pathname;
 
 <header>
   <div class="header-content">
-    <a href="/" class="logo">Astro Widgets</a>
+    <a href="/" class="logo">Storybook Astro</a>
     <nav>
       <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
       <a href="/about" class:list={[{ active: currentPath === '/about' || currentPath === '/about/' }]}>About</a>
-      <a href="/widgets" class:list={[{ active: currentPath === '/widgets' || currentPath === '/widgets/' }]}>Widgets</a>
+      <a href="/widgets" class:list={[{ active: currentPath === '/widgets' || currentPath === '/widgets/' }]}>Widgets Demo</a>
     </nav>
   </div>
 </header>

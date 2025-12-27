@@ -6868,6 +6868,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"marked@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "marked@npm:17.0.1"
+  bin:
+    marked: bin/marked.js
+  checksum: 10c0/0197337aad33882308cea52d2c86d7b830a89be729a4010a26a488ae1c224cdc7520b8cce056832a81a127fc39a3827f45e3865c1ff257324cb553cb06ce0e57
+  languageName: node
+  linkType: hard
+
 "mdast-util-definitions@npm:^6.0.0":
   version: 6.0.0
   resolution: "mdast-util-definitions@npm:6.0.0"
@@ -8913,6 +8922,7 @@ __metadata:
     globals: "npm:^16.0.0"
     happy-dom: "npm:^17.4.4"
     husky: "npm:^9.1.7"
+    marked: "npm:^17.0.1"
     preact: "npm:^10.28.1"
     prettier: "npm:^3.7.4"
     prettier-plugin-astro: "npm:^0.14.1"
