@@ -1,6 +1,6 @@
 # @storybook/astro
 
-An experimental Storybook framework implementation that enables support for Astro components in Storybook. This project addresses the feature request tracked in [storybookjs/storybook#18356](https://github.com/storybookjs/storybook/issues/18356).
+An experimental Storybook framework implementation that enables support for Astro components in Storybook.
 
 > **⚠️ Experimental**: This is an experimental project and is not ready for production use. The implementation is actively being developed and tested.
 
@@ -227,12 +227,70 @@ storybook-astro/
 └── package.json                # Root package
 ```
 
-## Known Limitations
+## Known Issues
+
+### Preact Framework Compatibility
+
+Preact components currently fail to render with the error: `TypeError: Cannot add property __, object is not extensible`. This occurs because Preact components become non-extensible after creation, preventing the framework renderer from adding necessary properties for Storybook integration. The issue persists even when using `@storybook/preact-vite` instead of `@storybook/preact`. A custom renderer solution similar to the SolidJS implementation may be required.
+
+### SolidJS Framework Compatibility
+
+SolidJS components fail to render properly in Storybook due to fundamental architectural incompatibilities. The `storybook-solidjs-vite` renderer is designed to work as a standalone Storybook framework (using `framework: "storybook-solidjs-vite"`), not as a renderer within the `@storybook/astro` framework. When SolidJS components are rendered, they show console warnings like "computations created outside a `createRoot` or `render` will never be disposed" and components appear blank because they're created outside the proper SolidJS rendering context. The official SolidJS renderer expects to control the entire rendering lifecycle, which conflicts with Astro's framework-delegation approach.
+
+### Vue Component Styling
+
+Vue single-file components (`.vue`) with `<style scoped>` blocks may encounter PostCSS parsing errors ("Unknown word" errors) when styles are tightly formatted without spacing between CSS rule sets. This is a PostCSS parsing issue in the Vue SFC compiler.
+
+### Other Known Issues
 
 - This is experimental software not ready for production
 - Some Astro features may not work as expected in the Storybook environment
 - Performance may need optimization for large component libraries
 - Hot module replacement for styles requires manual trigger in some cases
+
+## Roadmap: Astro Framework Feature Support
+
+This section tracks Astro's built-in framework features and their compatibility status with Storybook Astro. Many Astro features rely on special module resolution (e.g., `astro:*` imports) that may require additional configuration to work within Storybook's environment.
+
+### ✅ Supported Features
+
+- **Component Rendering** - Core Astro component rendering via Container API
+- **Props & Slots** - Passing data and content to components
+- **Scoped Styles** - Component-scoped CSS
+- **Multiple Framework Support** - React, Vue, Svelte, Alpine.js (Preact and Solid have known issues)
+- **Client Directives** - `client:load`, `client:only`, etc. for framework components
+
+### ⚠️ Partial Support
+
+- **`astro:assets` (Image Optimization)** - Works in components but requires fallback approach for Storybook stories due to module resolution issues. Components can accept both `ImageMetadata` and string URLs to maintain compatibility.
+
+### ❌ Not Yet Supported
+
+- **View Transitions** - Astro's built-in View Transitions API (`<ViewTransitions />` component)
+- **Content Collections** - `astro:content` module for type-safe content management
+- **Middleware** - Astro's middleware system for request/response handling
+- **API Routes** - Server endpoints (`/pages/api/*` routes)
+- **Server Islands** - Dynamic content islands with server-side rendering
+- **Actions** - Type-safe backend functions callable from frontend (`astro:actions`)
+- **Environment Variables** - `astro:env` module for managing environment variables
+- **Glob Imports** - `Astro.glob()` for batch file imports
+- **Database Integration** - Astro DB and database utilities
+- **Internationalization (i18n)** - Built-in i18n routing and helpers
+- **Prefetch** - Automatic page prefetching utilities
+- **Dev Toolbar** - Development toolbar integrations
+- **Markdown/MDX Features** - Advanced markdown processing features beyond basic rendering
+
+### 🔮 Future Considerations
+
+- **Static Site Generation (SSG)** - Currently only dev server rendering is supported; static builds would require architectural changes
+- **Server-Side Rendering (SSR)** - Full SSR mode compatibility
+- **Adapters** - Integration with Astro's deployment adapters (Netlify, Vercel, etc.)
+- **Error Handling** - Better error boundaries and recovery mechanisms
+- **Performance Optimizations** - Caching strategies and render optimization
+
+### Contributing to Feature Support
+
+If you're interested in helping add support for any of these features, please see the `AGENTS.md` file for development guidance and check the [GitHub issues](https://github.com/storybookjs/storybook/issues/18356) for ongoing discussions.
 
 ## Contributing
 
