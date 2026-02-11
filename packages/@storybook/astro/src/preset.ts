@@ -25,6 +25,8 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
     config.plugins = [];
   }
 
+  config.envPrefix = mergeEnvPrefixes(config.envPrefix, 'STORYBOOK_');
+
   config.plugins.push(
     viteStorybookRendererFallbackPlugin(options.integrations),
     viteStorybookAstroRendererPlugin({
@@ -49,7 +51,17 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
     return finalConfig;
   }
 
-  const outDir = config.build?.outDir ? dirname(config.build.outDir) : process.cwd();
+  config.build = {
+    ...(config.build ?? {}),
+    manifest: true
+  };
+
+  config.build.rollupOptions = {
+    ...(config.build.rollupOptions ?? {}),
+    preserveEntrySignatures: 'strict'
+  };
+
+  const outDir = config.build.outDir ? dirname(config.build.outDir) : process.cwd();
 
   config.plugins.push(
     ...astroServerRenderPlugin({
@@ -67,3 +79,12 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
 
   return finalConfig;
 };
+
+function mergeEnvPrefixes(
+  existing: string | string[] | undefined,
+  additionalPrefix: string
+): string[] {
+  const prefixes = Array.isArray(existing) ? existing : existing ? [existing] : [];
+
+  return Array.from(new Set([...prefixes, additionalPrefix]));
+}

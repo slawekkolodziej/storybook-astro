@@ -1,9 +1,19 @@
 import type { Integration } from './integrations';
 
-export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
+type PluginOptions = {
+  mode?: 'development' | 'production';
+  staticModuleMap?: Record<string, string>;
+};
+
+export function viteAstroContainerRenderersPlugin(
+  integrations: Integration[],
+  options: PluginOptions = {}
+) {
   const name = 'astro-container-renderers';
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+  const mode = options.mode ?? 'development';
+  const staticModuleMap = options.staticModuleMap ?? {};
 
   return {
     name,
@@ -17,6 +27,15 @@ export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
         const importStatements = buildImportStatements(integrations);
+        const clientResolvers =
+          mode === 'development'
+            ? integrations
+                .filter((integration) => typeof integration.resolveClient === 'function')
+                .map((integration) =>
+                  integration.resolveClient.toString().replace(/^resolveClient/, 'function')
+                )
+                .join(',\n')
+            : '';
 
         const code = `
           ${importStatements}
@@ -26,47 +45,30 @@ export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
           }
 
 
+          const staticClientModules = ${JSON.stringify(staticModuleMap, null, 2)};
+
           const clientModulesResolvers = [
-            ${integrations
-              .filter((integration) => typeof integration.resolveClient === 'function')
-              .map((integration) =>
-                integration.resolveClient.toString().replace(/^resolveClient/, 'function')
-              )
-              .join(',\n')}
+            ${clientResolvers}
           ];
-          
+           
           export function resolveClientModules(s) {
-            for (let resolver of clientModulesResolvers) {
+            if (Object.hasOwn(staticClientModules, s)) {
+              return staticClientModules[s];
+            }
+
+            const normalizedSpecifier = s.replace(/\\\\/g, '/').replace(/\\?.*$/, '');
+
+            if (Object.hasOwn(staticClientModules, normalizedSpecifier)) {
+              return staticClientModules[normalizedSpecifier];
+            }
+
+            for (const resolver of clientModulesResolvers) {
               const resolution = resolver(s);
 
               if (resolution) {
                 return resolution;
               }
             }
-          }
-
-          // Generate script content for astro:scripts virtual modules
-          export function getScriptContent(scriptName) {
-            const beforeHydrationScripts = [
-              ${integrations
-                .map((integration) => {
-                  // For now, return empty array - integrations would add scripts here
-                  return '// Scripts from ' + integration.name + ' integration';
-                })
-                .map((comment) => `"${comment}"`)
-                .join(',\n')}
-            ].filter(Boolean);
-            
-            const pageScripts = [
-              // Page scripts would go here
-            ].filter(Boolean);
-            
-            const scripts = {
-              'before-hydration.js': beforeHydrationScripts,
-              'page.js': pageScripts
-            };
-            
-            return scripts[scriptName] ? scripts[scriptName].join('\\n') : '';
           }
         `;
 

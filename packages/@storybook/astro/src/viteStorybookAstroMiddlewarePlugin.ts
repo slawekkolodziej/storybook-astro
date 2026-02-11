@@ -68,7 +68,9 @@ export async function createViteServer(integrations: Integration[]) {
     ...config,
     plugins: [
       ...(config.plugins?.filter(Boolean) ?? []),
-      viteAstroContainerRenderersPlugin(integrations)
+      viteAstroContainerRenderersPlugin(integrations, {
+        mode: 'development'
+      })
     ]
   });
 
