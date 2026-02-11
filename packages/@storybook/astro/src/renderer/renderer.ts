@@ -1,4 +1,4 @@
-import type { RenderComponentInput, RenderResponseMessage } from '../types';
+import type { RenderComponentInput, RenderResponseMessage } from '../types.ts';
 
 type StorybookImportMetaEnv = ImportMeta & {
   env?: Record<string, string | undefined>;
@@ -59,5 +59,9 @@ function getServerUrl() {
 }
 
 export function init() {
-  console.log('Set up astro prod rederer');
+  return;
+}
+
+export function applyStyles() {
+  return;
 }

@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { Options as ViteReactPluginOptions } from '@vitejs/plugin-react';
 
 export type Options = Pick<ViteReactPluginOptions, 'include' | 'exclude'>;
@@ -7,7 +7,7 @@ export class ReactIntegration implements Integration {
   readonly name = 'react';
   readonly dependencies = ['@astrojs/react', '@storybook/react', 'react', 'react-dom'];
   readonly options: Options;
-  readonly storybookEntryPreview = '@storybook/react/dist/entry-preview.mjs';
+  readonly storybookEntryPreview = '@storybook/react/entry-preview';
 
   readonly renderer = {
     server: {

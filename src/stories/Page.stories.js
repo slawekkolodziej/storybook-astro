@@ -1,4 +1,4 @@
-import { expect, userEvent, within } from '@storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 import { Page } from './Page';
 
 export default {
@@ -7,8 +7,8 @@ export default {
   parameters: {
     renderer: 'react',
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
-    layout: 'fullscreen',
-  },
+    layout: 'fullscreen'
+  }
 };
 
 export const LoggedOut = {};
@@ -26,5 +26,5 @@ export const LoggedIn = {
     const logoutButton = canvas.getByRole('button', { name: /Log out/i });
 
     await expect(logoutButton).toBeInTheDocument();
-  },
+  }
 };

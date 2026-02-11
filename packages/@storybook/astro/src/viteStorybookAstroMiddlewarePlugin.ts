@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url';
 import { createServer, type PluginOption } from 'vite';
 import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/astro-renderer/types';
-import type { FrameworkOptions } from './types';
-import type { Integration } from './integrations';
-import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin';
+import type { FrameworkOptions } from './types.ts';
+import type { Integration } from './integrations/index.ts';
+import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';
 
 export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOptions) {
   const viteServer = await createViteServer(options.integrations);
@@ -39,12 +39,27 @@ export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOpt
     }
   } satisfies PluginOption;
 
+  const assetServingPlugin = {
+    name: 'storybook-astro:assets',
+    configureServer(server) {
+      server.middlewares.use('/_image', (req, res, next) => {
+        viteServer.middlewares.handle(req, res, (err: unknown) => {
+          if (err) {
+            console.error('Asset serving error:', err);
+            next();
+          }
+        });
+      });
+    }
+  } satisfies PluginOption;
+
   return {
     vitePlugin,
     viteConfig: {
       plugins: [
         viteServer.config.plugins.find((plugin) => plugin.name === 'vite:css'),
-        viteServer.config.plugins.find((plugin) => plugin.name === 'vite:css-post')
+        viteServer.config.plugins.find((plugin) => plugin.name === 'vite:css-post'),
+        assetServingPlugin
       ].filter(Boolean)
     }
   };

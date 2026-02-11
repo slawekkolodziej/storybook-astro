@@ -1,13 +1,11 @@
 import { mergeConfig, type InlineConfig } from 'vite';
-import type { Integration } from './integrations';
+import type { Integration } from './integrations/index.ts';
 
 const ASTRO_DISABLED_PLUGINS_FOR_STORYBOOK = [
   '@astro/plugin-actions',
   '@astrojs/vite-plugin-astro-ssr-manifest',
   'astro-content-virtual-mod-plugin',
   'astro:actions',
-  'astro:assets:esm',
-  'astro:assets',
   'astro:build:normal',
   'astro:container',
   'astro:content-asset-propagation',

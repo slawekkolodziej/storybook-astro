@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { PreactPluginOptions } from '@preact/preset-vite';
 
 export type Options = Pick<PreactPluginOptions, 'include' | 'exclude'> & {
@@ -8,10 +8,10 @@ export type Options = Pick<PreactPluginOptions, 'include' | 'exclude'> & {
 
 export class PreactIntegration implements Integration {
   readonly name = 'preact';
-  readonly dependencies = ['@astrojs/preact', '@storybook/preact', 'preact'];
+  readonly dependencies = ['@astrojs/preact', '@storybook/preact-vite', 'preact'];
   readonly options: Options;
-  readonly storybookEntryPreview = '@storybook/preact/dist/entry-preview.mjs';
-  
+  readonly storybookEntryPreview = '@storybook/preact/entry-preview';
+
   readonly renderer = {
     server: {
       name: '@astrojs/preact',

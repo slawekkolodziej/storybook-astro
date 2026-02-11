@@ -1,18 +1,14 @@
 import { dirname, join } from 'node:path';
-import type { StorybookConfigVite, FrameworkOptions } from './types';
-import { createStorybookAstroMiddlewarePlugin } from './viteStorybookAstroMiddlewarePlugin';
-import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
-import { mergeWithAstroConfig } from './vitePluginAstro';
-import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin';
-import { astroServerRenderPlugin } from './vite/astroServerRenderPlugin';
-
-const getAbsolutePath = <I extends string>(input: I): I =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dirname(require.resolve(join(input, 'package.json'))) as any;
+import type { StorybookConfigVite, FrameworkOptions } from './types.ts';
+import { createStorybookAstroMiddlewarePlugin } from './viteStorybookAstroMiddlewarePlugin.ts';
+import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin.ts';
+import { mergeWithAstroConfig } from './vitePluginAstro.ts';
+import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin.ts';
+import { astroServerRenderPlugin } from './vite/astroServerRenderPlugin.ts';
 
 export const core = {
-  builder: getAbsolutePath('@storybook/builder-vite'),
-  renderer: getAbsolutePath('@storybook/astro-renderer')
+  builder: '@storybook/builder-vite',
+  renderer: '@storybook/astro-renderer'
 };
 
 export const viteFinal: StorybookConfigVite['viteFinal'] = async (
@@ -33,6 +29,19 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
       mode: configType === 'DEVELOPMENT' ? 'development' : 'production'
     })
   );
+
+  if (!config.resolve) {
+    config.resolve = {};
+  }
+
+  if (!config.resolve.alias) {
+    config.resolve.alias = {};
+  }
+
+  const aliases = config.resolve.alias as Record<string, string>;
+
+  aliases.react ??= 'react';
+  aliases['react-dom'] ??= 'react-dom';
 
   /** Start Astro dev middleware only when running storybook in DEVELOPMENT mode */
   if (configType === 'DEVELOPMENT') {

@@ -3,22 +3,23 @@
   "version": "0.0.1",
   "type": "module",
   "exports": {
+    ".": "./src/index.ts",
     "./integrations": "./src/integrations/index.ts",
     "./preset": "./preset.ts",
     "./package.json": "./package.json",
     "./*": "./src/*"
   },
   "devDependencies": {
-    "@storybook/preact": "^8.6.12",
-    "@storybook/react": "^8.6.12",
-    "@storybook/svelte": "^8.6.12",
-    "@storybook/vue3": "^8.6.12",
+    "@storybook/preact": "^10.1.10",
+    "@storybook/react": "^10.1.10",
+    "@storybook/svelte": "^10.1.10",
+    "@storybook/vue3": "^10.1.10",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/node": "^20.17.30",
     "@vitejs/plugin-react": "^4.3.4",
     "alpinejs": "^3.14.9",
     "astro": "^5.6.1",
-    "storybook-solidjs": "^1.0.0-beta.7",
+    "storybook-solidjs-vite": "^10.0.9",
     "vite-plugin-solid": "^2.11.6"
   },
   "peerDependencies": {
@@ -29,16 +30,17 @@
     "@astrojs/svelte": "^7.0.9",
     "@astrojs/vue": "^5.0.9",
     "@preact/preset-vite": "^2.10.1",
-    "@storybook/preact": "^8.6.12",
-    "@storybook/react": "^8.6.12",
-    "@storybook/svelte": "^8.6.12",
-    "@storybook/vue3": "^8.6.12",
+    "@storybook/preact": "^10.1.10",
+    "@storybook/preact-vite": "^10.1.10",
+    "@storybook/react": "^10.1.10",
+    "@storybook/svelte": "^10.1.10",
+    "@storybook/vue3": "^10.1.10",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vitejs/plugin-vue-jsx": "^4.1.2",
-    "astro": "^4.14.6",
-    "storybook": "^8.6.12",
-    "storybook-solidjs": "^1.0.0-beta.7",
+    "astro": "^5.5.3",
+    "storybook": "^10.1.10",
+    "storybook-solidjs-vite": "^10.0.9",
     "vite": "^6.2.5"
   },
   "peerDependenciesMeta": {
@@ -66,6 +68,9 @@
     "@storybook/preact": {
       "optional": true
     },
+    "@storybook/preact-vite": {
+      "optional": true
+    },
     "@storybook/react": {
       "optional": true
     },
@@ -81,12 +86,21 @@
     "@vitejs/plugin-vue-jsx": {
       "optional": true
     },
-    "storybook-solidjs": {
+    "storybook-solidjs-vite": {
       "optional": true
     }
   },
   "dependencies": {
     "@storybook/astro-renderer": "workspace:*",
-    "hono": "^4.8.1"
+    "hono": "^4.8.1",
+    "preact": "^10.26.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "solid-js": "^1.9.5",
+    "storybook": "^10.1.10",
+    "svelte": "^5.25.6",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.5",
+    "vue": "^3.5.13"
   }
 }

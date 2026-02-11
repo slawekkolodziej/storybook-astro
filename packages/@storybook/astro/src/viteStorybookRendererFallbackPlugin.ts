@@ -1,5 +1,5 @@
-import type { Integration } from './integrations';
-import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin';
+import type { Integration } from './integrations/index.ts';
+import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin.ts';
 
 export function viteStorybookRendererFallbackPlugin(integrations: Integration[]) {
   const pluginName = 'storybook-astro:renderer-fallback';

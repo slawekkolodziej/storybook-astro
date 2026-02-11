@@ -1,4 +1,4 @@
-import type { RenderComponentInput } from './types';
+import type { RenderComponentInput } from './types.ts';
 
 declare module 'virtual:astro-container-renderers' {
   import type { experimental_AstroContainer as AstroContainer } from 'astro/container';

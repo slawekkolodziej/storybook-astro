@@ -1,5 +1,5 @@
-import type { Integration } from './integrations';
-import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin';
+import type { Integration } from './integrations/index.ts';
+import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin.ts';
 
 type PluginOptions = {
   mode?: 'development' | 'production';

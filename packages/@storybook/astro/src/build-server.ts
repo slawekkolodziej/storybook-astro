@@ -1,10 +1,10 @@
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { build } from 'vite';
-import { mergeWithAstroConfig } from './vitePluginAstro';
-import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin';
-import { astroFilesVirtualModulePlugin } from './vite/astroFilesVirtualModulePlugin';
-import type { FrameworkOptions } from './types.js';
+import { mergeWithAstroConfig } from './vitePluginAstro.ts';
+import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';
+import { astroFilesVirtualModulePlugin } from './vite/astroFilesVirtualModulePlugin.ts';
+import type { FrameworkOptions } from './types.ts';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 

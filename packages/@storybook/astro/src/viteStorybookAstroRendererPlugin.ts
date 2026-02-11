@@ -1,5 +1,6 @@
-import pkgJson from '../package.json';
-import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin';
+import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin.ts';
+
+const packageName = '@storybook/astro';
 
 export function viteStorybookAstroRendererPlugin(options: { mode: 'development' | 'production' }) {
   const pluginName = 'storybook-astro:renderer-module';
@@ -10,7 +11,7 @@ export function viteStorybookAstroRendererPlugin(options: { mode: 'development' 
     pluginName,
     virtualModuleId,
     load() {
-      return `export * from '${pkgJson.name}/renderer/renderer${isProduction ? '' : '-dev'}.ts';`;
+      return `export * from '${packageName}/renderer/renderer${isProduction ? '' : '-dev'}.ts';`;
     }
   });
 }
