@@ -186,6 +186,8 @@ async function buildAstroServer(options: {
     console.warn('Astro server build completed successfully.');
   } catch (error) {
     console.error('Build failed:', error);
+
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }
