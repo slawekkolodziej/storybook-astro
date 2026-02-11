@@ -1,4 +1,4 @@
-import type { RenderComponentInput, RenderPromise, RenderResponseMessage } from '../types';
+import type { RenderComponentInput, RenderPromise, RenderResponseMessage } from '../types.ts';
 
 const messages = new Map<string, RenderPromise>();
 

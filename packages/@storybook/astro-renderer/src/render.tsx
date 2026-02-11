@@ -2,7 +2,7 @@ import { simulateDOMContentLoaded, simulatePageLoad } from 'storybook/internal/p
 import type { ArgsStoryFn, RenderContext } from 'storybook/internal/types';
 import { dedent } from 'ts-dedent';
 import 'astro:scripts/page.js';
-import type { $FIXME } from './types';
+import type { $FIXME } from './types.ts';
 import * as renderers from 'virtual:storybook-renderer-fallback';
 import * as astroRenderer from 'virtual:storybook-astro-renderer';
 

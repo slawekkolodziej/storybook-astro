@@ -3,30 +3,28 @@ import { react, solid, preact, vue, svelte, alpinejs } from '@storybook/astro/in
 /** @type { import('@storybook/astro').StorybookConfig } */
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
-  addons: [
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook',
-    '@storybook/addon-interactions',
-  ],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-docs'],
   framework: {
     name: '@storybook/astro',
     options: {
       integrations: [
         react({
-          include: ['**/react/*']
+          include: ['**/react/**']
         }),
         solid({
-          include: ['**/solid/*']
+          include: ['**/solid/**']
         }),
         preact({
-          include: ['**/preact/*']
+          include: ['**/preact/**']
         }),
         vue(),
         svelte(),
-        alpinejs()
+        alpinejs({
+          entrypoint: './.storybook/alpine-entrypoint.js'
+        })
       ]
-    },
-  },
+    }
+  }
 };
 
 export default config;

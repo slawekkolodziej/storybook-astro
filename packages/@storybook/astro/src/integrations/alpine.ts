@@ -1,13 +1,10 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 
 export type Options = Record<string, unknown>;
 
 export class AlpineIntegration implements Integration {
   readonly name = 'alpine';
-  readonly dependencies = [
-    '@astrojs/alpinejs',
-    'alpinejs'
-  ];
+  readonly dependencies = ['@astrojs/alpinejs', 'alpinejs'];
   readonly options: Options;
   readonly renderer = {};
 

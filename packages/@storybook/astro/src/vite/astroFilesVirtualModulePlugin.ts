@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite';
-import { createVirtualModulePlugin } from './createVirtualModulePlugin';
+import { createVirtualModulePlugin } from './createVirtualModulePlugin.ts';
 
 type ImportRecord = {
   id: string;

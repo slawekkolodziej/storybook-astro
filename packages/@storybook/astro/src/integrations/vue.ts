@@ -1,4 +1,4 @@
-import type { Integration } from './base';
+import type { Integration } from './base.ts';
 import type { Options as VueOptions } from '@vitejs/plugin-vue';
 import type { Options as VueJsxOptions } from '@vitejs/plugin-vue-jsx';
 
@@ -15,7 +15,7 @@ export class VueIntegration implements Integration {
   // FIXME: Add missing dependencies
   readonly dependencies = ['@astrojs/vue', '@storybook/vue3'];
   readonly options: Options;
-  readonly storybookEntryPreview = '@storybook/vue3/dist/entry-preview.mjs';
+  readonly storybookEntryPreview = '@storybook/vue3/entry-preview';
 
   readonly renderer = {
     server: {

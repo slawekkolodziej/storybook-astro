@@ -1,6 +1,6 @@
 import type { CompatibleString, Options } from 'storybook/internal/types';
 import type { InlineConfig } from 'vite';
-import type { Integration } from './integrations';
+import type { Integration } from './integrations/index.ts';
 
 type FrameworkName = CompatibleString<'@storybook/astro'>;
 
@@ -24,7 +24,7 @@ export type StorybookConfig = StorybookConfigFramework;
 type ViteFinal = (config: InlineConfig, options: Options) => InlineConfig | Promise<InlineConfig>;
 
 export type StorybookConfigVite = {
-    viteFinal?: ViteFinal;
+  viteFinal?: ViteFinal;
 };
 
 export type RenderComponentInput = {

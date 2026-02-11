@@ -24,16 +24,16 @@ export default getViteConfig(vitestConfig as UserConfig, {
   // Tests specific astro config
   integrations: [
     react({
-      include: ['**/react/*']
+      include: ['**/react/**']
     }),
     solid({
-      include: ['**/solid/*']
+      include: ['**/solid/**']
     }),
     preact({
-      include: ['**/preact/*']
+      include: ['**/preact/**']
     }),
     vue(),
-    svelte({ extensions: ['.svelte'] }),
+    svelte(),
     alpinejs(),
     solidVitestPatch()
   ]

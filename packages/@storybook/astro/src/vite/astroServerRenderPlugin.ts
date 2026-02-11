@@ -2,10 +2,10 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readdir } from 'node:fs/promises';
 import { build, type Rollup } from 'vite';
-import type { FrameworkOptions } from '../types';
-import { viteAstroContainerRenderersPlugin } from '../viteAstroContainerRenderersPlugin';
-import { mergeWithAstroConfig } from '../vitePluginAstro';
-import { astroFilesVirtualModulePlugin } from './astroFilesVirtualModulePlugin';
+import type { FrameworkOptions } from '../types.ts';
+import { viteAstroContainerRenderersPlugin } from '../viteAstroContainerRenderersPlugin.ts';
+import { mergeWithAstroConfig } from '../vitePluginAstro.ts';
+import { astroFilesVirtualModulePlugin } from './astroFilesVirtualModulePlugin.ts';
 
 const moduleRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
