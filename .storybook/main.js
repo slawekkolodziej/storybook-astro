@@ -22,7 +22,11 @@ const config = {
         alpinejs({
           entrypoint: './.storybook/alpine-entrypoint.js'
         })
-      ]
+      ],
+      sanitization: {
+        args: ['**.html', '**.htmlContent'],
+        slots: ['**']
+      }
     }
   }
 };
