@@ -1,29 +1,21 @@
 import type { Integration } from './integrations';
+import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin';
 
 export function viteStorybookRendererFallbackPlugin(integrations: Integration[]) {
-  const name = 'storybook-renderer-fallback';
-  const virtualModuleId = `virtual:${name}`;
-  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+  const pluginName = 'storybook-astro:renderer-fallback';
+  const virtualModuleId = 'virtual:storybook-renderer-fallback';
 
-  return {
-    name,
-
-    resolveId(id: string) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId;
-      }
-    },
-
-    load(id: string) {
-      if (id === resolvedVirtualModuleId) {
-        return integrations
-          .filter((integration) => integration.storybookEntryPreview)
-          .map(
-            (integration) =>
-              `export * as ${integration.name} from '${integration.storybookEntryPreview}';`
-          )
-          .join('\n');
-      }
+  return createVirtualModulePlugin({
+    pluginName,
+    virtualModuleId,
+    load() {
+      return integrations
+        .filter((integration) => integration.storybookEntryPreview)
+        .map(
+          (integration) =>
+            `export * as ${integration.name} from '${integration.storybookEntryPreview}';`
+        )
+        .join('\n');
     }
-  };
+  });
 }

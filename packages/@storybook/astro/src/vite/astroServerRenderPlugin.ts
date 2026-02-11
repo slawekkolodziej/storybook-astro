@@ -5,6 +5,7 @@ import { build, type Rollup } from 'vite';
 import type { FrameworkOptions } from '../types';
 import { viteAstroContainerRenderersPlugin } from '../viteAstroContainerRenderersPlugin';
 import { mergeWithAstroConfig } from '../vitePluginAstro';
+import { astroFilesVirtualModulePlugin } from './astroFilesVirtualModulePlugin';
 
 const moduleRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -19,7 +20,7 @@ export function astroServerRenderPlugin(options: {
 
   return [
     {
-      name: 'collect-astro-files',
+      name: 'storybook-astro:collect-astro-files',
       enforce: 'pre',
       /**
        * Build a map of files that import *.astro files
@@ -39,7 +40,7 @@ export function astroServerRenderPlugin(options: {
       }
     },
     {
-      name: 'astro-frontend-chunks',
+      name: 'storybook-astro:build-static-module-map',
       resolveId(id: string) {
         if (id.startsWith('virtual:astro-static-module/')) {
           return `\0${id}`;
@@ -107,12 +108,12 @@ export function astroServerRenderPlugin(options: {
       }
     },
     {
-      name: 'render-astro-server',
+      name: 'storybook-astro:build-render-server',
 
       async writeBundle(
         this: Rollup.PluginContext,
         _outputOptions: Rollup.OutputOptions,
-        bundle: Rollup.OutputBundle
+        _bundle: Rollup.OutputBundle
       ) {
         const astroComponents = Array.from(storiesMap.keys());
         const staticModuleMap = buildStaticModuleMap(
@@ -164,7 +165,7 @@ async function buildAstroServer(options: {
       }
     },
     plugins: [
-      astroFilesPlugin(options.astroComponents),
+      astroFilesVirtualModulePlugin(options.astroComponents),
       viteAstroContainerRenderersPlugin(options.integrations, {
         mode: 'production',
         staticModuleMap: options.staticModuleMap
@@ -302,53 +303,4 @@ function isNonHydratableSourceFile(input: string) {
   return /\.stories\.[jt]sx?$|\.stories\.vue$|\.stories\.svelte$|\.(spec|test)\.[jt]sx?$/.test(
     input
   );
-}
-
-function astroFilesPlugin(astroComponents: string[]) {
-  const name = 'astro-files';
-  const virtualModuleId = `virtual:${name}`;
-  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
-
-  return {
-    name,
-
-    resolveId(id: string) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId;
-      }
-    },
-
-    async load(id: string) {
-      if (id === resolvedVirtualModuleId) {
-        try {
-          const imports = astroComponents.reduce<
-            Array<{ id: string; file: string; index: number; importStatement: string }>
-          >((acc, file, index) => {
-            const moduleId = `_astroFile${index}`;
-            const importStatement = `import ${moduleId} from '${file}';`;
-
-            return [
-              ...acc,
-              {
-                id: moduleId,
-                file,
-                index,
-                importStatement
-              }
-            ];
-          }, []);
-
-          return `
-            ${imports.map(({ importStatement }) => importStatement).join('\n')}
-            export default {
-              ${imports.map(({ file, id }) => `'${file}': ${id}`).join(',\n')}
-            };
-          `;
-        } catch (error) {
-          console.error('Failed to load astro files:', error);
-          process.exit(1);
-        }
-      }
-    }
-  };
 }

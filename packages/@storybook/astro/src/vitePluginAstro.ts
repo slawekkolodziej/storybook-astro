@@ -1,7 +1,7 @@
 import { mergeConfig, type InlineConfig } from 'vite';
 import type { Integration } from './integrations';
 
-const ASTRO_PLUGINS_THAT_ARE_SUPPOSEDLY_NOT_NEEDED_IN_STORYBOOK = [
+const ASTRO_DISABLED_PLUGINS_FOR_STORYBOOK = [
   '@astro/plugin-actions',
   '@astrojs/vite-plugin-astro-ssr-manifest',
   'astro-content-virtual-mod-plugin',
@@ -58,9 +58,7 @@ export async function mergeWithAstroConfig(
     .plugins!.flat()
     .filter(
       (plugin) =>
-        plugin &&
-        'name' in plugin &&
-        !ASTRO_PLUGINS_THAT_ARE_SUPPOSEDLY_NOT_NEEDED_IN_STORYBOOK.includes(plugin.name)
+        plugin && 'name' in plugin && !ASTRO_DISABLED_PLUGINS_FOR_STORYBOOK.includes(plugin.name)
     );
 
   return mergeConfig(config, {

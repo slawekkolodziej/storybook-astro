@@ -1,4 +1,5 @@
 import type { Integration } from './integrations';
+import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin';
 
 type PluginOptions = {
   mode?: 'development' | 'production';
@@ -9,35 +10,27 @@ export function viteAstroContainerRenderersPlugin(
   integrations: Integration[],
   options: PluginOptions = {}
 ) {
-  const name = 'astro-container-renderers';
-  const virtualModuleId = `virtual:${name}`;
-  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+  const pluginName = 'storybook-astro:container-renderers';
+  const virtualModuleId = 'virtual:astro-container-renderers';
   const mode = options.mode ?? 'development';
   const staticModuleMap = options.staticModuleMap ?? {};
 
-  return {
-    name,
+  return createVirtualModulePlugin({
+    pluginName,
+    virtualModuleId,
+    load() {
+      const importStatements = buildImportStatements(integrations);
+      const clientResolvers =
+        mode === 'development'
+          ? integrations
+              .filter((integration) => typeof integration.resolveClient === 'function')
+              .map((integration) =>
+                integration.resolveClient.toString().replace(/^resolveClient/, 'function')
+              )
+              .join(',\n')
+          : '';
 
-    resolveId(id: string) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId;
-      }
-    },
-
-    load(id: string) {
-      if (id === resolvedVirtualModuleId) {
-        const importStatements = buildImportStatements(integrations);
-        const clientResolvers =
-          mode === 'development'
-            ? integrations
-                .filter((integration) => typeof integration.resolveClient === 'function')
-                .map((integration) =>
-                  integration.resolveClient.toString().replace(/^resolveClient/, 'function')
-                )
-                .join(',\n')
-            : '';
-
-        const code = `
+      return `
           ${importStatements}
         
           export function addRenderers(container) {
@@ -71,11 +64,8 @@ export function viteAstroContainerRenderersPlugin(
             }
           }
         `;
-
-        return code;
-      }
     }
-  };
+  });
 }
 
 function buildImportStatements(integrations: Integration[]) {

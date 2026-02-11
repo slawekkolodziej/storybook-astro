@@ -5,11 +5,11 @@ import type { FrameworkOptions } from './types';
 import type { Integration } from './integrations';
 import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin';
 
-export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptions) {
+export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOptions) {
   const viteServer = await createViteServer(options.integrations);
 
   const vitePlugin = {
-    name: 'storybook-astro-middleware-plugin',
+    name: 'storybook-astro:middleware',
     async configureServer(server) {
       const filePath = fileURLToPath(new URL('./middleware', import.meta.url));
       const middleware = await viteServer.ssrLoadModule(filePath, {
@@ -49,6 +49,8 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
     }
   };
 }
+
+export const vitePluginStorybookAstroMiddleware = createStorybookAstroMiddlewarePlugin;
 
 export async function createViteServer(integrations: Integration[]) {
   const { getViteConfig } = await import('astro/config');
