@@ -1,5 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { Integration } from './integrations/index.ts';
+import type { SanitizationOptions } from './sanitization.ts';
+import { resolveSanitizationOptions, sanitizeRenderPayload } from './sanitization.ts';
 import { addRenderers } from 'virtual:astro-container-renderers';
 
 export type HandlerProps = {
@@ -8,7 +10,10 @@ export type HandlerProps = {
   slots?: Record<string, unknown>;
 };
 
-export async function handlerFactory(integrations: Integration[]) {
+export async function handlerFactory(
+  integrations: Integration[],
+  sanitization?: SanitizationOptions
+) {
   const container = await AstroContainer.create({
     // Somewhat hacky way to force client-side Storybook's Vite to resolve modules properly
     resolve: async (s) => {
@@ -30,13 +35,22 @@ export async function handlerFactory(integrations: Integration[]) {
 
   addRenderers(container);
 
+  const sanitizationOptions = resolveSanitizationOptions(sanitization);
+
   return async function handler(data: HandlerProps) {
     const { default: Component } = await import(/* @vite-ignore */ data.component);
     const processedArgs = await processImageMetadata(data.args ?? {});
+    const sanitizedPayload = sanitizeRenderPayload(
+      {
+        args: processedArgs,
+        slots: data.slots ?? {}
+      },
+      sanitizationOptions
+    );
 
     return container.renderToString(Component, {
-      props: processedArgs,
-      slots: data.slots ?? {}
+      props: sanitizedPayload.args,
+      slots: sanitizedPayload.slots
     });
   };
 }

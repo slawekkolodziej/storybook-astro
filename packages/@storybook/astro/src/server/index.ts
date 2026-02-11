@@ -2,7 +2,9 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import astroFiles from 'virtual:astro-files';
+import sanitization from 'virtual:storybook-astro-sanitization-config';
 import { addRenderers, resolveClientModules } from 'virtual:astro-container-renderers';
+import { resolveSanitizationOptions, sanitizeRenderPayload } from '../sanitization.ts';
 
 const app = new Hono();
 const rendererHandlerPromise = handlerFactory();
@@ -33,8 +35,6 @@ app.post('/render', async (c) => {
 
 export default app;
 
-// Export the app for external server setup
-// The server startup will be handled by a separate script
 async function handlerFactory() {
   const container = await AstroContainer.create({
     resolve: async (specifier) => {
@@ -50,12 +50,25 @@ async function handlerFactory() {
 
   addRenderers(container);
 
-  return async function handler(data) {
+  const sanitizationOptions = resolveSanitizationOptions(sanitization ?? undefined);
+
+  return async function handler(data: {
+    component: string;
+    args?: Record<string, unknown>;
+    slots?: Record<string, unknown>;
+  }) {
     const Component = astroFiles[data.component];
+    const sanitizedPayload = sanitizeRenderPayload(
+      {
+        args: data.args ?? {},
+        slots: data.slots ?? {}
+      },
+      sanitizationOptions
+    );
 
     return container.renderToString(Component, {
-      props: data.args,
-      slots: data.slots ?? {}
+      props: sanitizedPayload.args,
+      slots: sanitizedPayload.slots
     });
   };
 }
