@@ -31,13 +31,14 @@ export async function runAstroServerBuild(options: {
     },
     plugins: [
       astroFilesPlugin(options.astroComponents),
-      viteAstroContainerRenderersPlugin(options.integrations)
+      viteAstroContainerRenderersPlugin(options.integrations, {
+        mode: 'production'
+      })
     ]
   };
 
   try {
-    // eslint-disable-next-line no-console
-    console.info('Starting build...');
+    console.warn('Starting Astro server build...');
     const finalConfig = await mergeWithAstroConfig(
       buildConfig,
       options.integrations,
@@ -46,8 +47,7 @@ export async function runAstroServerBuild(options: {
     );
 
     await build(finalConfig);
-    // eslint-disable-next-line no-console
-    console.info('Build completed successfully!');
+    console.warn('Astro server build completed successfully.');
   } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);
@@ -62,23 +62,25 @@ function astroFilesPlugin(astroComponents: string[]) {
   return {
     name,
 
-    resolveId(id) {
+    resolveId(id: string) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId;
       }
     },
 
-    async load(id) {
+    async load(id: string) {
       if (id === resolvedVirtualModuleId) {
         try {
-          const imports = astroComponents.reduce((acc, file, index) => {
-            const id = `_astroFile${index}`;
-            const importStatement = `import ${id} from '${file}';`;
+          const imports = astroComponents.reduce<
+            Array<{ id: string; file: string; index: number; importStatement: string }>
+          >((acc, file, index) => {
+            const moduleId = `_astroFile${index}`;
+            const importStatement = `import ${moduleId} from '${file}';`;
 
             return [
               ...acc,
               {
-                id,
+                id: moduleId,
                 file,
                 index,
                 importStatement
