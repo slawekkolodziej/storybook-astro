@@ -1,6 +1,7 @@
 import type { RenderComponentInput, RenderPromise, RenderResponseMessage } from '../types.ts';
 
 const messages = new Map<string, RenderPromise>();
+const ASTRO_SERVER_UNAVAILABLE_ERROR_NAME = 'AstroRenderServerUnavailableError';
 
 export async function render(data: RenderComponentInput, timeoutMs = 5000) {
   // eslint-disable-next-line n/no-unsupported-features/node-builtins
@@ -10,7 +11,13 @@ export async function render(data: RenderComponentInput, timeoutMs = 5000) {
     // Abort rendering if it did not finish on time
     const timeoutId = setTimeout(() => {
       messages.delete(id);
-      reject(new Error(`Request ${id} timed out after ${timeoutMs}ms`));
+      const error = new Error(
+        `Unable to reach Astro rendering server. No render response was received within ${timeoutMs}ms.`
+      );
+
+      error.name = ASTRO_SERVER_UNAVAILABLE_ERROR_NAME;
+
+      reject(error);
     }, timeoutMs);
 
     messages.set(id, { resolve, reject, timeoutId });

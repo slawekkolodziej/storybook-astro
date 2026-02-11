@@ -74,11 +74,31 @@ export async function renderToCanvas(
 
   if (element?.isAstroComponentFactory) {
     const { slots = {}, ...args } = storyContext.args;
-    const { html } = await astroRenderer.render({
-      component: element.moduleId,
-      args: args,
-      slots: slots
-    });
+    let html: string;
+
+    try {
+      const response = await astroRenderer.render({
+        component: element.moduleId,
+        args: args,
+        slots: slots
+      });
+
+      html = response.html;
+    } catch (error) {
+      if (isAstroServerUnavailableError(error)) {
+        showError({
+          title: 'Unable to reach Astro rendering server.',
+          description: dedent`
+            Storybook could not connect to the Astro rendering server, so this Astro story cannot be rendered.
+            ${error.message}
+          `
+        });
+
+        return;
+      }
+
+      throw error;
+    }
 
     astroRenderer.applyStyles?.();
     canvasElement.innerHTML = html;
@@ -121,6 +141,17 @@ function invokeScriptTags(element: HTMLElement) {
 
     oldScript.parentNode?.replaceChild(newScript, oldScript);
   });
+}
+
+function isAstroServerUnavailableError(error: unknown): error is Error {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  return (
+    error.name === 'AstroRenderServerUnavailableError' ||
+    error.message.includes('Unable to reach Astro rendering server')
+  );
 }
 
 (function init() {

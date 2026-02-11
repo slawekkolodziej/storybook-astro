@@ -8,6 +8,8 @@ type StorybookGlobalEnv = typeof globalThis & {
   STORYBOOK_ASTRO_SERVER_URL?: string;
 };
 
+const ASTRO_SERVER_UNAVAILABLE_ERROR_NAME = 'AstroRenderServerUnavailableError';
+
 // Production renderer - uses HTTP to communicate with standalone Hono server
 export async function render(data: RenderComponentInput, timeoutMs = 5000) {
   // eslint-disable-next-line n/no-unsupported-features/node-builtins
@@ -44,7 +46,17 @@ export async function render(data: RenderComponentInput, timeoutMs = 5000) {
     clearTimeout(timeoutId);
 
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Request timed out after ${timeoutMs}ms`);
+      throw createServerUnavailableError(
+        serverUrl,
+        `Request timed out after ${timeoutMs}ms while waiting for a render response.`
+      );
+    }
+
+    if (error instanceof TypeError) {
+      throw createServerUnavailableError(
+        serverUrl,
+        'The Astro rendering server is not reachable over HTTP.'
+      );
     }
 
     throw error;
@@ -64,4 +76,12 @@ export function init() {
 
 export function applyStyles() {
   return;
+}
+
+function createServerUnavailableError(serverUrl: string, reason: string) {
+  const error = new Error(`Unable to reach Astro rendering server at ${serverUrl}. ${reason}`);
+
+  error.name = ASTRO_SERVER_UNAVAILABLE_ERROR_NAME;
+
+  return error;
 }
