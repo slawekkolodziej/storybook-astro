@@ -52,6 +52,12 @@ export default [
 
     ...eslintPluginNode.configs['flat/recommended-script'],
 
+    settings: {
+      node: {
+        version: '>=22.0.0'
+      }
+    },
+
     rules: {
       ...eslintPluginNode.configs['flat/recommended-script'].rules,
       'n/no-unpublished-import': ['off'],
