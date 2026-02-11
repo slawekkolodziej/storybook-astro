@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import type { StorybookConfigVite, FrameworkOptions } from './types';
-import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
+import { createStorybookAstroMiddlewarePlugin } from './viteStorybookAstroMiddlewarePlugin';
 import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
 import { mergeWithAstroConfig } from './vitePluginAstro';
 import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin';
@@ -37,7 +37,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
   /** Start Astro dev middleware only when running storybook in DEVELOPMENT mode */
   if (configType === 'DEVELOPMENT') {
     const { vitePlugin: storybookAstroMiddlewarePlugin, viteConfig } =
-      await vitePluginStorybookAstroMiddleware(options);
+      await createStorybookAstroMiddlewarePlugin(options);
 
     config.plugins.push(storybookAstroMiddlewarePlugin, ...viteConfig.plugins);
 

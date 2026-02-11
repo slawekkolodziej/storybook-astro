@@ -3,6 +3,7 @@ import path from 'node:path';
 import { build } from 'vite';
 import { mergeWithAstroConfig } from './vitePluginAstro';
 import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin';
+import { astroFilesVirtualModulePlugin } from './vite/astroFilesVirtualModulePlugin';
 import type { FrameworkOptions } from './types.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,7 +31,7 @@ export async function runAstroServerBuild(options: {
       }
     },
     plugins: [
-      astroFilesPlugin(options.astroComponents),
+      astroFilesVirtualModulePlugin(options.astroComponents),
       viteAstroContainerRenderersPlugin(options.integrations, {
         mode: 'production'
       })
@@ -52,53 +53,4 @@ export async function runAstroServerBuild(options: {
     console.error('Build failed:', error);
     process.exit(1);
   }
-}
-
-function astroFilesPlugin(astroComponents: string[]) {
-  const name = 'astro-files';
-  const virtualModuleId = `virtual:${name}`;
-  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
-
-  return {
-    name,
-
-    resolveId(id: string) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId;
-      }
-    },
-
-    async load(id: string) {
-      if (id === resolvedVirtualModuleId) {
-        try {
-          const imports = astroComponents.reduce<
-            Array<{ id: string; file: string; index: number; importStatement: string }>
-          >((acc, file, index) => {
-            const moduleId = `_astroFile${index}`;
-            const importStatement = `import ${moduleId} from '${file}';`;
-
-            return [
-              ...acc,
-              {
-                id: moduleId,
-                file,
-                index,
-                importStatement
-              }
-            ];
-          }, []);
-
-          return `
-            ${imports.map(({ importStatement }) => importStatement).join('\n')}
-            export default {
-              ${imports.map(({ file, id }) => `'${file}': ${id}`).join(',\n')}
-            };
-          `;
-        } catch (error) {
-          console.error('Failed to load astro files:', error);
-          process.exit(1);
-        }
-      }
-    }
-  };
 }
