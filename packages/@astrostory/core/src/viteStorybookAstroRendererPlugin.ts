@@ -1,6 +1,6 @@
 import { createVirtualModulePlugin } from './vite/createVirtualModulePlugin.ts';
 
-const packageName = '@storybook/astro';
+const packageName = '@astrostory/core';
 
 export function viteStorybookAstroRendererPlugin(options: { mode: 'development' | 'production' }) {
   const pluginName = 'storybook-astro:renderer-module';

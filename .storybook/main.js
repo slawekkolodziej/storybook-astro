@@ -1,11 +1,11 @@
-import { react, solid, preact, vue, svelte, alpinejs } from '@storybook/astro/integrations';
+import { react, solid, preact, vue, svelte, alpinejs } from '@astrostory/core/integrations';
 
-/** @type { import('@storybook/astro').StorybookConfig } */
+/** @type { import('@astrostory/core').StorybookConfig } */
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   addons: ['@chromatic-com/storybook', '@storybook/addon-docs'],
   framework: {
-    name: '@storybook/astro',
+    name: '@astrostory/core',
     options: {
       integrations: [
         react({

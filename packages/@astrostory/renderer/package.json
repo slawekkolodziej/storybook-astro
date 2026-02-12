@@ -1,5 +1,5 @@
 {
-  "name": "@storybook/astro-renderer",
+  "name": "@astrostory/renderer",
   "version": "0.0.1",
   "module": "./preset.js",
   "type": "module",

@@ -17,6 +17,7 @@ It uses Vitest To verify that Astro Container API works as expected. You can try
 The repository is based on Astro blank project.
 
 Code responsible for Storybook integration lives in two packages:
+<<<<<<< Updated upstream
 
 - `packages/@storybook/astro` - defines Storybook framework (https://storybook.js.org/docs/configure/integration/frameworks), it is responsible for server-side rendering Astro components
 - `packages/@storybook/astro-renderer` - a package that gets imported into client-side of Storybook, it sends render requests to Astro rendering proxy.
@@ -55,5 +56,10 @@ The default policy is intentionally moderate (not tiny): it allows common conten
 `div`, `span`, `img`, `b`, `i`, `hr`, headings, lists, tables, plus safe attributes including `class`
 globally and `src`/`alt` for images. Scripts, event handler attributes, and other unsafe constructs are
 still blocked.
+=======
+
+- `packages/@astrostory/core` - defines Storybook framework (https://storybook.js.org/docs/configure/integration/frameworks), it is responsible for server-side rendering Astro components
+- `packages/@astrostory/renderer` - a package that gets imported into client-side of Storybook, it sends render requests to Astro rendering proxy.
+>>>>>>> Stashed changes
 
 **Any help is highly appreciated!**

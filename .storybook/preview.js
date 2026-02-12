@@ -1,4 +1,4 @@
-/** @type { import('@storybook/astro').Preview } */
+/** @type { import('@astrostory/core').Preview } */
 const preview = {
   parameters: {
     controls: {
