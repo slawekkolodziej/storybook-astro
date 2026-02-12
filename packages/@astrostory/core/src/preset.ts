@@ -75,7 +75,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
   config.plugins.push(
     ...astroServerRenderPlugin({
       integrations: options.integrations,
-      rules: options.rules,
+      storyRules: options.storyRules,
       outDir: join(outDir, 'storybook-server')
     })
   );

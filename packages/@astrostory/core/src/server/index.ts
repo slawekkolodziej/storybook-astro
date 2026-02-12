@@ -3,9 +3,9 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import astroFiles from 'virtual:astro-files';
 import { addRenderers, resolveClientModules } from 'virtual:astro-container-renderers';
-import rulesConfigModule, {
-  storybookAstroRulesConfigFilePath
-} from 'virtual:storybook-astro-rules-config';
+import storyRulesConfigModule, {
+  storybookAstroStoryRulesConfigFilePath
+} from 'virtual:storybook-astro-story-rules-config';
 import { resolveStoryModuleMock, withStoryModuleMocks } from '../module-mocks.ts';
 import { applyMswHandlers } from '../msw.ts';
 import { selectStoryRules } from '../rules.ts';
@@ -68,8 +68,8 @@ async function handlerFactory() {
   return async function handler(data: HandlerProps) {
     const executeRender = async () => {
       const selectedRules = await selectStoryRules({
-        configModule: rulesConfigModule,
-        configFilePath: storybookAstroRulesConfigFilePath,
+        configModule: storyRulesConfigModule,
+        configFilePath: storybookAstroStoryRulesConfigFilePath,
         mode: 'production',
         story: data.story
       });

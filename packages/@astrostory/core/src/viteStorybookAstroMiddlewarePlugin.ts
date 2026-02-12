@@ -16,11 +16,11 @@ export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOpt
       const middleware = await viteServer.ssrLoadModule(filePath, {
         fixStacktrace: true
       });
-      const rulesConfigFilePath = resolveRulesConfigFilePath(options.rules);
+      const storyRulesConfigFilePath = resolveRulesConfigFilePath(options.storyRules);
       const handler = await middleware.handlerFactory(options.integrations, {
         mode: 'development',
-        rulesConfigFilePath,
-        resolveRulesConfigModule: () => loadRulesConfigModule(viteServer, rulesConfigFilePath)
+        rulesConfigFilePath: storyRulesConfigFilePath,
+        resolveRulesConfigModule: () => loadRulesConfigModule(viteServer, storyRulesConfigFilePath)
       });
 
       server.ws.on('astro:render:request', async (data: RenderRequestMessage['data']) => {
@@ -113,7 +113,7 @@ async function loadRulesConfigModule(viteServer: ViteDevServer, configFilePath?:
     const reason = error instanceof Error ? error.message : String(error);
 
     throw new Error(
-      `Unable to load framework.options.rules config module at ${configFilePath}: ${reason}`
+      `Unable to load framework.options.storyRules config module at ${configFilePath}: ${reason}`
     );
   }
 }

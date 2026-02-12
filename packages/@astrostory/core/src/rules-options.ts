@@ -1,13 +1,13 @@
 import { existsSync } from 'node:fs';
 import { extname, resolve } from 'node:path';
 
-export type RulesOptions =
+export type StoryRulesOptions =
   | string
   | {
       configFile: string;
     };
 
-export function resolveRulesConfigFilePath(options?: RulesOptions): string | undefined {
+export function resolveRulesConfigFilePath(options?: StoryRulesOptions): string | undefined {
   if (options === undefined) {
     return undefined;
   }
@@ -18,15 +18,15 @@ export function resolveRulesConfigFilePath(options?: RulesOptions): string | und
 
   if (!normalizedConfigFilePath) {
     throw new Error(
-      `framework.options.rules config file was not found: ${resolvedConfigFilePath}. ` +
-        'Provide an existing path in framework.options.rules.'
+      `framework.options.storyRules config file was not found: ${resolvedConfigFilePath}. ` +
+        'Provide an existing path in framework.options.storyRules.'
     );
   }
 
   return normalizedConfigFilePath;
 }
 
-function normalizeConfigFileOption(options: RulesOptions): string {
+function normalizeConfigFileOption(options: StoryRulesOptions): string {
   const configFile =
     typeof options === 'string'
       ? options
@@ -36,14 +36,14 @@ function normalizeConfigFileOption(options: RulesOptions): string {
 
   if (typeof configFile !== 'string') {
     throw new Error(
-      'framework.options.rules must be either a string path or an object with a string configFile.'
+      'framework.options.storyRules must be either a string path or an object with a string configFile.'
     );
   }
 
   const normalizedConfigFile = configFile.trim();
 
   if (!normalizedConfigFile) {
-    throw new Error('framework.options.rules config file path cannot be empty.');
+    throw new Error('framework.options.storyRules config file path cannot be empty.');
   }
 
   return normalizedConfigFile;

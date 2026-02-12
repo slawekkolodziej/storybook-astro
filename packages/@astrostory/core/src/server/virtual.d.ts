@@ -1,9 +1,9 @@
 declare module 'virtual:astro-files' {}
 
-declare module 'virtual:storybook-astro-rules-config' {
-  const rulesConfigModule: unknown;
-  const storybookAstroRulesConfigFilePath: string | undefined;
+declare module 'virtual:storybook-astro-story-rules-config' {
+  const storyRulesConfigModule: unknown;
+  const storybookAstroStoryRulesConfigFilePath: string | undefined;
 
-  export default rulesConfigModule;
-  export { storybookAstroRulesConfigFilePath };
+  export default storyRulesConfigModule;
+  export { storybookAstroStoryRulesConfigFilePath };
 }

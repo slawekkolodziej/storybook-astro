@@ -1,4 +1,4 @@
-import { defineRules, type StoryRuleUse } from '@astrostory/core';
+import { defineStoryRules, type StoryRuleUse } from '@astrostory/core';
 import { http, HttpResponse } from '@astrostory/core/msw-helpers';
 
 const mockTodoSuccess: StoryRuleUse = ({ msw, mode }) => {
@@ -7,7 +7,7 @@ const mockTodoSuccess: StoryRuleUse = ({ msw, mode }) => {
       return HttpResponse.json({
         userId: 42,
         id: 1,
-        title: `Storybook ${mode} todo from rules`,
+        title: `Storybook ${mode} todo from story rules`,
         completed: mode === 'production'
       });
     })
@@ -22,7 +22,7 @@ const mockTodoFailure: StoryRuleUse = ({ msw }) => {
   );
 };
 
-export default defineRules({
+export default defineStoryRules({
   rules: [
     {
       match: ['astro/card/from-public-api'],

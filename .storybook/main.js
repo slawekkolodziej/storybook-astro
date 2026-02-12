@@ -27,7 +27,7 @@ const config = {
         args: ['**.html', '**.htmlContent'],
         slots: ['**']
       },
-      rules: './.storybook/rules.ts'
+      storyRules: './.storybook/story-rules.ts'
     }
   }
 };

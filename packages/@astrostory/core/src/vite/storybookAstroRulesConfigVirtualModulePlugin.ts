@@ -1,25 +1,27 @@
 import type { Plugin } from 'vite';
-import type { RulesOptions } from '../rules-options.ts';
+import type { StoryRulesOptions } from '../rules-options.ts';
 import { resolveRulesConfigFilePath } from '../rules-options.ts';
 import { createVirtualModulePlugin } from './createVirtualModulePlugin.ts';
 
-export const STORYBOOK_ASTRO_RULES_CONFIG_VIRTUAL_MODULE_ID =
-  'virtual:storybook-astro-rules-config';
+export const STORYBOOK_ASTRO_STORY_RULES_CONFIG_VIRTUAL_MODULE_ID =
+  'virtual:storybook-astro-story-rules-config';
 
-export function storybookAstroRulesConfigVirtualModulePlugin(options?: RulesOptions): Plugin {
-  const pluginName = 'storybook-astro:virtual-rules-config';
+export function storybookAstroStoryRulesConfigVirtualModulePlugin(
+  options?: StoryRulesOptions
+): Plugin {
+  const pluginName = 'storybook-astro:virtual-story-rules-config';
 
   return createVirtualModulePlugin({
     pluginName,
-    virtualModuleId: STORYBOOK_ASTRO_RULES_CONFIG_VIRTUAL_MODULE_ID,
+    virtualModuleId: STORYBOOK_ASTRO_STORY_RULES_CONFIG_VIRTUAL_MODULE_ID,
     load() {
       const configFilePath = resolveRulesConfigFilePath(options);
 
       if (!configFilePath) {
         return [
-          'const storybookAstroRulesConfig = { rules: [] };',
-          'export default storybookAstroRulesConfig;',
-          'export const storybookAstroRulesConfigFilePath = undefined;'
+          'const storybookAstroStoryRulesConfig = { rules: [] };',
+          'export default storybookAstroStoryRulesConfig;',
+          'export const storybookAstroStoryRulesConfigFilePath = undefined;'
         ].join('\n');
       }
 
@@ -27,9 +29,9 @@ export function storybookAstroRulesConfigVirtualModulePlugin(options?: RulesOpti
       const configPath = JSON.stringify(configFilePath.replace(/\\/g, '/'));
 
       return [
-        `import * as storybookAstroRulesConfigModule from ${importPath};`,
-        'export default storybookAstroRulesConfigModule;',
-        `export const storybookAstroRulesConfigFilePath = ${configPath};`
+        `import * as storybookAstroStoryRulesConfigModule from ${importPath};`,
+        'export default storybookAstroStoryRulesConfigModule;',
+        `export const storybookAstroStoryRulesConfigFilePath = ${configPath};`
       ].join('\n');
     }
   });

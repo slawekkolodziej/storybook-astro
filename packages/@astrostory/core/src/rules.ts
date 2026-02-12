@@ -49,7 +49,7 @@ type MutableStoryRuleSelection = {
   mswHandlers: RequestHandler[];
 };
 
-export function defineRules(config: StoryRulesConfig): StoryRulesConfig {
+export function defineStoryRules(config: StoryRulesConfig): StoryRulesConfig {
   return config;
 }
 
