@@ -27,7 +27,7 @@ const config = {
         args: ['**.html', '**.htmlContent'],
         slots: ['**']
       },
-      msw: './.storybook/msw.ts'
+      rules: './.storybook/rules.ts'
     }
   }
 };

@@ -5,14 +5,14 @@ import { build, type Rollup } from 'vite';
 import type { FrameworkOptions } from '../types.ts';
 import { viteAstroContainerRenderersPlugin } from '../viteAstroContainerRenderersPlugin.ts';
 import { mergeWithAstroConfig } from '../vitePluginAstro.ts';
-import { storybookAstroMswConfigVirtualModulePlugin } from './storybookAstroMswConfigVirtualModulePlugin.ts';
+import { storybookAstroRulesConfigVirtualModulePlugin } from './storybookAstroRulesConfigVirtualModulePlugin.ts';
 import { astroFilesVirtualModulePlugin } from './astroFilesVirtualModulePlugin.ts';
 
 const moduleRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export function astroServerRenderPlugin(options: {
   integrations: FrameworkOptions['integrations'];
-  msw?: FrameworkOptions['msw'];
+  rules?: FrameworkOptions['rules'];
   outDir: string;
 }) {
   const storiesMap = new Map<string, Set<string>>();
@@ -134,7 +134,7 @@ export function astroServerRenderPlugin(options: {
 
         await buildAstroServer({
           integrations: options.integrations,
-          msw: options.msw,
+          rules: options.rules,
           astroComponents,
           outDir: options.outDir,
           staticModuleMap
@@ -147,7 +147,7 @@ export function astroServerRenderPlugin(options: {
 async function buildAstroServer(options: {
   astroComponents: string[];
   integrations: FrameworkOptions['integrations'];
-  msw?: FrameworkOptions['msw'];
+  rules?: FrameworkOptions['rules'];
   outDir: string;
   staticModuleMap: Record<string, string>;
 }) {
@@ -170,7 +170,7 @@ async function buildAstroServer(options: {
     },
     plugins: [
       astroFilesVirtualModulePlugin(options.astroComponents),
-      storybookAstroMswConfigVirtualModulePlugin(options.msw),
+      storybookAstroRulesConfigVirtualModulePlugin(options.rules),
       viteAstroContainerRenderersPlugin(options.integrations, {
         mode: 'production',
         staticModuleMap: options.staticModuleMap

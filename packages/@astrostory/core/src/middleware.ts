@@ -1,23 +1,37 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { Integration } from './integrations/index.ts';
 import { addRenderers } from 'virtual:astro-container-renderers';
-import { startMswServer } from './msw.ts';
+import { resolveStoryModuleMock, withStoryModuleMocks } from './module-mocks.ts';
+import { applyMswHandlers } from './msw.ts';
+import { selectStoryRules } from './rules.ts';
+import type { RenderStoryInput } from './types.ts';
 
 export type HandlerProps = {
   component: string;
   args?: Record<string, unknown>;
   slots?: Record<string, unknown>;
+  story?: RenderStoryInput;
 };
 
-type ResolveMswConfigModule = () => unknown | Promise<unknown>;
+type ResolveRulesConfigModule = () => unknown | Promise<unknown>;
 
-export async function handlerFactory(
-  integrations: Integration[],
-  resolveMswConfigModule?: ResolveMswConfigModule
-) {
+type HandlerFactoryOptions = {
+  mode?: 'development' | 'production';
+  rulesConfigFilePath?: string;
+  resolveRulesConfigModule?: ResolveRulesConfigModule;
+};
+
+export async function handlerFactory(integrations: Integration[], options?: HandlerFactoryOptions) {
+  const mode = options?.mode ?? 'development';
   const container = await AstroContainer.create({
     // Somewhat hacky way to force client-side Storybook's Vite to resolve modules properly
     resolve: async (s) => {
+      const mockedModule = resolveStoryModuleMock(s);
+
+      if (mockedModule) {
+        return mockedModule;
+      }
+
       if (s.startsWith('astro:scripts')) {
         return `/@id/${s}`;
       }
@@ -35,19 +49,42 @@ export async function handlerFactory(
   });
 
   addRenderers(container);
+  let renderQueue = Promise.resolve<void>(undefined);
 
   return async function handler(data: HandlerProps) {
-    const mswConfigModule = resolveMswConfigModule ? await resolveMswConfigModule() : undefined;
+    const executeRender = async () => {
+      const rulesConfigModule = options?.resolveRulesConfigModule
+        ? await options.resolveRulesConfigModule()
+        : undefined;
 
-    await startMswServer(mswConfigModule, 'development');
+      const selectedRules = await selectStoryRules({
+        configModule: rulesConfigModule,
+        configFilePath: options?.rulesConfigFilePath,
+        mode,
+        story: data.story
+      });
 
-    const { default: Component } = await import(/* @vite-ignore */ data.component);
-    const processedArgs = await processImageMetadata(data.args ?? {});
+      await applyMswHandlers(selectedRules.mswHandlers);
 
-    return container.renderToString(Component, {
-      props: processedArgs,
-      slots: data.slots ?? {}
-    });
+      return withStoryModuleMocks(selectedRules.moduleMocks, async () => {
+        const { default: Component } = await import(/* @vite-ignore */ data.component);
+        const processedArgs = await processImageMetadata(data.args ?? {});
+
+        return container.renderToString(Component, {
+          props: processedArgs,
+          slots: data.slots ?? {}
+        });
+      });
+    };
+
+    const resultPromise = renderQueue.then(executeRender, executeRender);
+
+    renderQueue = resultPromise.then(
+      () => undefined,
+      () => undefined
+    );
+
+    return resultPromise;
   };
 }
 

@@ -1,17 +1,23 @@
 import type { CompatibleString, Options } from 'storybook/internal/types';
 import type { InlineConfig } from 'vite';
 import type { Integration } from './integrations/index.ts';
-import type { MswOptions } from './msw-options.ts';
+import type { RulesOptions } from './rules-options.ts';
 
 type FrameworkName = CompatibleString<'@astrostory/core'>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type $FIXME = any;
 
-export type { Integration, MswOptions };
+export type { Integration, RulesOptions };
 export type FrameworkOptions = {
   integrations: Integration[];
-  msw?: MswOptions;
+  rules?: RulesOptions;
+};
+
+export type RenderStoryInput = {
+  id: string;
+  title?: string;
+  name?: string;
 };
 
 type StorybookConfigFramework = {
@@ -33,6 +39,7 @@ export type RenderComponentInput = {
   component: string;
   args: Record<string, unknown>;
   slots: Record<string, string>;
+  story?: RenderStoryInput;
 };
 
 export type RenderResponseMessage = {

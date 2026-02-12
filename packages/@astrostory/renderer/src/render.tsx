@@ -80,7 +80,12 @@ export async function renderToCanvas(
       const response = await astroRenderer.render({
         component: element.moduleId,
         args: args,
-        slots: slots
+        slots: slots,
+        story: {
+          id: storyContext.id,
+          title: kind,
+          name
+        }
       });
 
       html = response.html;

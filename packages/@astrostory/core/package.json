@@ -5,6 +5,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./integrations": "./src/integrations/index.ts",
+    "./msw-helpers": "./src/msw-helpers.ts",
     "./preset": "./preset.ts",
     "./package.json": "./package.json",
     "./*": "./src/*"

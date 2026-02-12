@@ -1,13 +1,13 @@
 import { existsSync } from 'node:fs';
 import { extname, resolve } from 'node:path';
 
-export type MswOptions =
+export type RulesOptions =
   | string
   | {
       configFile: string;
     };
 
-export function resolveMswConfigFilePath(options?: MswOptions): string | undefined {
+export function resolveRulesConfigFilePath(options?: RulesOptions): string | undefined {
   if (options === undefined) {
     return undefined;
   }
@@ -18,15 +18,15 @@ export function resolveMswConfigFilePath(options?: MswOptions): string | undefin
 
   if (!normalizedConfigFilePath) {
     throw new Error(
-      `framework.options.msw config file was not found: ${resolvedConfigFilePath}. ` +
-        'Provide an existing path in framework.options.msw.'
+      `framework.options.rules config file was not found: ${resolvedConfigFilePath}. ` +
+        'Provide an existing path in framework.options.rules.'
     );
   }
 
   return normalizedConfigFilePath;
 }
 
-function normalizeConfigFileOption(options: MswOptions): string {
+function normalizeConfigFileOption(options: RulesOptions): string {
   const configFile =
     typeof options === 'string'
       ? options
@@ -36,14 +36,14 @@ function normalizeConfigFileOption(options: MswOptions): string {
 
   if (typeof configFile !== 'string') {
     throw new Error(
-      'framework.options.msw must be either a string path or an object with a string configFile.'
+      'framework.options.rules must be either a string path or an object with a string configFile.'
     );
   }
 
   const normalizedConfigFile = configFile.trim();
 
   if (!normalizedConfigFile) {
-    throw new Error('framework.options.msw config file path cannot be empty.');
+    throw new Error('framework.options.rules config file path cannot be empty.');
   }
 
   return normalizedConfigFile;

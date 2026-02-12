@@ -1,10 +1,10 @@
 import { fileURLToPath } from 'node:url';
-import { createServer, normalizePath, type PluginOption, type ViteDevServer } from 'vite';
+import { createServer, type PluginOption, type ViteDevServer } from 'vite';
 import type { RenderRequestMessage, RenderResponseMessage } from '@astrostory/renderer/types';
 import type { FrameworkOptions } from './types.ts';
 import type { Integration } from './integrations/index.ts';
 import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';
-import { resolveMswConfigFilePath } from './msw-options.ts';
+import { resolveRulesConfigFilePath } from './rules-options.ts';
 
 export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOptions) {
   const viteServer = await createViteServer(options.integrations);
@@ -16,54 +16,12 @@ export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOpt
       const middleware = await viteServer.ssrLoadModule(filePath, {
         fixStacktrace: true
       });
-      const mswConfigFilePath = resolveMswConfigFilePath(options.msw);
-      let mswConfigModule = await loadMswConfigModule(viteServer, mswConfigFilePath);
-
-      const handler = await middleware.handlerFactory(options.integrations, () => mswConfigModule);
-
-      if (mswConfigFilePath) {
-        const normalizedMswConfigPath = normalizePath(mswConfigFilePath);
-
-        server.watcher.add(mswConfigFilePath);
-
-        const refreshMswConfigModule = async (action: 'change' | 'unlink') => {
-          try {
-            if (action === 'unlink') {
-              mswConfigModule = undefined;
-            } else {
-              mswConfigModule = await loadMswConfigModule(viteServer, mswConfigFilePath, {
-                invalidate: true
-              });
-            }
-          } catch (error) {
-            console.error('Failed to reload MSW config module:', error);
-          }
-        };
-
-        server.watcher.on('change', (changedPath) => {
-          if (normalizePath(changedPath) !== normalizedMswConfigPath) {
-            return;
-          }
-
-          void refreshMswConfigModule('change');
-        });
-
-        server.watcher.on('unlink', (changedPath) => {
-          if (normalizePath(changedPath) !== normalizedMswConfigPath) {
-            return;
-          }
-
-          void refreshMswConfigModule('unlink');
-        });
-
-        server.watcher.on('add', (changedPath) => {
-          if (normalizePath(changedPath) !== normalizedMswConfigPath) {
-            return;
-          }
-
-          void refreshMswConfigModule('change');
-        });
-      }
+      const rulesConfigFilePath = resolveRulesConfigFilePath(options.rules);
+      const handler = await middleware.handlerFactory(options.integrations, {
+        mode: 'development',
+        rulesConfigFilePath,
+        resolveRulesConfigModule: () => loadRulesConfigModule(viteServer, rulesConfigFilePath)
+      });
 
       server.ws.on('astro:render:request', async (data: RenderRequestMessage['data']) => {
         try {
@@ -142,21 +100,9 @@ export async function createViteServer(integrations: Integration[]) {
   return viteServer;
 }
 
-async function loadMswConfigModule(
-  viteServer: ViteDevServer,
-  configFilePath?: string,
-  options?: { invalidate?: boolean }
-) {
+async function loadRulesConfigModule(viteServer: ViteDevServer, configFilePath?: string) {
   if (!configFilePath) {
     return undefined;
-  }
-
-  if (options?.invalidate) {
-    const modules = viteServer.moduleGraph.getModulesByFile(configFilePath);
-
-    modules?.forEach((module) => {
-      viteServer.moduleGraph.invalidateModule(module);
-    });
   }
 
   try {
@@ -167,7 +113,7 @@ async function loadMswConfigModule(
     const reason = error instanceof Error ? error.message : String(error);
 
     throw new Error(
-      `Unable to load framework.options.msw config module at ${configFilePath}: ${reason}`
+      `Unable to load framework.options.rules config module at ${configFilePath}: ${reason}`
     );
   }
 }

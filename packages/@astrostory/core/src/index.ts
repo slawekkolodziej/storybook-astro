@@ -1,3 +1,4 @@
-export type { FrameworkOptions, MswOptions, StorybookConfig } from './types.ts';
-export type { MswConfig, MswConfigFactory } from './msw.ts';
+export type { FrameworkOptions, RulesOptions, StorybookConfig } from './types.ts';
+export type { StoryRule, StoryRulesConfig, StoryRuleUse, StoryRuleUseContext } from './rules.ts';
+export { defineRules } from './rules.ts';
 export { core, viteFinal } from './preset.ts';

@@ -31,3 +31,9 @@ export const FromPublicApi = {
     apiUrl: 'https://jsonplaceholder.typicode.com/todos/1'
   }
 };
+
+export const ApiDown = {
+  args: {
+    apiUrl: 'https://jsonplaceholder.typicode.com/todos/1'
+  }
+};
