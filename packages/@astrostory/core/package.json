@@ -13,12 +13,12 @@
   "devDependencies": {
     "@storybook/preact": "^10.2.8",
     "@storybook/react": "^10.2.8",
-    "@storybook/svelte": "^10.1.10",
-    "@storybook/vue3": "^10.1.10",
-    "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@types/node": "^20.17.30",
+    "@storybook/svelte": "^10.2.8",
+    "@storybook/vue3": "^10.2.8",
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "@types/node": "^20.19.33",
     "@vitejs/plugin-react": "^5.1.4",
-    "alpinejs": "^3.14.9",
+    "alpinejs": "^3.15.8",
     "astro": "^5.6.1",
     "storybook-solidjs-vite": "^10.0.9",
     "vite-plugin-solid": "^2.11.10"
@@ -93,16 +93,16 @@
   },
   "dependencies": {
     "@astrostory/renderer": "workspace:*",
-    "hono": "^4.8.1",
+    "hono": "^4.11.9",
     "msw": "2.12.10",
     "preact": "^10.28.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "solid-js": "^1.9.11",
-    "storybook": "^10.1.10",
-    "svelte": "^5.25.6",
-    "typescript": "^5.8.3",
-    "vite": "^6.2.5",
-    "vue": "^3.5.13"
+    "storybook": "^10.2.8",
+    "svelte": "^5.50.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vue": "^3.5.28"
   }
 }

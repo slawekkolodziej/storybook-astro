@@ -19,7 +19,7 @@
     "storybook": "^10.1.10"
   },
   "dependencies": {
-    "@types/node": "^20.17.30"
+    "@types/node": "^20.19.33"
   },
   "peerDependenciesMeta": {
     "@storybook/react": {
