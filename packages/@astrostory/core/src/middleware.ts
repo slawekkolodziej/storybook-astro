@@ -1,6 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { Integration } from './integrations/index.ts';
 import { addRenderers } from 'virtual:astro-container-renderers';
+import { startMswServer } from './msw.ts';
 
 export type HandlerProps = {
   component: string;
@@ -8,7 +9,12 @@ export type HandlerProps = {
   slots?: Record<string, unknown>;
 };
 
-export async function handlerFactory(integrations: Integration[]) {
+type ResolveMswConfigModule = () => unknown | Promise<unknown>;
+
+export async function handlerFactory(
+  integrations: Integration[],
+  resolveMswConfigModule?: ResolveMswConfigModule
+) {
   const container = await AstroContainer.create({
     // Somewhat hacky way to force client-side Storybook's Vite to resolve modules properly
     resolve: async (s) => {
@@ -31,6 +37,10 @@ export async function handlerFactory(integrations: Integration[]) {
   addRenderers(container);
 
   return async function handler(data: HandlerProps) {
+    const mswConfigModule = resolveMswConfigModule ? await resolveMswConfigModule() : undefined;
+
+    await startMswServer(mswConfigModule, 'development');
+
     const { default: Component } = await import(/* @vite-ignore */ data.component);
     const processedArgs = await processImageMetadata(data.args ?? {});
 

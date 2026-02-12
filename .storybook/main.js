@@ -26,7 +26,8 @@ const config = {
       sanitization: {
         args: ['**.html', '**.htmlContent'],
         slots: ['**']
-      }
+      },
+      msw: './.storybook/msw.ts'
     }
   }
 };

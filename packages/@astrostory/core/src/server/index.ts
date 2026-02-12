@@ -3,9 +3,12 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import astroFiles from 'virtual:astro-files';
 import { addRenderers, resolveClientModules } from 'virtual:astro-container-renderers';
+import mswConfig from 'virtual:storybook-astro-msw-config';
+import { startMswServer } from '../msw.ts';
 
 const app = new Hono();
 const rendererHandlerPromise = handlerFactory();
+const mswServerPromise = startMswServer(mswConfig, 'production');
 
 app.use(
   '*',
@@ -19,6 +22,8 @@ app.use(
 app.get('/', async (c) => c.text('OK'));
 
 app.post('/render', async (c) => {
+  await mswServerPromise;
+
   const data = (await c.req.json()) || {};
   const rendererHandler = await rendererHandlerPromise;
 

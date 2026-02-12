@@ -1,11 +1,55 @@
 ---
-const { title = 'Default title', content = 'Default content' } = Astro.props;
+type TodoResponse = {
+  id?: number;
+  title?: string;
+  completed?: boolean;
+};
+
+const {
+  title = 'Default title',
+  content = 'Default content',
+  apiUrl
+} = Astro.props as {
+  title?: string;
+  content?: string;
+  apiUrl?: string;
+};
+
+let resolvedTitle = title;
+let resolvedContent = content;
+let fetchError = '';
+
+if (typeof apiUrl === 'string' && apiUrl.trim()) {
+  try {
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    const payload = (await response.json()) as TodoResponse;
+
+    if (typeof payload.title === 'string' && payload.title.trim()) {
+      const todoId = typeof payload.id === 'number' ? payload.id : 'unknown';
+
+      resolvedTitle = `Public API todo #${todoId}`;
+      resolvedContent = `${payload.title} (${payload.completed ? 'done' : 'pending'})`;
+    } else {
+      resolvedTitle = 'Public API response';
+      resolvedContent = JSON.stringify(payload);
+    }
+  } catch (error) {
+    fetchError = error instanceof Error ? error.message : 'Unknown error';
+  }
+}
 
 ---
 
 <div id="container">
-  <h2>{title}</h2>
-  <p>{content}</p>
+  <h2>{resolvedTitle}</h2>
+  <p>{resolvedContent}</p>
+  {apiUrl ? <small>Source: {apiUrl}</small> : null}
+  {fetchError ? <p role="alert">Unable to load API data: {fetchError}</p> : null}
   Slot:
   <slot name="main" />
 </div>
