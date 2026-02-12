@@ -94,7 +94,7 @@
   "dependencies": {
     "@astrostory/renderer": "workspace:*",
     "hono": "^4.8.1",
-    "msw": "2.4.9",
+    "msw": "2.12.10",
     "preact": "^10.28.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
