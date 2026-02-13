@@ -5,6 +5,7 @@ import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFall
 import { mergeWithAstroConfig } from './vitePluginAstro.ts';
 import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin.ts';
 import { astroServerRenderPlugin } from './vite/astroServerRenderPlugin.ts';
+import { resolveSanitizationOptions } from './sanitization.ts';
 
 export const core = {
   builder: '@storybook/builder-vite',
@@ -16,6 +17,8 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
   { configType, presets }
 ) => {
   const options = await presets.apply<FrameworkOptions>('frameworkOptions');
+
+  resolveSanitizationOptions(options.sanitization);
 
   if (!config.plugins) {
     config.plugins = [];
@@ -75,6 +78,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
   config.plugins.push(
     ...astroServerRenderPlugin({
       integrations: options.integrations,
+      sanitization: options.sanitization,
       storyRules: options.storyRules,
       outDir: join(outDir, 'storybook-server')
     })

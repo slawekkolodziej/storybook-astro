@@ -2,6 +2,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import astroFiles from 'virtual:astro-files';
+import sanitization from 'virtual:storybook-astro-sanitization-config';
 import { addRenderers, resolveClientModules } from 'virtual:astro-container-renderers';
 import storyRulesConfigModule, {
   storybookAstroStoryRulesConfigFilePath
@@ -9,6 +10,7 @@ import storyRulesConfigModule, {
 import { resolveStoryModuleMock, withStoryModuleMocks } from '../module-mocks.ts';
 import { applyMswHandlers } from '../msw.ts';
 import { selectStoryRules } from '../rules.ts';
+import { resolveSanitizationOptions, sanitizeRenderPayload } from '../sanitization.ts';
 import type { HandlerProps } from '../middleware.ts';
 
 const app = new Hono();
@@ -63,6 +65,7 @@ async function handlerFactory() {
   });
 
   addRenderers(container);
+  const sanitizationOptions = resolveSanitizationOptions(sanitization ?? undefined);
   let renderQueue = Promise.resolve<void>(undefined);
 
   return async function handler(data: HandlerProps) {
@@ -80,10 +83,17 @@ async function handlerFactory() {
         const Component = astroFiles[data.component] as Parameters<
           typeof container.renderToString
         >[0];
+        const sanitizedPayload = sanitizeRenderPayload(
+          {
+            args: data.args ?? {},
+            slots: data.slots ?? {}
+          },
+          sanitizationOptions
+        );
 
         return container.renderToString(Component, {
-          props: data.args,
-          slots: data.slots ?? {}
+          props: sanitizedPayload.args,
+          slots: sanitizedPayload.slots
         });
       });
     };

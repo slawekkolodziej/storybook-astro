@@ -3,7 +3,7 @@ import {
   resolveSanitizationOptions,
   sanitizeRenderPayload,
   serializeSanitizationOptions
-} from '@storybook/astro/sanitization.ts';
+} from '@astrostory/core/sanitization.ts';
 
 describe('sanitization', () => {
   test('keeps sanitization disabled by default', () => {

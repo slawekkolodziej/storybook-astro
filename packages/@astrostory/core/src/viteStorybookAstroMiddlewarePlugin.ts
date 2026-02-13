@@ -19,6 +19,7 @@ export async function createStorybookAstroMiddlewarePlugin(options: FrameworkOpt
       const storyRulesConfigFilePath = resolveRulesConfigFilePath(options.storyRules);
       const handler = await middleware.handlerFactory(options.integrations, {
         mode: 'development',
+        sanitization: options.sanitization,
         rulesConfigFilePath: storyRulesConfigFilePath,
         resolveRulesConfigModule: () => loadRulesConfigModule(viteServer, storyRulesConfigFilePath)
       });

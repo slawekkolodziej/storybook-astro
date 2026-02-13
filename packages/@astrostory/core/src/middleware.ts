@@ -4,6 +4,8 @@ import { addRenderers } from 'virtual:astro-container-renderers';
 import { resolveStoryModuleMock, withStoryModuleMocks } from './module-mocks.ts';
 import { applyMswHandlers } from './msw.ts';
 import { selectStoryRules } from './rules.ts';
+import type { SanitizationOptions } from './sanitization.ts';
+import { resolveSanitizationOptions, sanitizeRenderPayload } from './sanitization.ts';
 import type { RenderStoryInput } from './types.ts';
 
 export type HandlerProps = {
@@ -17,6 +19,7 @@ type ResolveRulesConfigModule = () => unknown | Promise<unknown>;
 
 type HandlerFactoryOptions = {
   mode?: 'development' | 'production';
+  sanitization?: SanitizationOptions;
   rulesConfigFilePath?: string;
   resolveRulesConfigModule?: ResolveRulesConfigModule;
 };
@@ -49,6 +52,7 @@ export async function handlerFactory(integrations: Integration[], options?: Hand
   });
 
   addRenderers(container);
+  const sanitizationOptions = resolveSanitizationOptions(options?.sanitization);
   let renderQueue = Promise.resolve<void>(undefined);
 
   return async function handler(data: HandlerProps) {
@@ -69,10 +73,17 @@ export async function handlerFactory(integrations: Integration[], options?: Hand
       return withStoryModuleMocks(selectedRules.moduleMocks, async () => {
         const { default: Component } = await import(/* @vite-ignore */ data.component);
         const processedArgs = await processImageMetadata(data.args ?? {});
+        const sanitizedPayload = sanitizeRenderPayload(
+          {
+            args: processedArgs,
+            slots: data.slots ?? {}
+          },
+          sanitizationOptions
+        );
 
         return container.renderToString(Component, {
-          props: processedArgs,
-          slots: data.slots ?? {}
+          props: sanitizedPayload.args,
+          slots: sanitizedPayload.slots
         });
       });
     };

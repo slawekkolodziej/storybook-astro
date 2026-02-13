@@ -6,12 +6,14 @@ import type { FrameworkOptions } from '../types.ts';
 import { viteAstroContainerRenderersPlugin } from '../viteAstroContainerRenderersPlugin.ts';
 import { mergeWithAstroConfig } from '../vitePluginAstro.ts';
 import { storybookAstroStoryRulesConfigVirtualModulePlugin } from './storybookAstroRulesConfigVirtualModulePlugin.ts';
+import { storybookAstroSanitizationConfigVirtualModulePlugin } from './storybookAstroSanitizationConfigVirtualModulePlugin.ts';
 import { astroFilesVirtualModulePlugin } from './astroFilesVirtualModulePlugin.ts';
 
 const moduleRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export function astroServerRenderPlugin(options: {
   integrations: FrameworkOptions['integrations'];
+  sanitization?: FrameworkOptions['sanitization'];
   storyRules?: FrameworkOptions['storyRules'];
   outDir: string;
 }) {
@@ -134,6 +136,7 @@ export function astroServerRenderPlugin(options: {
 
         await buildAstroServer({
           integrations: options.integrations,
+          sanitization: options.sanitization,
           storyRules: options.storyRules,
           astroComponents,
           outDir: options.outDir,
@@ -147,6 +150,7 @@ export function astroServerRenderPlugin(options: {
 async function buildAstroServer(options: {
   astroComponents: string[];
   integrations: FrameworkOptions['integrations'];
+  sanitization?: FrameworkOptions['sanitization'];
   storyRules?: FrameworkOptions['storyRules'];
   outDir: string;
   staticModuleMap: Record<string, string>;
@@ -170,6 +174,7 @@ async function buildAstroServer(options: {
     },
     plugins: [
       astroFilesVirtualModulePlugin(options.astroComponents),
+      storybookAstroSanitizationConfigVirtualModulePlugin(options.sanitization),
       storybookAstroStoryRulesConfigVirtualModulePlugin(options.storyRules),
       viteAstroContainerRenderersPlugin(options.integrations, {
         mode: 'production',
