@@ -1,19 +1,14 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vitest/config';
-import { getViteConfig } from 'astro/config';
-import react from '@astrojs/react';
-import solid from '@astrojs/solid-js';
-import vue from '@astrojs/vue';
-import preact from '@astrojs/preact';
-import svelte from '@astrojs/svelte';
-import alpinejs from '@astrojs/alpinejs';
-import { solidVitestPatch } from './lib/test-utils';
 
-const vitestConfig = defineConfig({
-  mode: 'test',
+export default defineConfig({
   test: {
-    // environment: 'happy-dom',
-    setupFiles: ['./lib/vitest-setup.ts'],
+    projects: [
+      './vitest.app.config.ts',
+      './packages/@astrostory/core/vitest.config.ts',
+      './packages/@astrostory/renderer/vitest.config.ts',
+      './packages/@storybook/astro/vitest.config.ts'
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],
@@ -34,25 +29,4 @@ const vitestConfig = defineConfig({
       ]
     }
   }
-});
-
-export default getViteConfig(vitestConfig as unknown as Parameters<typeof getViteConfig>[0], {
-  // Don't read astro.config.mjs
-  configFile: false,
-  // Tests specific astro config
-  integrations: [
-    react({
-      include: ['**/react/**']
-    }),
-    solid({
-      include: ['**/solid/**']
-    }),
-    preact({
-      include: ['**/preact/**']
-    }),
-    vue(),
-    svelte(),
-    alpinejs(),
-    solidVitestPatch()
-  ]
 });

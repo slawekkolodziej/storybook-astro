@@ -1,0 +1,68 @@
+import { describe, expect, test, vi } from 'vitest';
+import { createVirtualModulePlugin } from './createVirtualModulePlugin.ts';
+
+function getHookHandler<T extends (...args: any[]) => any>(hook: unknown): T {
+  if (typeof hook === 'function') {
+    return hook as T;
+  }
+
+  if (
+    typeof hook === 'object' &&
+    hook !== null &&
+    'handler' in hook &&
+    typeof (hook as { handler?: unknown }).handler === 'function'
+  ) {
+    return (hook as { handler: T }).handler;
+  }
+
+  throw new Error('Expected hook to be a function or an object with a handler function.');
+}
+
+describe('createVirtualModulePlugin', () => {
+  test('resolves configured virtual module id with a null-byte prefix', () => {
+    const plugin = createVirtualModulePlugin({
+      pluginName: 'test:virtual-module',
+      virtualModuleId: 'virtual:test-module',
+      load: () => 'export default true;'
+    });
+
+    const resolveId = getHookHandler<(id: string) => string | undefined>(plugin.resolveId);
+
+    expect(plugin.name).toBe('test:virtual-module');
+    expect(resolveId('virtual:test-module')).toBe('\0virtual:test-module');
+    expect(resolveId('virtual:other-module')).toBeUndefined();
+  });
+
+  test('loads module content only for the resolved virtual module id', async () => {
+    const load = vi.fn(() => 'export const message = "hello";');
+
+    const plugin = createVirtualModulePlugin({
+      pluginName: 'test:virtual-module',
+      virtualModuleId: 'virtual:test-module',
+      load
+    });
+
+    const loadModule = getHookHandler<(id: string) => Promise<string | undefined>>(plugin.load);
+
+    const result = await loadModule('\0virtual:test-module');
+
+    expect(result).toBe('export const message = "hello";');
+    expect(load).toHaveBeenCalledTimes(1);
+    expect(load).toHaveBeenCalledWith('\0virtual:test-module');
+
+    await expect(loadModule('virtual:test-module')).resolves.toBeUndefined();
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
+  test('supports asynchronous virtual module loaders', async () => {
+    const plugin = createVirtualModulePlugin({
+      pluginName: 'test:virtual-module',
+      virtualModuleId: 'virtual:test-module',
+      load: async () => 'export default "async";'
+    });
+
+    const loadModule = getHookHandler<(id: string) => Promise<string | undefined>>(plugin.load);
+
+    await expect(loadModule('\0virtual:test-module')).resolves.toBe('export default "async";');
+  });
+});
