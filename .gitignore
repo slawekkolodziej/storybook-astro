@@ -30,3 +30,6 @@ storybook-static/
 storybook-server/
 dist-test/
 .vscode/
+
+# Coverage report
+coverage/

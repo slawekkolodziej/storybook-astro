@@ -13,7 +13,26 @@ const vitestConfig = defineConfig({
   mode: 'test',
   test: {
     // environment: 'happy-dom',
-    setupFiles: ['./lib/vitest-setup.ts']
+    setupFiles: ['./lib/vitest-setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'json-summary'],
+      include: [
+        'src/**/*.{js,jsx,ts,tsx,astro,vue,svelte}',
+        'packages/**/src/**/*.{js,jsx,ts,tsx,astro,vue,svelte}',
+        'packages/**/preset.{js,ts,mjs,cjs}'
+      ],
+      exclude: [
+        '**/*.d.ts',
+        '**/*.{test,spec}.{js,jsx,ts,tsx}',
+        '**/*.stories.{js,jsx,ts,tsx,mdx}',
+        '**/stories/**',
+        '**/.astro/**',
+        '**/coverage/**',
+        '**/dist/**',
+        '**/node_modules/**'
+      ]
+    }
   }
 });
 
