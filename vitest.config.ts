@@ -7,7 +7,6 @@ import vue from '@astrojs/vue';
 import preact from '@astrojs/preact';
 import svelte from '@astrojs/svelte';
 import alpinejs from '@astrojs/alpinejs';
-import type { UserConfig } from 'vite';
 import { solidVitestPatch } from './lib/test-utils';
 
 const vitestConfig = defineConfig({
@@ -18,7 +17,7 @@ const vitestConfig = defineConfig({
   }
 });
 
-export default getViteConfig(vitestConfig as UserConfig, {
+export default getViteConfig(vitestConfig as unknown as Parameters<typeof getViteConfig>[0], {
   // Don't read astro.config.mjs
   configFile: false,
   // Tests specific astro config
