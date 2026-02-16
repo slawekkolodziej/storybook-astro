@@ -5,6 +5,7 @@ import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFall
 import { mergeWithAstroConfig } from './vitePluginAstro.ts';
 import { viteStorybookAstroRendererPlugin } from './viteStorybookAstroRendererPlugin.ts';
 import { astroServerRenderPlugin } from './vite/astroServerRenderPlugin.ts';
+import { astroStaticPrerenderPlugin } from './vite/astroStaticPrerenderPlugin.ts';
 import { resolveSanitizationOptions } from './sanitization.ts';
 
 export const core = {
@@ -31,7 +32,8 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
   config.plugins.push(
     viteStorybookRendererFallbackPlugin(options.integrations),
     viteStorybookAstroRendererPlugin({
-      mode: configType === 'DEVELOPMENT' ? 'development' : 'production'
+      mode: configType === 'DEVELOPMENT' ? 'development' : 'production',
+      renderMode: options.renderMode
     })
   );
 
@@ -75,16 +77,28 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
     preserveEntrySignatures: 'strict'
   };
 
-  const outDir = config.build.outDir ? dirname(config.build.outDir) : process.cwd();
+  if (options.renderMode === 'static') {
+    const staticOutputDir = config.build.outDir ?? join(process.cwd(), 'storybook-static');
 
-  config.plugins.push(
-    ...astroServerRenderPlugin({
-      integrations: options.integrations,
-      sanitization: options.sanitization,
-      storyRules: options.storyRules,
-      outDir: join(outDir, 'storybook-server')
-    })
-  );
+    config.plugins.push(
+      ...astroStaticPrerenderPlugin({
+        integrations: options.integrations,
+        sanitization: options.sanitization,
+        outDir: staticOutputDir
+      })
+    );
+  } else {
+    const outDir = config.build.outDir ? dirname(config.build.outDir) : process.cwd();
+
+    config.plugins.push(
+      ...astroServerRenderPlugin({
+        integrations: options.integrations,
+        sanitization: options.sanitization,
+        storyRules: options.storyRules,
+        outDir: join(outDir, 'storybook-server')
+      })
+    );
+  }
 
   const finalConfig = await mergeWithAstroConfig(
     config,

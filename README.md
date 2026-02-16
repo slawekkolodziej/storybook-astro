@@ -8,6 +8,7 @@ This project is experimental and not ready for production use yet.
 
 - Astro component rendering in Storybook
 - Multi-framework support through Astro integrations (`react`, `preact`, `solid`, `vue`, `svelte`, `alpinejs`)
+- Server and static build modes via `framework.options.renderMode`
 - Story-aware backend rules (`storyRules`) with:
   - MSW handlers
   - Module replacement mocks
@@ -30,6 +31,32 @@ const config = {
   framework: {
     name: '@astrostory/core',
     options: {
+      integrations: [react(), solid(), preact(), vue(), svelte(), alpinejs()]
+    }
+  }
+};
+
+export default config;
+```
+
+## Build modes
+
+Astro Storybook supports two production render modes:
+
+- `server` (default): runs stories through the Astro rendering server and supports `storyRules`
+- `static`: prerenders Astro stories into static HTML and does not support `storyRules`
+
+### Example: static mode
+
+```js
+import { react, solid, preact, vue, svelte, alpinejs } from '@astrostory/core/integrations';
+
+/** @type { import('@astrostory/core').StorybookConfig } */
+const config = {
+  framework: {
+    name: '@astrostory/core',
+    options: {
+      renderMode: 'static',
       integrations: [react(), solid(), preact(), vue(), svelte(), alpinejs()]
     }
   }
@@ -79,7 +106,8 @@ Security-specific options are documented in `SECURITY.md` to keep this README fo
 ## Common commands
 
 - Dev Storybook: `yarn storybook`
-- Build Storybook: `yarn build-storybook`
+- Build Storybook (server mode): `yarn build-storybook`
+- Build Storybook (static mode): `yarn build-storybook.static`
 - Run tests: `yarn test --run`
 - Build app: `yarn build`
 

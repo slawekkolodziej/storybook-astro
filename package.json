@@ -8,6 +8,7 @@
     "astro": "astro",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "build-storybook.static": "storybook build --config-dir .storybook-static",
     "test": "vitest",
     "test.coverage": "vitest --run --coverage"
   },
