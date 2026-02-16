@@ -1,59 +1,86 @@
 # Astro Storybook
 
-The goal of this project is to enable support for Astro components in Storybook.
+Astro Storybook lets you render `.astro` components in Storybook with Astro integrations and story-aware backend rules.
 
-This repository is an experimental project and is not a fully functional Storybook addon. It is not ready for production use.
+This project is experimental and not ready for production use yet.
 
-It uses Vitest To verify that Astro Container API works as expected. You can try it out by running `yarn test`.
+## What you get
 
-## Setup instructions
+- Astro component rendering in Storybook
+- Multi-framework support through Astro integrations (`react`, `preact`, `solid`, `vue`, `svelte`, `alpinejs`)
+- Story-aware backend rules (`storyRules`) with:
+  - MSW handlers
+  - Module replacement mocks
+- Dev + production render flows using the same Astro-based renderer pipeline
 
-1. Clone the repo
-2. Run `yarn install`
-3. Run `yarn storybook`
+## Quick start
 
-## Code structure
+1. Install dependencies: `yarn install`
+2. Start Storybook: `yarn storybook`
 
-The repository is based on Astro blank project.
-
-Code responsible for Storybook integration lives in two packages:
-
-- `packages/@astrostory/core` - defines Storybook framework (https://storybook.js.org/docs/configure/integration/frameworks), it is responsible for server-side rendering Astro components
-- `packages/@astrostory/renderer` - a package that gets imported into client-side of Storybook, it sends render requests to Astro rendering proxy.
-
-## HTML sanitization
-
-`@astrostory/core` supports server-side HTML sanitization for incoming story args/slots.
-
-Configure it in `.storybook/main.js` under `framework.options.sanitization`:
+### Example `.storybook/main.js`
 
 ```js
-framework: {
-  name: '@astrostory/core',
-  options: {
-    integrations: [/* ... */],
-    sanitization: {
-      args: ['contentHtml', 'items.*.bodyHtml'],
-      slots: ['**'],
-      sanitizeHtml: {
-        allowedTags: ['p', 'a', 'strong', 'em', 'ul', 'ol', 'li', 'br'],
-        allowedAttributes: {
-          a: ['href', 'target', 'rel']
-        }
-      }
+import { react, solid, preact, vue, svelte, alpinejs } from '@astrostory/core/integrations';
+
+/** @type { import('@astrostory/core').StorybookConfig } */
+const config = {
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  addons: ['@chromatic-com/storybook', '@storybook/addon-docs'],
+  framework: {
+    name: '@astrostory/core',
+    options: {
+      integrations: [react(), solid(), preact(), vue(), svelte(), alpinejs()]
     }
   }
-}
+};
+
+export default config;
 ```
 
-Path patterns support `*` for one segment and `**` for any depth. Function-valued `sanitize-html`
-options are intentionally unsupported in framework options.
+## Story rules (MSW + module mocks)
 
-If `sanitization` is enabled and `slots` is omitted, all slot names are sanitized by default (`['**']`).
+Use `framework.options.storyRules` to attach backend behavior to specific stories.
 
-The default policy is intentionally moderate (not tiny): it allows common content/layout tags such as
-`div`, `span`, `img`, `b`, `i`, `hr`, headings, lists, tables, plus safe attributes including `class`
-globally and `src`/`alt` for images. Scripts, event handler attributes, and other unsafe constructs are
-still blocked.
+```ts
+import { defineStoryRules } from '@astrostory/core';
+import { http, HttpResponse } from '@astrostory/core/msw-helpers';
 
-**Any help is highly appreciated!**
+export default defineStoryRules({
+  rules: [
+    {
+      match: ['astro/card/from-public-api'],
+      use: ({ msw, mode }) => {
+        msw.use(
+          http.get('https://jsonplaceholder.typicode.com/todos/1', () => {
+            return HttpResponse.json({
+              userId: 42,
+              id: 1,
+              title: `Storybook ${mode} todo from story rules`,
+              completed: mode === 'production'
+            });
+          })
+        );
+      }
+    }
+  ]
+});
+```
+
+## Security and sanitization
+
+Security-specific options are documented in `SECURITY.md` to keep this README focused on day-to-day usage.
+
+## Repo structure
+
+- `packages/@astrostory/core`: Storybook framework integration and Astro render pipeline
+- `packages/@astrostory/renderer`: client-side renderer bridge used by Storybook preview
+
+## Common commands
+
+- Dev Storybook: `yarn storybook`
+- Build Storybook: `yarn build-storybook`
+- Run tests: `yarn test --run`
+- Build app: `yarn build`
+
+Contributions are welcome.
