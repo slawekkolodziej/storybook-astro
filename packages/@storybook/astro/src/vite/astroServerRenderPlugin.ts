@@ -192,7 +192,6 @@ async function buildAstroServer(options: {
   } catch (error) {
     console.error('Build failed:', error);
 
-    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }
