@@ -185,10 +185,18 @@ export default [
 
   // Tests specific config
   {
-    files: [`**/__tests__/**/*.{spec,test}.{${ALL_EXTENSIONS}}`],
+    files: [
+      `**/*.{spec,test}.{${ALL_EXTENSIONS}}`,
+      '**/vitest.config.ts',
+      '**/vitest.app.config.ts'
+    ],
 
     plugins: {
       jest: eslintPluginJest
+    },
+
+    rules: {
+      'n/no-extraneous-import': 'off'
     }
   },
 

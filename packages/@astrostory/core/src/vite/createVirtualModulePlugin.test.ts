@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { createVirtualModulePlugin } from './createVirtualModulePlugin.ts';
 
-function getHookHandler<T extends (...args: any[]) => any>(hook: unknown): T {
+function getHookHandler<T extends (...args: unknown[]) => unknown>(hook: unknown): T {
   if (typeof hook === 'function') {
     return hook as T;
   }
