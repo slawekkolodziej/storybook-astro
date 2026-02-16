@@ -98,21 +98,6 @@ export default defineStoryRules({
 
 Security-specific options are documented in `SECURITY.md` to keep this README focused on day-to-day usage.
 
-## Repo structure
-
-- `packages/@astrostory/core`: Storybook framework integration and Astro render pipeline
-- `packages/@astrostory/renderer`: client-side renderer bridge used by Storybook preview
-
-## Common commands
-
-- Dev Storybook: `yarn storybook`
-- Build Storybook (server mode): `yarn build-storybook`
-- Build Storybook (static mode): `yarn build-storybook.static`
-- Run tests: `yarn test --run`
-- Build app: `yarn build`
-
-Contributions are welcome.
-
 ## Auth modes
 
 The standalone `storybook-server` build supports two auth modes via server environment:
@@ -127,4 +112,19 @@ Env details:
 
 Client runtime integration:
 
-- Set `STORYBOOK_ASTRO_AUTH_TOKEN` in the Storybook runtime for `simple-token` mode.
+- Set `STORYBOOK_ASTRO_AUTH_TOKEN` in Storybook runtime for `simple-token` mode.
+
+## Repo structure
+
+- `packages/@astrostory/core`: Storybook framework integration and Astro render pipeline
+- `packages/@astrostory/renderer`: client-side renderer bridge used by Storybook preview
+
+## Common commands
+
+- Dev Storybook: `yarn storybook`
+- Build Storybook (server mode): `yarn build-storybook`
+- Build Storybook (static mode): `yarn build-storybook.static`
+- Run tests: `yarn test --run`
+- Build app: `yarn build`
+
+Contributions are welcome.
