@@ -1,5 +1,6 @@
 export type {
   FrameworkOptions,
+  RenderMode,
   SanitizationOptions,
   StoryRulesOptions,
   StorybookConfig

@@ -18,6 +18,8 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
 ) => {
   const options = await presets.apply<FrameworkOptions>('frameworkOptions');
 
+  validateFrameworkOptions(options);
+
   resolveSanitizationOptions(options.sanitization);
 
   if (!config.plugins) {
@@ -93,6 +95,14 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (
 
   return finalConfig;
 };
+
+function validateFrameworkOptions(options: FrameworkOptions) {
+  if (options.renderMode === 'static' && options.storyRules !== undefined) {
+    throw new Error(
+      'framework.options.storyRules is not supported when framework.options.renderMode is "static".'
+    );
+  }
+}
 
 function mergeEnvPrefixes(
   existing: string | string[] | undefined,

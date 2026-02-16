@@ -10,11 +10,24 @@ type FrameworkName = CompatibleString<'@astrostory/core'>;
 export type $FIXME = any;
 
 export type { Integration, SanitizationOptions, StoryRulesOptions };
-export type FrameworkOptions = {
+export type RenderMode = 'server' | 'static';
+
+type BaseFrameworkOptions = {
   integrations: Integration[];
   sanitization?: SanitizationOptions;
+};
+
+type ServerFrameworkOptions = BaseFrameworkOptions & {
+  renderMode?: 'server';
   storyRules?: StoryRulesOptions;
 };
+
+type StaticFrameworkOptions = BaseFrameworkOptions & {
+  renderMode: 'static';
+  storyRules?: never;
+};
+
+export type FrameworkOptions = ServerFrameworkOptions | StaticFrameworkOptions;
 
 export type RenderStoryInput = {
   id: string;
