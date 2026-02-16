@@ -22,7 +22,8 @@
     "alpinejs": "^3.15.8",
     "astro": "^5.6.1",
     "storybook-solidjs-vite": "^10.0.9",
-    "vite-plugin-solid": "^2.11.10"
+    "vite-plugin-solid": "^2.11.10",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "@astrojs/alpinejs": "^0.4.5",

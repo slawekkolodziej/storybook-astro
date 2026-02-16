@@ -211,6 +211,7 @@ __metadata:
     typescript: "npm:^5.9.3"
     vite: "npm:^7.3.1"
     vite-plugin-solid: "npm:^2.11.10"
+    vitest: "npm:^4.0.18"
     vue: "npm:^3.5.28"
   peerDependencies:
     "@astrojs/alpinejs": ^0.4.5
