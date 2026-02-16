@@ -11,9 +11,11 @@ import { resolveStoryModuleMock, withStoryModuleMocks } from '../module-mocks.ts
 import { applyMswHandlers } from '../msw.ts';
 import { selectStoryRules } from '../rules.ts';
 import { resolveSanitizationOptions, sanitizeRenderPayload } from '../sanitization.ts';
+import { createAuthMiddleware, resolveAuthConfig } from './auth.ts';
 import type { HandlerProps } from '../middleware.ts';
 
 const app = new Hono();
+const authConfig = resolveAuthConfig();
 const rendererHandlerPromise = handlerFactory();
 
 app.use(
@@ -21,9 +23,11 @@ app.use(
   cors({
     origin: '*',
     allowMethods: ['GET', 'POST'],
-    allowHeaders: ['Content-Type']
+    allowHeaders: ['Content-Type', 'Authorization']
   })
 );
+
+app.use('*', createAuthMiddleware(authConfig));
 
 app.get('/', async (c) => c.text('OK'));
 
