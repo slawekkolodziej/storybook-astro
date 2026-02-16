@@ -6,6 +6,7 @@ type StorybookImportMetaEnv = ImportMeta & {
 
 type StorybookGlobalEnv = typeof globalThis & {
   STORYBOOK_ASTRO_SERVER_URL?: string;
+  STORYBOOK_ASTRO_AUTH_TOKEN?: string;
 };
 
 const ASTRO_SERVER_UNAVAILABLE_ERROR_NAME = 'AstroRenderServerUnavailableError';
@@ -17,15 +18,23 @@ export async function render(data: RenderComponentInput, timeoutMs = 5000) {
 
   const serverUrl = getServerUrl();
 
+  const authToken = getAuthToken();
+
+  const requestHeaders: Record<string, string> = {
+    'content-type': 'application/json'
+  };
+
+  if (authToken) {
+    requestHeaders.authorization = `Bearer ${authToken}`;
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(`${serverUrl}/render`, {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
+      headers: requestHeaders,
       body: JSON.stringify(data),
       signal: controller.signal
     });
@@ -68,6 +77,13 @@ function getServerUrl() {
   const globalServerUrl = (globalThis as StorybookGlobalEnv).STORYBOOK_ASTRO_SERVER_URL;
 
   return envServerUrl || globalServerUrl || 'http://localhost:3000';
+}
+
+function getAuthToken() {
+  const envAuthToken = (import.meta as StorybookImportMetaEnv).env?.STORYBOOK_ASTRO_AUTH_TOKEN;
+  const globalAuthToken = (globalThis as StorybookGlobalEnv).STORYBOOK_ASTRO_AUTH_TOKEN;
+
+  return envAuthToken || globalAuthToken;
 }
 
 export function init() {

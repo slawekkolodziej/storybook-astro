@@ -112,3 +112,19 @@ Security-specific options are documented in `SECURITY.md` to keep this README fo
 - Build app: `yarn build`
 
 Contributions are welcome.
+
+## Auth modes
+
+The standalone `storybook-server` build supports two auth modes via server environment:
+
+- `AUTH_MODE=external` (default): pass-through, expects auth at deployment boundary.
+- `AUTH_MODE=simple-token`: requires `Authorization: Bearer <AUTH_TOKEN>` on `/render` requests.
+
+Env details:
+
+- Required for `simple-token`: `AUTH_TOKEN`
+- Optional metadata: `AUTH_TOKEN_ID`, `AUTH_TOKEN_EXPIRES_AT`
+
+Client runtime integration:
+
+- Set `STORYBOOK_ASTRO_AUTH_TOKEN` in the Storybook runtime for `simple-token` mode.
